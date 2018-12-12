@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Categorias{% endblock %}
+
+{% block content %}
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h2>Categorías</h2>
+                </div>
+            </div>
+
+            {% for category in categories %}
+            <!-- post -->
+            <div class="col-md-4">
+                <div class="post post-thumb">
+                    <a class="post-img" href="{% url 'category' category.categoria %}" target="_self"><img src="{% static './img/category.png' %}" alt="" class="img-fluid" style="max-height: 15em; object-fit: cover;"></a>
+                    <div class="post-body">
+                        {% comment %} <div class="post-meta">
+                            <a class="post-category cat-" href="#">{{category.categoria}}</a>
+                        </div> {% endcomment %}
+                        <h3 class="post-title"><a href="{% url 'category' category.categoria %}" target="_self" style="text-decoration:none;">{{category.categoria|upper}}</a></h3>
+                    </div>
+                </div>
+            </div>
+            <!-- /post -->
+            {% endfor %}
+
+            <div class="clearfix visible-md visible-lg"></div>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Estadísticas{% endblock %}
+
+{% block content %}
+    
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h2>Estadísticas</h2>
+                </div>
+            </div>
+
+        </div>
+        <!-- /row -->
+
+        <!-- row -->
+        <div class="row">
+            <div class="col-12">
+                <p>UPLA : {{ contador.upla.contador_visitas__sum }}</p>
+                <p>UTFSM : {{ contador.ufsm.contador_visitas__sum }}</p>
+                <p>UV : {{ contador.uv.contador_visitas__sum }}</p>
+                <p>UCN : {{ contador.ucn.contador_visitas__sum }}</p>
+                <p>PUCV : {{ contador.pucv.contador_visitas__sum }}</p>
+
+                <br>
+
+                <p>Mejor Noticia PUCV: {{ contador.mejores_noticia_pucv.bajada }}</p>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+
+{% endblock %}

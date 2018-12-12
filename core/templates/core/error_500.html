@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Error 500{% endblock %}
+
+{% block content %}
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <h1>Ops! Ocurrió un error en el sevidor. Intenta denuevo en unos minutos</h1>
+            <h3><a href="{% url 'home' %}" target="_self">Volver a Inicio</a></h3>
+
+            <div class="clearfix visible-md visible-lg"></div>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+
+{% endblock %}
