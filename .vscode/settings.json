@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Miniconda3\\envs\\uninews\\python.exe"
+    "python.pythonPath": "C:\\Miniconda3\\envs\\uninews\\python.exe",
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
 }
