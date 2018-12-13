@@ -1,0 +1,14 @@
+astroid==2.0.4
+beautifulsoup4==4.6.3
+certifi==2018.10.15
+colorama==0.4.0
+Django==2.1.3
+feedparser==5.2.1
+isort==4.3.4
+lazy-object-proxy==1.3.1
+mccabe==0.6.1
+pylint==2.1.1
+pytz==2018.7
+six==1.11.0
+wincertstore==0.2
+wrapt==1.10.11
