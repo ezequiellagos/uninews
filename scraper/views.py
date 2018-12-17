@@ -108,32 +108,37 @@ def upla():
     result = []
 
     for item in feed['items']:
-        titulo =  item['title']
-        bajada =  item['summary']
-        link = item['link']
-        categoria = item['category']
-        fecha = item['published']
-        fecha = formatear_fecha(fecha, "upla")
+        try:
+            titulo =  item['title']
+            bajada =  item['summary']
+            link = item['link']
+            categoria = item['category']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "upla")
 
-        # Parsea la categoria para ser buscada
-        categoria_busqueda = categoria.lower()
-        categoria_busqueda = elimina_tildes(categoria_busqueda)
-        categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            # Parsea la categoria para ser buscada
+            categoria_busqueda = categoria.lower()
+            categoria_busqueda = elimina_tildes(categoria_busqueda)
+            categoria_busqueda = categoria_busqueda.replace(" ", "-")
 
-        # Entra en la pagina de cada categoria y busca todas las noticias
-        contents = urllib.request.urlopen("http://www.upla.cl/noticias/category/"+categoria_busqueda).read()
-        bs = BeautifulSoup(contents, "html.parser")
-        articles = bs.find_all("article", ["item-list"])
+            # Entra en la pagina de cada categoria y busca todas las noticias
+            contents = urllib.request.urlopen("http://www.upla.cl/noticias/category/"+categoria_busqueda).read()
+            bs = BeautifulSoup(contents, "html.parser")
+            articles = bs.find_all("article", ["item-list"])
 
-        # Por cada noticia obtiene su titulo
-        for article in articles:
-            titulo_articulo = article.find("a").text
+            # Por cada noticia obtiene su titulo
+            for article in articles:
+                titulo_articulo = article.find("a").text
 
-            # Si el titulo de la noticia es igual al titulo obtenido del XML, obtiene la imagen de esa noticia y termina el ciclo
-            if titulo_articulo == titulo:
-                imagen = article.find("img")['src']
-                break
-        result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+                # Si el titulo de la noticia es igual al titulo obtenido del XML, obtiene la imagen de esa noticia y termina el ciclo
+                if titulo_articulo == titulo:
+                    imagen = article.find("img")['src']
+                    break
+            result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            print("------------------------------------------")
+            print(e)
+            print("------------------------------------------")
     return result
 
 def pucv():
