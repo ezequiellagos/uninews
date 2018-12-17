@@ -20,7 +20,7 @@
                             <span class="display-4">{{university.nombre}}</span>
                         </div>
                         <div class="col-4">
-                            {% with "./img/universidades/"|add:university.alias|add:".png" as university_logo %}
+                            {% with "./img/universidades/"|add:university.alias|lower|add:".png" as university_logo %}
                             <img src="{% static university_logo %}" alt="" class="img-fluid" style="max-height: 8em; ">
                             {% endwith %}
                         </div>
