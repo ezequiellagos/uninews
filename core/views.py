@@ -20,6 +20,10 @@ def categories(request):
     categories = Noticia.objects.order_by().values('categoria').distinct()
     return render(request, "core/categories.html", {'categories':categories})
 
+def regiones(request):
+        regiones = Universidad.objects.all().values('region').order_by('region').distinct()
+        return render(request, "core/regiones.html", {'regiones':regiones})
+
 def error_404(request):
         data = {}
         return render(request,'core/error_404.html', data)

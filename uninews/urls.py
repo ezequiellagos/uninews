@@ -30,6 +30,7 @@ urlpatterns = [
     path('detalle/<int:id_noticia>', news_views.detail, name='detail'),
     path('universidad/<str:alias>', news_views.university, name='university'),
     path('categoria/<slug:category>', news_views.category, name='category'),
+    path('region/<str:region>', news_views.region, name='region'),
     path('estadisticas/', news_views.statistics, name='statistics'),
     path('busqueda/', news_views.search, name='search'),
 
@@ -37,6 +38,7 @@ urlpatterns = [
     path('contacto/', core_views.contact, name='contact'),
     path('universidades/', core_views.universities, name='universities'),
     path('categorias/', core_views.categories, name='categories'),
+    path('regiones/', core_views.regiones, name='regiones'),
     path('email/', core_views.email, name='email'),
 
     path('scraper/', scraper_views.scraper, name='scraper'),

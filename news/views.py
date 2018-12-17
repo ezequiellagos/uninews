@@ -63,6 +63,32 @@ def category(request, category):
 
     return render(request, "news/category.html", {'news':news, 'news_most_view':news_most_view, 'category':category})
 
+def region(request, region):
+    news = Noticia.objects.filter(id_universidad__region=region).order_by('-fecha')
+
+    # Noticias por Categoria
+    hoy = datetime.today()
+    semana_atras = date.today() - timedelta(days=14)
+    formato = "%Y-%m-%d" # AAAA-MM-DD
+    fecha_actual = hoy.strftime(formato)
+    fecha_pasada = semana_atras.strftime(formato)
+    news_most_view = Noticia.objects.filter(categoria=category).filter(fecha__range=[fecha_pasada, fecha_actual]).order_by('-contador_visitas')[:2]
+
+    # Paginación
+    news_per_page = 9
+    paginator = Paginator(news, news_per_page)
+    page = request.GET.get('page')
+    try:
+        news = paginator.get_page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        news = paginator.get_page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        news = paginator.get_page(paginator.num_pages)
+
+    return render(request, "news/region.html", {'news':news, 'news_most_view':news_most_view, 'region':region})
+
 def university(request, alias):
     news = Noticia.objects.filter(id_universidad__alias=alias).order_by('-fecha')
 
