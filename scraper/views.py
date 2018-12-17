@@ -139,6 +139,7 @@ def upla():
             print("------------------------------------------")
             print(e)
             print("------------------------------------------")
+            result.append({'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
     return result
 
 def pucv():
