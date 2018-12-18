@@ -3,29 +3,36 @@ from news.models import Universidad, Noticia
 from bs4 import BeautifulSoup
 import feedparser, unicodedata, urllib.request, time, re
 
+result = []
+
 # Create your views here.
 def scraper(request):
-    universities = [upla(), pucv(), ucn(), utfsm(), uv()]
-    
-    for university in universities:
-        for new in university:
-            try:
-                n = Noticia.objects.get(titulo=new['titulo'], id_universidad__alias = new['universidad'].alias)
-                print(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
-            except Noticia.DoesNotExist:
-                n = Noticia(
-                    titulo=new['titulo'],
-                    bajada=new['bajada'],
-                    fecha=new['fecha'],
-                    link_noticia=new['link_noticia'],
-                    link_recurso=new['link_recurso'],
-                    id_universidad=new['universidad'],
-                    categoria=new['categoria'],
-                    contador_visitas=0
-                    )
-                n.save()
-                print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
-    return render(request, "scraper/scraper.html")
+    upla()
+    pucv()
+    ucn()
+    utfsm()
+    uv()
+    return render(request, "scraper/scraper.html", {'result':result})
+
+def saveNew(new):
+    try:
+        n = Noticia.objects.get(titulo=new['titulo'], id_universidad__alias = new['universidad'].alias)
+        print(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
+        result.append(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
+    except Noticia.DoesNotExist:
+        n = Noticia(
+            titulo=new['titulo'],
+            bajada=new['bajada'],
+            fecha=new['fecha'],
+            link_noticia=new['link_noticia'],
+            link_recurso=new['link_recurso'],
+            id_universidad=new['universidad'],
+            categoria=new['categoria'],
+            contador_visitas=0
+            )
+        n.save()
+        print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
+        result.append(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
 
 def formatear_fecha(fecha, universidad):
     fecha = fecha.split()
@@ -105,7 +112,6 @@ def upla():
     universidad = Universidad.objects.get(alias='UPLA')
     url_rss = "http://www.upla.cl/noticias/feed/"
     feed = feedparser.parse( url_rss )
-    result = []
 
     for item in feed['items']:
         try:
@@ -134,12 +140,12 @@ def upla():
                 if titulo_articulo == titulo:
                     imagen = article.find("img")['src']
                     break
-            result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
+            result.append(universidad.alias + ": " + titulo + " | Error")
             print("------------------------------------------")
             print(e)
             print("------------------------------------------")
-    return result
 
 def pucv():
     universidad = Universidad.objects.get(alias='PUCV')
@@ -147,7 +153,6 @@ def pucv():
     contents = urllib.request.urlopen("http://www.pucv.cl/pucv/site/tax/port/all/taxport_1___1.html").read()
     bs = BeautifulSoup(contents, "html.parser")
     articulos = bs.find_all("article")
-    result = []
     
     for articulo in articulos:
         link = articulo.a['href']
@@ -179,13 +184,11 @@ def pucv():
         except:
             category = 'sin-categoria'
 
-        result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-    return result
+        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def ucn():
     universidad = Universidad.objects.get(alias='UCN')
     d = feedparser.parse("http://www.noticias.ucn.cl/feed/")
-    result = []
     for e in d.entries:
         titulo = (e.title)
         nombre_uni = "ucn"
@@ -201,13 +204,11 @@ def ucn():
         cuerpo = e['content']
         contenido = cuerpo[0].value
         imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url").replace("-150x150", "")
-        result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-    return result
+        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def utfsm():
     universidad = Universidad.objects.get(alias='UTFSM')
     d = feedparser.parse("http://www.noticias.usm.cl/feed/")
-    result = []
     for e in d.entries:
         titulo = (e.title)
         nombre_uni = "ufsm"
@@ -223,15 +224,13 @@ def utfsm():
         cuerpo = e['content']
         contenido = cuerpo[0].value
         imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
-        result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-    return result
+        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def uv():
     universidad = Universidad.objects.get(alias='UV')
     contents = urllib.request.urlopen("http://www.uv.cl/pdn/archivo/").read()
     bs = BeautifulSoup(contents, "html.parser")
     divs = bs.find_all("div", ["item n_caja borde6", "item n_caja borde6 fin"])
-    result = []
 
     for div in divs:
         fecha = div.find("div", ["fecha"]).text
@@ -252,7 +251,6 @@ def uv():
             imagen = "http://www.uv.cl/pdn" + imagen.replace("..", "")
 
         categoria_busqueda = 'sin-categoria'
-        result.append({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-    return result
+        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 

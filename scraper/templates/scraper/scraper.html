@@ -7,8 +7,10 @@
     <title>UniNews | Scraper</title>
 </head>
 <body>
-    {% comment %} {% for info in info %}
-    <p>{{info.id_universidad.alias}}</p>
-    {% endfor %} {% endcomment %}
+    
+    {% for result in result %}
+    <p> {{ result }} </p>
+    {% endfor %}
+
 </body>
 </html>
