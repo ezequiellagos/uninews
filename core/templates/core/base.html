@@ -79,12 +79,49 @@
 									<input class="search-input" type="text" name="search" placeholder="Buscar noticia ...">
 									<span class="search-close"><i class="fa fa-times"></i></span>
 								</form> 
+								<button class="aside-btn"><i class="fa fa-bars"></i></button>
 							</div>
 							<!-- /search & aside toggle -->
 						</div>
 					</div>
 				</div>
 				<!-- /Main Nav -->
+
+				<!-- Aside Nav -->
+				<div id="nav-aside">
+					<!-- nav -->
+					<div class="section-row">
+						<ul class="nav-aside-menu">
+							<li><a href="{% url 'home' %}">Inicio</a></li>
+							<li><a href="{% url 'universities' %}">Universidades</a></li>
+							<li><a href="{% url 'categories' %}">Categorías</a></li>
+							<li><a href="{% url 'regiones' %}">Regiones</a></li>
+							<hr>
+							<li><a href="{% url 'about' %}">Nosotros</a></li>
+							<li><a href="{% url 'contact' %}">Contacto</a></li>
+						</ul>
+					</div>
+					<!-- /nav -->
+
+					<!-- social links -->
+					{% comment %} 
+					<div class="section-row">
+						<h3>Síguenos</h3>
+						<ul class="nav-aside-social">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+						</ul>
+					</div>
+					{% endcomment %}
+					<!-- /social links -->
+
+					<!-- aside nav close -->
+					<button class="nav-aside-close"><i class="fa fa-times"></i></button>
+					<!-- /aside nav close -->
+				</div>
+				<!-- Aside Nav -->
 
 			</div>
 			<!-- /Nav -->
@@ -151,12 +188,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									<button class="newsletter-btn"><i class="fa fa-paper-plane"></i></button>
 								</form>
 							</div>
+							{% comment %} 
 							<ul class="footer-social">
 								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
 								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
 								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
 								<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
 							</ul>
+							 {% endcomment %}
 						</div>
 					</div>
 
