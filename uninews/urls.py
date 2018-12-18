@@ -36,6 +36,7 @@ urlpatterns = [
 
     path('nosotros/', core_views.about, name='about'),
     path('contacto/', core_views.contact, name='contact'),
+    path('licencia/', core_views.license, name='license'),
     path('universidades/', core_views.universities, name='universities'),
     path('categorias/', core_views.categories, name='categories'),
     path('regiones/', core_views.regiones, name='regiones'),

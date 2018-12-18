@@ -12,6 +12,9 @@ def about(request):
 def contact(request):
     return render(request, "core/contact.html")
 
+def license(request):
+    return render(request, "core/license.html")
+
 def universities(request):
     universities = Universidad.objects.all()
     return render(request, "core/universities.html", {'universities':universities})
@@ -21,24 +24,24 @@ def categories(request):
     return render(request, "core/categories.html", {'categories':categories})
 
 def regiones(request):
-        regiones = Universidad.objects.all().values('region').order_by('region').distinct()
-        return render(request, "core/regiones.html", {'regiones':regiones})
+    regiones = Universidad.objects.all().values('region').order_by('region').distinct()
+    return render(request, "core/regiones.html", {'regiones':regiones})
 
 def error_404(request):
-        data = {}
-        return render(request,'core/error_404.html', data)
+    data = {}
+    return render(request,'core/error_404.html', data)
 
 def error_500(request):
-        data = {}
-        return render(request,'core/error_500.html', data)
+    data = {}
+    return render(request,'core/error_500.html', data)
 
 def email(request):
-        if request.method == 'POST':
-                try:
-                        e = Email(email=request.POST['email'])
-                        e.save()
-                        info = True
-                except IntegrityError:
-                        info = False
-        return render(request, "core/email.html", {'info':info})
+    if request.method == 'POST':
+        try:
+            e = Email(email=request.POST['email'])
+            e.save()
+            info = True
+        except IntegrityError:
+            info = False
+    return render(request, "core/email.html", {'info':info})
 

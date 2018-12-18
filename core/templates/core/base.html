@@ -104,17 +104,18 @@
 					<!-- /nav -->
 
 					<!-- social links -->
-					{% comment %} 
 					<div class="section-row">
 						<h3>Síguenos</h3>
 						<ul class="nav-aside-social">
+							<li><a href="https://github.com/ezequiellagos/uninews" target="_blank"><i class="fa fa-github"></i></a></li>
+{% comment %} 
 							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
 							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
 							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
 							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+							 {% endcomment %}
 						</ul>
 					</div>
-					{% endcomment %}
 					<!-- /social links -->
 
 					<!-- aside nav close -->
@@ -142,13 +143,12 @@
 								<a href="index.html" class="logo"><img src="{% static './img/logo_uninews.png' %}" alt=""></a>
 							</div>
 							<ul class="footer-nav">
-								<li><a href="#">Privacy Policy</a></li>
-								<li><a href="#">Advertisement</a></li>
+								<li><a href="{% url 'license' %}">Licencia</a></li>
 							</ul>
 							<div class="footer-copyright">
-								<span>&copy; <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></span>
+								<span> <!-- Link back to Colorlib can't be removed. Template is licensed under MIT -->
+Copyright <script>document.write(new Date().getFullYear());</script> Todos los derechos reservados | <a href="https://datoslab.cl" target="_blank">Datoslab</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under MIT --></span>
 							</div>
 						</div>
 					</div>
@@ -188,14 +188,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									<button class="newsletter-btn"><i class="fa fa-paper-plane"></i></button>
 								</form>
 							</div>
-							{% comment %} 
 							<ul class="footer-social">
+								<li><a href="https://github.com/ezequiellagos/uninews" target="_blank"><i class="fa fa-github"></i></a></li>
+								{% comment %} 
 								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
 								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-								<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li> 
+								{% endcomment %}
 							</ul>
-							 {% endcomment %}
 						</div>
 					</div>
 
