@@ -98,7 +98,7 @@ def search(request):
     return render(request, "news/search.html", {'news':news, 'info':info, 'search':request.GET['search']})
 
 def pagination(request, news):
-    news_per_page = 10
+    news_per_page = 21
     paginator = Paginator(news, news_per_page)
     page = request.GET.get('page')
     try:
