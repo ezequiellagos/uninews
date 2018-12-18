@@ -47,20 +47,25 @@
 	post category
 \*----------------------------*/
 
+/* PUCV */
 .post-meta .post-category.cat-1 {
-    background-color: #4BB92F;
+    background-color: #a75154;
 }
+/* UCN */
 .post-meta .post-category.cat-2 {
-    background-color: #ff8700;
+    background-color: #BD6222;
 }
+/* UTFSM */
 .post-meta .post-category.cat-3 {
-    background-color: #8d00ff;
+    background-color: #f7ae00;
 }
+/* UPLA */
 .post-meta .post-category.cat-4 {
     background-color: #0099cc;
 }
+/* UV */
 .post-meta .post-category.cat-5 {
-    background-color: #0055ad;
+    background-color: #003399;
 }
 .post-meta .post-category.cat-6 {
     background-color: #ff8700;
