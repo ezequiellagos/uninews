@@ -84,17 +84,7 @@ def search(request):
         info = True
 
         # Paginación
-        news_per_page = 9
-        paginator = Paginator(news, news_per_page)
-        page = request.GET.get('page')
-        try:
-            news = paginator.get_page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            news = paginator.get_page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            news = paginator.get_page(paginator.num_pages)
+        news = pagination(request, news)
     return render(request, "news/search.html", {'news':news, 'info':info, 'search':request.GET['search']})
 
 def pagination(request, news):

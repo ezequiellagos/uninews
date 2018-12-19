@@ -55,12 +55,12 @@
                     <ul class="pagination">
                         {% if news.has_previous %}
                             <li class="page-item">
-                                <a href="?page=1" aria-label="Inicio" class="page-link">
+                                <a href="?search={{search}}&page=1" aria-label="Inicio" class="page-link">
                                     <span aria-hidden="true">Inicio</span>
                                 </a>
                             </li>
                             <li class="page-item">
-                                <a href="?page={{ news.previous_page_number }}" aria-label="Anterior" class="page-link">
+                                <a href="?search={{search}}&page={{ news.previous_page_number }}" aria-label="Anterior" class="page-link">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
@@ -75,19 +75,19 @@
                             {% if news.number == num %}
                                 <li class="page-item active"><a class="page-link">{{ num }}</a></li>
                             {% elif num > news.number|add:'-3' and num < news.number|add:'3' %}
-                                <li class="page-item"><a href="?page={{ num }}" class="page-link">{{ num }}</a></li>
+                                <li class="page-item"><a href="?search={{search}}&page={{ num }}" class="page-link">{{ num }}</a></li>
                             {% endif %}
                         
                         {% endfor %}
 
                         {% if news.has_next %}
                             <li class="page-item">
-                                <a href="?page={{news.next_page_number}}" aria-label="Siguiente" class="page-link">
+                                <a href="?search={{search}}&page={{news.next_page_number}}" aria-label="Siguiente" class="page-link">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
                             <li class="page-item">
-                                <a href="?page={{news.paginator.num_pages}}" aria-label="Última" class="page-link">
+                                <a href="?search={{search}}&page={{news.paginator.num_pages}}" aria-label="Última" class="page-link">
                                     <span aria-hidden="true">Última</span>
                                 </a>
                             </li>
