@@ -2,8 +2,10 @@ from django.shortcuts import render
 from news.models import Universidad, Noticia
 from .models import Email
 from django.db import IntegrityError
+from django.core.mail import send_mail
 
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 # Create your views here.
 def about(request):
@@ -40,6 +42,18 @@ def email(request):
         try:
             e = Email(email=request.POST['email'])
             e.save()
+            # send_mail('Subject here', 'Here is the message.', 'no-reply@uninews.datoslab.cl', [request.POST['email']], fail_silently=False)
+
+            msg_plain = render_to_string('core/mail/welcome.txt', {'some_params': request.POST['email']})
+            msg_html = render_to_string('core/mail/welcome.html', {'some_params': request.POST['email']})
+            send_mail(
+                'Bienvenido a UniNews!',
+                msg_plain,
+                'UniNews@uninews.datoslab.cl',
+                [request.POST['email']],
+                html_message=msg_html,
+            )
+
             info = True
         except IntegrityError:
             info = False
