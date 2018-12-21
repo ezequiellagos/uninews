@@ -18,8 +18,9 @@ def saveNew(new):
     try:
         n = Noticia.objects.get(titulo=new['titulo'], id_universidad__alias = new['universidad'].alias)
         print(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
-        result.append(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
-    except Noticia.DoesNotExist:
+        e = "Existe" 
+        result.append({'status':"exist", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
+    except Noticia.DoesNotExist as e:
         n = Noticia(
             titulo=new['titulo'],
             bajada=new['bajada'],
@@ -32,7 +33,8 @@ def saveNew(new):
             )
         n.save()
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
-        result.append(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
+        e = "Insertada"
+        result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
 
 def formatear_fecha(fecha, universidad):
     fecha = fecha.split()
@@ -142,10 +144,7 @@ def upla():
                     break
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
-            result.append(universidad.alias + ": " + titulo + " | Error")
-            print("------------------------------------------")
-            print(e)
-            print("------------------------------------------")
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def pucv():
     universidad = Universidad.objects.get(alias='PUCV')
@@ -155,76 +154,90 @@ def pucv():
     articulos = bs.find_all("article")
     
     for articulo in articulos:
-        link = articulo.a['href']
-        link = "http://www.pucv.cl" + link.replace("..", "")
-
-        imagen = articulo.img['src']
-        imagen = "http://pucv.cl" + imagen.replace("..","")
-
-        pagina_noticia = urllib.request.urlopen(link).read()
-        bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
-        titulo = bs_noticia.find("h1", { "class" : "titular" }).text
-
-        bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
-        fecha = bs_noticia.find("span",{"class":"fecha aright"})
-        if fecha is None:
-            fecha = time.strftime("%Y-%m-%d")
-        else:
-            fecha = formatear_fecha(fecha.text,nombre_uni)
-
-        newpage = urllib.request.urlopen(link).read()
-        bs_cate = BeautifulSoup(newpage, "html.parser")
-        categoria = bs_cate.find("div",{ "class" : "breadcrumbs" })
-        categorias = categoria.findAll("a")
         try:
-            category = categorias[2].text
-            categoria_busqueda = category.lower()
-            categoria_busqueda = elimina_tildes(categoria_busqueda)
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
-        except:
-            category = 'sin-categoria'
+            link = articulo.a['href']
+            link = "http://www.pucv.cl" + link.replace("..", "")
 
-        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+            imagen = articulo.img['src']
+            imagen = "http://pucv.cl" + imagen.replace("..","")
+
+            pagina_noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
+            titulo = bs_noticia.find("h1", { "class" : "titular" }).text
+
+            bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
+            fecha = bs_noticia.find("span",{"class":"fecha aright"})
+            if fecha is None:
+                fecha = time.strftime("%Y-%m-%d")
+            else:
+                fecha = formatear_fecha(fecha.text,nombre_uni)
+
+            newpage = urllib.request.urlopen(link).read()
+            bs_cate = BeautifulSoup(newpage, "html.parser")
+            categoria = bs_cate.find("div",{ "class" : "breadcrumbs" })
+            
+            # No encuentra una categoría
+            try:
+                categorias = categoria.findAll("a")
+            except Exception as e:
+                continue
+            try:
+                category = categorias[2].text
+                categoria_busqueda = category.lower()
+                categoria_busqueda = elimina_tildes(categoria_busqueda)
+                categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            except:
+                category = 'sin-categoria'
+            saveNew({'status':"ok", 'error_message':'', 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def ucn():
     universidad = Universidad.objects.get(alias='UCN')
     d = feedparser.parse("http://www.noticias.ucn.cl/feed/")
     for e in d.entries:
-        titulo = (e.title)
-        nombre_uni = "ucn"
-        link = (e.link)
-        categoria = (e.category)
-        categoria_busqueda = categoria.lower()
-        categoria_busqueda = elimina_tildes(categoria_busqueda)
-        categoria_busqueda = categoria_busqueda.replace(" ", "-")
-        fecha = e.published
-        fecha = formatear_fecha(fecha,nombre_uni)
-        description = e.description.split("/>")
-        bajada = description[1]
-        cuerpo = e['content']
-        contenido = cuerpo[0].value
-        imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url").replace("-150x150", "")
-        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        try:
+            titulo = (e.title)
+            nombre_uni = "ucn"
+            link = (e.link)
+            categoria = (e.category)
+            categoria_busqueda = categoria.lower()
+            categoria_busqueda = elimina_tildes(categoria_busqueda)
+            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            fecha = e.published
+            fecha = formatear_fecha(fecha,nombre_uni)
+            description = e.description.split("/>")
+            bajada = description[1]
+            cuerpo = e['content']
+            contenido = cuerpo[0].value
+            imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url").replace("-150x150", "")
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
 
 def utfsm():
     universidad = Universidad.objects.get(alias='UTFSM')
     d = feedparser.parse("http://www.noticias.usm.cl/feed/")
     for e in d.entries:
-        titulo = (e.title)
-        nombre_uni = "ufsm"
-        link = (e.link)
-        categoria = (e.category)
-        categoria_busqueda = categoria.lower()
-        categoria_busqueda = elimina_tildes(categoria_busqueda)
-        categoria_busqueda = categoria_busqueda.replace(" ", "-")
-        bajada = (e.description).replace("[&#8230;]", "")
-        fecha = e.published
-        fecha = formatear_fecha(fecha,nombre_uni)
-        region_u = "5"
-        cuerpo = e['content']
-        contenido = cuerpo[0].value
-        imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
-        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        try:
+            titulo = (e.title)
+            nombre_uni = "ufsm"
+            link = (e.link)
+            categoria = (e.category)
+            categoria_busqueda = categoria.lower()
+            categoria_busqueda = elimina_tildes(categoria_busqueda)
+            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            bajada = (e.description).replace("[&#8230;]", "")
+            fecha = e.published
+            fecha = formatear_fecha(fecha,nombre_uni)
+            region_u = "5"
+            cuerpo = e['content']
+            contenido = cuerpo[0].value
+            imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 def uv():
     universidad = Universidad.objects.get(alias='UV')
@@ -233,24 +246,27 @@ def uv():
     divs = bs.find_all("div", ["item n_caja borde6", "item n_caja borde6 fin"])
 
     for div in divs:
-        fecha = div.find("div", ["fecha"]).text
-        fecha = formatear_fecha(fecha, "uv")
-        link = div.a['href']
-        link = "http://www.uv.cl/pdn" + link.replace("..", "")
-
-        # Accede a la pagina de la noticia
-        pagina_noticia = urllib.request.urlopen(link).read()
-        bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
-        titulo = bs_noticia.find("div", id="n_titulo").text
-        bajada = bs_noticia.find("div", id="n_bajada").text
         try:
-            imagen = bs_noticia.find("div", id="n_clipex").img['src']
-            imagen = "http://www.uv.cl" + imagen
-        except TypeError:
-            imagen = div.find("img", ["sombra"])['src']
-            imagen = "http://www.uv.cl/pdn" + imagen.replace("..", "")
+            fecha = div.find("div", ["fecha"]).text
+            fecha = formatear_fecha(fecha, "uv")
+            link = div.a['href']
+            link = "http://www.uv.cl/pdn" + link.replace("..", "")
 
-        categoria_busqueda = 'sin-categoria'
-        saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+            # Accede a la pagina de la noticia
+            pagina_noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
+            titulo = bs_noticia.find("div", id="n_titulo").text
+            bajada = bs_noticia.find("div", id="n_bajada").text
+            try:
+                imagen = bs_noticia.find("div", id="n_clipex").img['src']
+                imagen = "http://www.uv.cl" + imagen
+            except TypeError:
+                imagen = div.find("img", ["sombra"])['src']
+                imagen = "http://www.uv.cl/pdn" + imagen.replace("..", "")
+
+            categoria_busqueda = 'sin-categoria'
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
 
