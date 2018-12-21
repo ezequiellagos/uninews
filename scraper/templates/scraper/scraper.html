@@ -31,6 +31,8 @@
                             <tr class="table-success">
                             {% elif result.status == 'exist' %}
                             <tr class="table-info">
+                            {% elif result.status == 'warning' %}
+                            <tr class="table-warning">
                             {% elif result.status == 'error' %}
                             <tr class="table-danger">
                             {% else %}
@@ -41,7 +43,11 @@
                                 <td> {{result.titulo}} </td>
                                 <td class="text-center"> {{result.status}} </td>
                                 <td> {{result.error_message}} </td>
-                                <td class="text-center"> <a href="{{result.link_noticia}}" class="btn btn-info" target="_blank">Ir</a> </td>
+                                {% if result.status == '' %}
+                                <td class="text-center"><span class="btn">&nbsp;</span></td>
+                                {% else %}
+                                <td class="text-center"> <a href="{{result.link_noticia}}" class="btn btn-info btn-block btn-sm" target="_blank">Ir</a> </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>

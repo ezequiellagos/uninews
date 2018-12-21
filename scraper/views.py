@@ -7,11 +7,12 @@ result = []
 
 # Create your views here.
 def scraper(request):
-    upla()
     pucv()
     ucn()
     utfsm()
     uv()
+    upla()
+    result.append({'status':"", 'error_message':'', 'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
     return render(request, "scraper/scraper.html", {'result':result})
 
 def saveNew(new):
@@ -31,7 +32,7 @@ def saveNew(new):
             categoria=new['categoria'],
             contador_visitas=0
             )
-        n.save()
+        # n.save()
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
         e = "Insertada"
         result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
@@ -157,6 +158,7 @@ def pucv():
         try:
             link = articulo.a['href']
             link = "http://www.pucv.cl" + link.replace("..", "")
+            fecha = articulo.find("span",{"class":"fecha aright"})
 
             imagen = articulo.img['src']
             imagen = "http://pucv.cl" + imagen.replace("..","")
@@ -166,28 +168,25 @@ def pucv():
             titulo = bs_noticia.find("h1", { "class" : "titular" }).text
 
             bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
-            fecha = bs_noticia.find("span",{"class":"fecha aright"})
             if fecha is None:
                 fecha = time.strftime("%Y-%m-%d")
             else:
                 fecha = formatear_fecha(fecha.text,nombre_uni)
 
-            newpage = urllib.request.urlopen(link).read()
-            bs_cate = BeautifulSoup(newpage, "html.parser")
-            categoria = bs_cate.find("div",{ "class" : "breadcrumbs" })
-            
             # No encuentra una categoría
             try:
+                newpage = urllib.request.urlopen(link).read()
+                bs_cate = BeautifulSoup(newpage, "html.parser")
+                categoria = bs_cate.find("div",{ "class" : "breadcrumbs" })
                 categorias = categoria.findAll("a")
-            except Exception as e:
-                continue
-            try:
+
                 category = categorias[2].text
                 categoria_busqueda = category.lower()
                 categoria_busqueda = elimina_tildes(categoria_busqueda)
                 categoria_busqueda = categoria_busqueda.replace(" ", "-")
-            except:
-                category = 'sin-categoria'
+            except Exception as e:
+                categoria_busqueda = 'sin-categoria'
+                result.append({'status':"warning", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
             saveNew({'status':"ok", 'error_message':'', 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -214,7 +213,6 @@ def ucn():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-
 
 def utfsm():
     universidad = Universidad.objects.get(alias='UTFSM')
