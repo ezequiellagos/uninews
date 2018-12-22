@@ -1,1 +1,0 @@
-curl -X POST -d @filename uninews.datoslab.cl
