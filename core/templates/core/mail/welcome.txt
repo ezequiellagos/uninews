@@ -1,4 +1,4 @@
-Noticias universitarias en un solo lugar!
+Bienvenido a UniNews
 
 Te has subscrito a UniNews, una plataforma donde poder ver noticias de distintas universidades, centralizado y ordenado por categorías, universidades y regiones.
 
@@ -7,7 +7,5 @@ Actualmente el proyecto sigue en desarrollo, cuando surjan nuevas característic
 No respondas este correo porque se usa un API para el envío de correos y actualmente no nos es posible responder tus inquietudes. Si quieres ponerte en contacto con nosotros visita nuestra Página de Contacto: 
 
 http://uninews.datoslab.cl/contacto/
-
-<a href="http://uninews.datoslab.cl/">Sitio Web</a>
 
 http://uninews.datoslab.cl/

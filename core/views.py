@@ -39,17 +39,11 @@ def email(request):
     if request.method == 'POST':
         try:
             e = Email(email=request.POST['email'])
-            # e.save()
+            e.save()
 
             msg_html = render_to_string('core/mail/welcome.html', {'some_params': email})
-            send_mail('Bienvenido a UniNews!', msg_html, 'uninews@uninews.datoslab.cl', [request.POST['email']])
-            # send_mail(
-            #     'Bienvenido a UniNews!',
-            #     msg_html,
-            #     'UniNews <uninews@uninews.datoslab.cl',
-            #     [request.POST['email']],
-            #     html_message=msg_html,
-            # )
+            msg_txt = render_to_string('core/mail/welcome.txt', {'some_params': email})
+            send_mail('Bienvenido a UniNews!', msg_txt, 'uninews@uninews.datoslab.cl', [request.POST['email']], fail_silently=True, html_message=msg_html)
 
             info = True
         except IntegrityError:
