@@ -128,8 +128,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email Settings
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mail@uninews.datoslab.cl'
-EMAIL_HOST_PASSWORD = 'ezequiel19'
-EMAIL_USE_TLS = True
+
