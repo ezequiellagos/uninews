@@ -56,26 +56,26 @@
                 </div>
             </div>
 
-            {% for new in news %}
-            <!-- post -->
-            <div class="col-md-4">
-                <div class="post">
-                    <div class="div-imagen">
-                        <div class="font-weight-bold">{{new.bajada|truncatechars:250 }}</div>
-                        <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; "></a>
-                    </div>
-                    <div class="post-body">
-                        <div class="post-meta">
-                            <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a>
-                            <a class="post-category cat-{{new.id_universidad.id_universidad}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
-                            <span class="post-date">{{new.fecha}}</span>
+            <div class="infinite-container d-flex flex-wrap" style="">
+                {% for new in news %}
+                <div class="col-md-4 infinite-item " >
+                    <div class="post">
+                        <div class="div-imagen">
+                            <div class="font-weight-bold">{{new.bajada|truncatechars:250 }}</div>
+                            <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; "></a>
                         </div>
-                        <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
+                        <div class="post-body">
+                            <div class="post-meta">
+                                <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a>
+                                <a class="post-category cat-{{new.id_universidad.id_universidad}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
+                                <span class="post-date">{{new.fecha}}</span>
+                            </div>
+                            <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            <!-- /post -->
-            {% endfor %}
 
             <div class="clearfix visible-md visible-lg"></div>
 
@@ -85,6 +85,15 @@
         <!-- Pagination -->
         <div class="row">
             <div class="paginator mx-auto">
+                {% if news.has_next %}
+                    <a class="infinite-more-link" href="?page={{ news.next_page_number }}">Más Noticias</a>
+                {% endif %}
+
+                <div class="loading" style="display: none;">
+                    Cargando...
+                </div>
+
+                {% comment %}  Paginacion por numeros
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
                         {% if news.has_previous %}
@@ -131,6 +140,7 @@
                         {% endif %}
                     </ul>
                 </nav>
+                {% endcomment %}
             </div>
         </div>
         <!-- /Pagination -->

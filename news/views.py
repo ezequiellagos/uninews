@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Universidad, Noticia
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
 from django.db.models import Max,Sum
 
@@ -87,10 +87,10 @@ def search(request):
         news = pagination(request, news)
     return render(request, "news/search.html", {'news':news, 'info':info, 'search':request.GET['search']})
 
-def pagination(request, news):
-    news_per_page = 21
-    paginator = Paginator(news, news_per_page)
+def pagination(request, news, news_per_page = 9):
+    
     page = request.GET.get('page')
+    paginator = Paginator(news, news_per_page)
     try:
         return paginator.get_page(page)
     except PageNotAnInteger:

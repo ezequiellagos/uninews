@@ -17,3 +17,14 @@ $(document).ready(function(){
        
        $('#back-to-top').tooltip('show');
 });
+
+
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+    }
+  });
