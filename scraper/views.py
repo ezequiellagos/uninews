@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from news.models import Universidad, Noticia
 from bs4 import BeautifulSoup
-import feedparser, unicodedata, urllib.request, time, re
+import feedparser, unicodedata, urllib.request, time, re, datetime, time
+import dateutil.parser
 
 result = []
 
@@ -12,6 +13,9 @@ def scraper(request):
     utfsm()
     uv()
     upla()
+    udec()
+
+
     result.append({'status':"", 'error_message':'', 'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
     return render(request, "scraper/scraper.html", {'result':result})
 
@@ -38,27 +42,37 @@ def saveNew(new):
         result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
 
 def formatear_fecha(fecha, universidad):
-    fecha = fecha.split()
+    
     if universidad == "uv":
+        fecha = fecha.split()
         dia = fecha[0]
         mes = fecha[2].lower()
         anno = fecha[4]
     elif universidad == "upla":
+        fecha = fecha.split()
         dia = fecha[1]
         mes = fecha[2].lower()
         anno = fecha[3]
     elif universidad == "ufsm":
+        fecha = fecha.split()
         dia = fecha[1]
         mes = fecha[2].lower()
         anno = fecha[3]
     elif universidad == "ucn":
+        fecha = fecha.split()
         dia = fecha[1]
         mes = fecha[2].lower()
         anno = fecha[3]
     elif universidad == "pucv":
+        fecha = fecha.split()
         dia = fecha[1]
         mes = fecha[3].lower()
         anno = fecha[5]
+    elif universidad == "udec":
+        # Esta universidad tambien entrega la hora pero no se esta usando por ahora
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
 
     if mes == "enero" or mes == "jan":
         mes = '01'
@@ -267,4 +281,25 @@ def uv():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+def udec():
+    universidad = Universidad.objects.get(alias='UDEC')
+    contents = urllib.request.urlopen("http://www.udec.cl/panoramaweb2016/noticias").read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("tr")
 
+    for item in items:
+        try:
+            link = "http://www.udec.cl" + item.a['href']
+            titulo = item.a.text
+            bajada = item.p.text
+            categoria_busqueda = 'sin-categoria'
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+            fecha = bs_noticia.find("span", {"class": "submitted"}).span["content"]
+            fecha = formatear_fecha(fecha, "udec")
+            imagen = bs_noticia.find("div", {"class": "content node-noticias"}).img["src"]
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    
