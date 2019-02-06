@@ -8,13 +8,16 @@ result = []
 
 # Create your views here.
 def scraper(request):
+
+    print("Hora Inicio: " + time.strftime("%H:%M:%S"))
     pucv()
     ucn()
     utfsm()
     uv()
     upla()
     udec()
-
+    utalca()
+    print("Hora Termino: " + time.strftime("%H:%M:%S"))
 
     result.append({'status':"", 'error_message':'', 'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
     return render(request, "scraper/scraper.html", {'result':result})
@@ -73,6 +76,11 @@ def formatear_fecha(fecha, universidad):
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == "utalca":
+        fecha = fecha.lower().split()
+        dia = fecha[0]
+        mes = fecha[1]
+        anno = fecha[2]        
 
     if mes == "enero" or mes == "jan":
         mes = '01'
@@ -303,3 +311,33 @@ def udec():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     
+def utalca():
+    universidad = Universidad.objects.get(alias='UTALCA')
+
+    items = []
+    categorias = ['Academia', 'admision', 'Conocimiento', 'DeportesRecreacion', 'Estudiantes', 'Extension', 'Institucional', 'Investigacion', 'RSU']
+    for categoria in categorias:
+        contents = urllib.request.urlopen("http://www.utalca.cl/link.cgi/SalaPrensa/"+ categoria).read()
+        bs = BeautifulSoup(contents, "html.parser")
+        items.extend(bs.find_all("div", {"class": "noti clearfix"}))
+    
+    for item in items:
+        try:
+            link = "http://www.utalca.cl" + item.a['href']
+            titulo = item.h2.text
+            bajada = item.find("p").text.replace(' ver más', '')
+            categoria_busqueda = item.a['href'].replace("/link.cgi//SalaPrensa/", "").split("/")[0].lower()
+            if categoria_busqueda == "rsu":
+                categoria_busqueda = "vinculacion"
+            elif categoria_busqueda == "deportesrecreacion":
+                categoria_busqueda = "deportes"
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+            fecha = bs_noticia.find("p", {"class":"fecha"}).text
+            fecha = formatear_fecha(fecha, "utalca")
+            imagen = "http://www.utalca.cl" + item.img["src"]
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
