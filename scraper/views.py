@@ -8,8 +8,11 @@ result = []
 
 # Create your views here.
 def scraper(request):
+    hora = {}
 
-    print("Hora Inicio: " + time.strftime("%H:%M:%S"))
+    hora["start"] = time.strftime("%H:%M:%S")
+    hora_inicio = time.time()
+
     pucv()
     ucn()
     utfsm()
@@ -17,10 +20,14 @@ def scraper(request):
     upla()
     udec()
     utalca()
-    print("Hora Termino: " + time.strftime("%H:%M:%S"))
+    ulagos()
+
+    hora_fin = time.time()
+    hora["finish"] = time.strftime("%H:%M:%S")
+    hora["total"] = hora_fin - hora_inicio
 
     result.append({'status':"", 'error_message':'', 'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
-    return render(request, "scraper/scraper.html", {'result':result})
+    return render(request, "scraper/scraper.html", {'result':result, 'hora':hora})
 
 def saveNew(new):
     try:
@@ -80,31 +87,36 @@ def formatear_fecha(fecha, universidad):
         fecha = fecha.lower().split()
         dia = fecha[0]
         mes = fecha[1]
-        anno = fecha[2]        
+        anno = fecha[2]
+    elif universidad == "ulagos":
+        fecha = fecha.lower().split('/')
+        dia = fecha[0]
+        mes = fecha[1]
+        anno = fecha[2]       
 
-    if mes == "enero" or mes == "jan":
+    if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
-    elif mes == "febrero" or mes == "feb":
+    elif mes == "febrero" or mes == "feb" or mes == '2':
         mes = '02'
-    elif mes == "marzo" or mes == "mar":
+    elif mes == "marzo" or mes == "mar" or mes == '3':
         mes = '03'
-    elif mes == "abril" or mes == "apr":
+    elif mes == "abril" or mes == "apr" or mes == '4':
         mes = '04'
-    elif mes == "mayo" or mes == "may":
+    elif mes == "mayo" or mes == "may" or mes == '5':
         mes = '05'
-    elif mes == "junio" or mes == "jun":
+    elif mes == "junio" or mes == "jun" or mes == '6':
         mes = '06'
-    elif mes == "julio" or mes == "jul":
+    elif mes == "julio" or mes == "jul" or mes == '7':
         mes = '07'
-    elif mes == "agosto" or mes == "aug":
+    elif mes == "agosto" or mes == "aug" or mes == '8':
         mes = '08'
-    elif mes == "septiembre" or mes == "sep":
+    elif mes == "septiembre" or mes == "sep" or mes == '9':
         mes = '09'
-    elif mes == "octubre" or mes == "oct":
+    elif mes == "octubre" or mes == "oct" or mes == '10':
         mes = '10'
-    elif mes == "noviembre" or mes == "nov":
+    elif mes == "noviembre" or mes == "nov" or mes == '11':
         mes = '11'
-    elif mes == "diciembre" or mes == "dec":
+    elif mes == "diciembre" or mes == "dec" or mes == '12':
         mes = '12'
 
     if dia == "1":
@@ -313,9 +325,9 @@ def udec():
     
 def utalca():
     universidad = Universidad.objects.get(alias='UTALCA')
-
     items = []
-    categorias = ['Academia', 'admision', 'Conocimiento', 'DeportesRecreacion', 'Estudiantes', 'Extension', 'Institucional', 'Investigacion', 'RSU']
+    # Se quitó la categoría 'admision' porque causa muchos conflictos. Error en la página de la universidad
+    categorias = ['Academia', 'Conocimiento', 'DeportesRecreacion', 'Estudiantes', 'Extension', 'Institucional', 'Investigacion', 'RSU']
     for categoria in categorias:
         contents = urllib.request.urlopen("http://www.utalca.cl/link.cgi/SalaPrensa/"+ categoria).read()
         bs = BeautifulSoup(contents, "html.parser")
@@ -340,4 +352,39 @@ def utalca():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
+def ulagos():
+    universidad = Universidad.objects.get(alias='ULAGOS')
+    items = []
+    categorias = ['campus-osorno', 'campus-pto-montt', 'sede-santiago', 'sede-chiloe']
+    for categoria in categorias:
+        contents = urllib.request.urlopen("http://www.ulagos.cl/category/" + categoria + "/").read()
+        bs = BeautifulSoup(contents, "html.parser")
+        items.extend(bs.find_all("div", {"class": "ultimas-noticias"}))
+    
+    for item in items:
+        try:
+            link = item.a['href']
+            titulo = item.find("div", {"class": "overflow_titulo_noticias"}).text.strip()
+
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+
+            bajada = bs_noticia.find("div", {"class":"title-post"}).span.text.strip()
+            categoria_busqueda = bs_noticia.find("div", {"class":"category-post"}).a.text.lower()
+            if(categoria_busqueda == "vinculación con el medio"):
+                categoria_busqueda = "vinculacion"
+            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+
+            fecha = bs_noticia.find("div", {"class":"conten-post-date"}).text.strip()
+            fecha = formatear_fecha(fecha, "ulagos")
+            imagen = bs_noticia.find("img", {"class": "img-destacado"})["src"]
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
+
+
+
 
