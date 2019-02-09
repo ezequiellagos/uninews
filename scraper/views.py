@@ -371,10 +371,11 @@ def ulagos():
             bs_noticia = BeautifulSoup(noticia, "html.parser")
 
             bajada = bs_noticia.find("div", {"class":"title-post"}).span.text.strip()
-            categoria_busqueda = bs_noticia.find("div", {"class":"category-post"}).a.text.lower()
+            categoria_busqueda = bs_noticia.find("div", {"class":"category-post"}).a.text.lower().strip()
             if(categoria_busqueda == "vinculación con el medio"):
                 categoria_busqueda = "vinculacion"
             categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            categoria_busqueda = categoria_busqueda.replace("é", "e")
 
             fecha = bs_noticia.find("div", {"class":"conten-post-date"}).text.strip()
             fecha = formatear_fecha(fecha, "ulagos")
