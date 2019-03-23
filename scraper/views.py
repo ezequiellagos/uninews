@@ -22,6 +22,23 @@ def scraper(request):
     utalca()
     ulagos()
 
+    # Nuevas universidades
+    unap()
+    ua()
+    uda()
+    userena()
+    uoh()
+    ucm()
+    ubiobio()
+    ucsc()
+    ufro()
+    uct()
+    uach()
+    uaysen()
+    umag()
+    uta()
+
+
     hora_fin = time.time()
     hora["finish"] = time.strftime("%H:%M:%S")
     hora["total"] = hora_fin - hora_inicio
@@ -385,7 +402,74 @@ def ulagos():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Universidad Arturo Prat
+def unap():
+    # http://www.unap.cl/prontus_unap/site/edic/base/port/inicio.html
+    pass
 
+# Universidad de Antofagasta
+def ua():
+    # http://www.uantof.cl/
+    pass
 
+# Universidad de Atacama
+def uda():
+    #http://www.uda.cl/
+    pass
 
+# Universidad de La Serena
+# Región de Coquimbo
+def userena():
+    # http://www.userena.cl/
+    pass
 
+# Universidad de O'Higgins
+def uoh():
+    # https://www.uoh.cl/
+    pass
+
+# Universidad Católica del Maule
+def ucm():
+    # http://portal.ucm.cl/
+    pass
+
+# Universidad del Bío-Bío
+def ubiobio():
+    # http://www.ubiobio.cl/w/
+    pass
+
+# Universidad Católica de la Santísima Concepción
+def ucsc():
+    # https://www.ucsc.cl/
+    pass
+
+# Universidad de la Frontera
+def ufro():
+    # https://www.ufro.cl/
+    pass
+
+# Universidad Católica de Temuco
+def uct():
+    # https://www.uct.cl/
+    pass
+
+# Universidad Austral de Chile
+def uach():
+    # https://www.uach.cl/
+    pass
+
+# Universidad de Aysén
+def uaysen():
+    # https://uaysen.cl/
+    pass
+
+# Universidad de Magallanes
+def umag():
+    # http://www.umag.cl/
+    pass
+
+# Universidad de Taracapá
+def uta():
+    # https://www.uta.cl/
+    pass
+    
