@@ -162,6 +162,7 @@ def formatear_fecha(fecha, universidad):
 def elimina_tildes(s):
    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
 
+# Universidad de Playa Ancha
 def upla():
     universidad = Universidad.objects.get(alias='UPLA')
     url_rss = "http://www.upla.cl/noticias/feed/"
@@ -198,6 +199,7 @@ def upla():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Pontificia Universidad Católica de Valparaíso
 def pucv():
     universidad = Universidad.objects.get(alias='PUCV')
     nombre_uni = "pucv"
@@ -242,6 +244,7 @@ def pucv():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Universidad Católica del Norte
 def ucn():
     universidad = Universidad.objects.get(alias='UCN')
     d = feedparser.parse("http://www.noticias.ucn.cl/feed/")
@@ -265,6 +268,7 @@ def ucn():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+#Universidad Técnico Federico Santa María
 def utfsm():
     universidad = Universidad.objects.get(alias='UTFSM')
     d = feedparser.parse("http://www.noticias.usm.cl/feed/")
@@ -288,6 +292,7 @@ def utfsm():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Universidad de Valparaíso
 def uv():
     universidad = Universidad.objects.get(alias='UV')
     contents = urllib.request.urlopen("http://www.uv.cl/pdn/archivo/").read()
@@ -318,6 +323,7 @@ def uv():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Universidad de Concepción
 def udec():
     universidad = Universidad.objects.get(alias='UDEC')
     contents = urllib.request.urlopen("http://www.udec.cl/panoramaweb2016/noticias").read()
@@ -340,6 +346,7 @@ def udec():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     
+# Universidad de Talca
 def utalca():
     universidad = Universidad.objects.get(alias='UTALCA')
     items = []
@@ -370,6 +377,7 @@ def utalca():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
+# Universidad de Los Lagos
 def ulagos():
     universidad = Universidad.objects.get(alias='ULAGOS')
     items = []
