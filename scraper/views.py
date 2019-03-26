@@ -1,43 +1,76 @@
 from django.shortcuts import render
 from news.models import Universidad, Noticia
 from bs4 import BeautifulSoup
-import feedparser, unicodedata, urllib.request, time, re, datetime, time
+import feedparser, unicodedata, urllib.request, time, re, datetime, time, threading
 import dateutil.parser
+from django.conf import settings
+import logging
 
 result = []
 
 # Create your views here.
 def scraper(request):
     hora = {}
-
     hora["start"] = time.strftime("%H:%M:%S")
     hora_inicio = time.time()
 
-    pucv()
-    ucn()
-    utfsm()
-    uv()
-    upla()
-    udec()
-    utalca()
-    ulagos()
+    if settings.DEBUG == False:
+        # Usar hilos para Producción
+        logging.basicConfig( level=logging.DEBUG, format='[%(levelname)s] - %(threadName)-10s : %(message)s')
+        universidades = [
+            {'target':pucv, 'name':'PUCV'},
+            {'target':ucn, 'name':'UCN'},
+            {'target':utfsm, 'name':'UTFSM'},
+            {'target':uv, 'name':'UV'},
+            {'target':upla, 'name':'UPLA'},
+            {'target':udec, 'name':'UDEC'},
+            {'target':utalca, 'name':'UTALCA'},
+            {'target':ulagos, 'name':'ULAGOS'},
+            {'target':unap, 'name':'UNAP'},
+            {'target':ua, 'name':'UA'},
+            {'target':uda, 'name':'UDA'},
+            {'target':userena, 'name':'USERENA'},
+            {'target':uoh, 'name':'UOH'},
+            {'target':ucm, 'name':'UCM'},
+            {'target':ubiobio, 'name':'UBIOBIO'},
+            {'target':ucsc, 'name':'UCSC'},
+            {'target':ufro, 'name':'UFRO'},
+            {'target':uct, 'name':'UCT'},
+            {'target':uach, 'name':'UACH'},
+            {'target':uaysen, 'name':'UAYSEN'},
+            {'target':umag, 'name':'UMAG'},
+            {'target':uta, 'name':'UTA'}
+        ]
 
-    # Nuevas universidades
-    unap()
-    ua()
-    uda()
-    userena()
-    uoh()
-    ucm()
-    ubiobio()
-    ucsc()
-    ufro()
-    uct()
-    uach()
-    uaysen()
-    umag()
-    uta()
+        for universidad in universidades:
+            threading.Thread(target=universidad['target'], name=universidad['name']).start()
+    else:
+        # Este metodo de ejecutar los scraper es muy lento
+        # Pero el panel uninews.datoslab.cl/scraper deja de mostrar información acerca de los errores e información
+        # Usar solo para Desarrollo
+        pucv()
+        ucn()
+        utfsm()
+        uv()
+        upla()
+        udec()
+        utalca()
+        ulagos()
 
+        unap()
+        ua()
+        uda()
+        userena()
+        uoh()
+        ucm()
+        ubiobio()
+        ucsc()
+        ufro()
+        uct()
+        uach()
+        uaysen()
+        umag()
+        uta()
 
     hora_fin = time.time()
     hora["finish"] = time.strftime("%H:%M:%S")
@@ -164,6 +197,7 @@ def elimina_tildes(s):
 
 # Universidad de Playa Ancha
 def upla():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UPLA')
     url_rss = "http://www.upla.cl/noticias/feed/"
     feed = feedparser.parse( url_rss )
@@ -198,9 +232,11 @@ def upla():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Pontificia Universidad Católica de Valparaíso
 def pucv():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='PUCV')
     nombre_uni = "pucv"
     contents = urllib.request.urlopen("http://www.pucv.cl/pucv/site/tax/port/all/taxport_1___1.html").read()
@@ -243,9 +279,11 @@ def pucv():
             saveNew({'status':"ok", 'error_message':'', 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad Católica del Norte
 def ucn():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UCN')
     d = feedparser.parse("http://www.noticias.ucn.cl/feed/")
     for e in d.entries:
@@ -267,9 +305,11 @@ def ucn():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 #Universidad Técnico Federico Santa María
 def utfsm():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UTFSM')
     d = feedparser.parse("http://www.noticias.usm.cl/feed/")
     for e in d.entries:
@@ -291,9 +331,11 @@ def utfsm():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad de Valparaíso
 def uv():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UV')
     contents = urllib.request.urlopen("http://www.uv.cl/pdn/archivo/").read()
     bs = BeautifulSoup(contents, "html.parser")
@@ -322,9 +364,11 @@ def uv():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad de Concepción
 def udec():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UDEC')
     contents = urllib.request.urlopen("http://www.udec.cl/panoramaweb2016/noticias").read()
     bs = BeautifulSoup(contents, "html.parser")
@@ -345,9 +389,11 @@ def udec():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
     
 # Universidad de Talca
 def utalca():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UTALCA')
     items = []
     # Se quitó la categoría 'admision' porque causa muchos conflictos. Error en la página de la universidad
@@ -376,9 +422,11 @@ def utalca():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad de Los Lagos
 def ulagos():
+    logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='ULAGOS')
     items = []
     categorias = ['campus-osorno', 'campus-pto-montt', 'sede-santiago', 'sede-chiloe']
@@ -409,75 +457,104 @@ def ulagos():
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad Arturo Prat
 def unap():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://www.unap.cl/prontus_unap/site/edic/base/port/inicio.html
     pass
 
 # Universidad de Antofagasta
 def ua():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://www.uantof.cl/
     pass
 
 # Universidad de Atacama
 def uda():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     #http://www.uda.cl/
     pass
 
 # Universidad de La Serena
 # Región de Coquimbo
 def userena():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://www.userena.cl/
     pass
 
 # Universidad de O'Higgins
 def uoh():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.uoh.cl/
     pass
 
 # Universidad Católica del Maule
 def ucm():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://portal.ucm.cl/
     pass
 
 # Universidad del Bío-Bío
 def ubiobio():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://www.ubiobio.cl/w/
     pass
 
 # Universidad Católica de la Santísima Concepción
 def ucsc():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.ucsc.cl/
     pass
 
 # Universidad de la Frontera
 def ufro():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.ufro.cl/
     pass
 
 # Universidad Católica de Temuco
 def uct():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.uct.cl/
     pass
 
 # Universidad Austral de Chile
 def uach():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.uach.cl/
     pass
 
 # Universidad de Aysén
 def uaysen():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://uaysen.cl/
     pass
 
 # Universidad de Magallanes
 def umag():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # http://www.umag.cl/
     pass
 
 # Universidad de Taracapá
 def uta():
+    logging.debug('Lanzado')
+    logging.debug('Deteniendo')
     # https://www.uta.cl/
     pass
     
