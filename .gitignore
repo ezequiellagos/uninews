@@ -1,7 +1,5 @@
-uninews/__pycache__/urls.cpython-37.pyc
-uninews/__pycache__/settings.cpython-37.pyc
-scraper/__pycache__/views.cpython-37.pyc
-news/__pycache__/views.cpython-37.pyc
-news/__pycache__/admin.cpython-37.pyc
-core/__pycache__/views.cpython-37.pyc
-core/__pycache__/admin.cpython-37.pyc
+uninews/__pycache__/
+scraper/__pycache__/
+news/__pycache__/
+core/__pycache__/
+db.sqlite3
