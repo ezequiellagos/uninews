@@ -80,7 +80,7 @@ def statistics(request):
 def search(request):
     info = False
     if request.method == 'GET':
-        news = Noticia.objects.filter(titulo__contains=request.GET['search'])
+        news = Noticia.objects.filter(titulo__icontains=request.GET['search'])
         info = True
 
         # Paginación

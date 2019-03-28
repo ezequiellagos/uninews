@@ -52,7 +52,7 @@
         <div class="row">
             <div class="paginator mx-auto">
                 {% if news.has_next %}
-                    <a class="infinite-more-link" href="?page={{ news.next_page_number }}">Más Noticias</a>
+                    <a class="infinite-more-link" href="?search={{search}}&page={{ news.next_page_number }}">Más Noticias</a>
                 {% endif %}
 
                 <div class="loading" style="display: none;">
