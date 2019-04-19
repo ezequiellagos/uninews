@@ -69,11 +69,15 @@ def statistics(request):
     contador_ufsm = news.filter(id_universidad__alias="UTFSM").aggregate(Sum('contador_visitas'))
     contador_ucn = news.filter(id_universidad__alias="UCN").aggregate(Sum('contador_visitas'))
     contador_uv = news.filter(id_universidad__alias="UV").aggregate(Sum('contador_visitas'))
+    contador_udec = news.filter(id_universidad__alias="UDEC").aggregate(Sum('contador_visitas'))
+    contador_ulagos = news.filter(id_universidad__alias="ULAGOS").aggregate(Sum('contador_visitas'))
+    contador_utalca = news.filter(id_universidad__alias="UTALCA").aggregate(Sum('contador_visitas'))
 
     mejores_noticia_pucv = news.filter(id_universidad__alias="PUCV").aggregate(Max('contador_visitas'))
     
     # Asigna los contadores al diccionario contador
-    contador = {'upla':contador_upla, 'pucv':contador_pucv, 'ucn':contador_ucn, 'ufsm':contador_ufsm, 'uv':contador_uv, 'mejores_noticia_pucv':mejores_noticia_pucv}
+    contador = {'upla':contador_upla, 'pucv':contador_pucv, 'ucn':contador_ucn, 'ufsm':contador_ufsm, 'uv':contador_uv, 
+                'udec':contador_udec, 'ulagos':contador_ulagos, 'utalca':contador_utalca, 'mejores_noticia_pucv':mejores_noticia_pucv}
 
     return render(request, 'news/statistics.html', {'noticias':news , 'contador':contador})
 

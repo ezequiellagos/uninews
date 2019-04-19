@@ -46,7 +46,7 @@ def scraper(request):
             threading.Thread(target=universidad['target'], name=universidad['name']).start()
     else:
         # Este metodo de ejecutar los scraper es muy lento
-        # Pero el panel uninews.datoslab.cl/scraper deja de mostrar información acerca de los errores e información
+        # Pero el panel uninews.datoslab.cl/scraper solo muestra información acerca de los errores e información si se usa este metodo
         # Usar solo para Desarrollo
         pucv()
         ucn()
