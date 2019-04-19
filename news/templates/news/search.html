@@ -26,6 +26,7 @@
                 {% for new in news %}
                 <div class="col-md-4 infinite-item " >
                     <div class="post">
+                        <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
                         <div class="div-imagen">
                             <div class="font-weight-bold">{{new.bajada|truncatechars:250 }}</div>
                             <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; "></a>
@@ -36,7 +37,6 @@
                                 <a class="post-category cat-{{new.id_universidad.id_universidad}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
                                 <span class="post-date">{{new.fecha}}</span>
                             </div>
-                            <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
                         </div>
                     </div>
                 </div>
