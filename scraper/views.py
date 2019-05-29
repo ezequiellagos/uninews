@@ -97,7 +97,7 @@ def saveNew(new):
             categoria=new['categoria'],
             contador_visitas=0
             )
-        #n.save()
+        n.save()
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
         e = "Insertada"
         result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
