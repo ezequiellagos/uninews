@@ -49,14 +49,14 @@ def scraper(request):
         # Este metodo de ejecutar los scraper es muy lento
         # Pero el panel uninews.datoslab.cl/scraper solo muestra información acerca de los errores e información si se usa este metodo
         # Usar solo para Desarrollo
-        pucv()
-        ucn()
-        utfsm()
-        uv()
-        upla()
-        udec()
-        utalca()
-        ulagos()
+        pucv() # Funcionando
+        ucn() # Funcionando
+        utfsm() # Funcionando
+        uv() # Funcionando
+        upla() # Funcionando
+        udec() # Funcionando
+        utalca() # Funcionando
+        ulagos() # Funcionando
 
         unap()
         ua()
@@ -65,7 +65,7 @@ def scraper(request):
         uoh()
         ucm()
         ubiobio()
-        ucsc()
+        #ucsc()
         ufro()
         uct()
         uach()
@@ -409,7 +409,8 @@ def utalca():
             if item.div.p is None:
                 categoria_busqueda = 'sin-categoria'
             else:
-                categoria_busqueda = item.div.p.text.lower()
+                categoria_busqueda = elimina_tildes(item.div.p.text.lower())
+                categoria_busqueda = categoria_busqueda.replace(" ", "-")
             
             noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(noticia, "html.parser")
@@ -446,7 +447,7 @@ def ulagos():
             if(categoria_busqueda == "vinculación con el medio"):
                 categoria_busqueda = "vinculacion"
             categoria_busqueda = categoria_busqueda.replace(" ", "-")
-            categoria_busqueda = categoria_busqueda.replace("é", "e")
+            categoria_busqueda = elimina_tildes(categoria_busqueda)
 
             fecha = bs_noticia.find("div", {"class":"conten-post-date"}).text.strip()
             fecha = formatear_fecha(fecha, "ulagos")            
@@ -513,9 +514,12 @@ def ubiobio():
 # Universidad Católica de la Santísima Concepción
 def ucsc():
     logging.debug('Lanzado')
-    logging.debug('Deteniendo')
-    # https://www.ucsc.cl/
-    pass
+    universidad = Universidad.objects.get(alias='UCSC')
+    contents = urllib.request.urlopen("https://www.ucsc.cl/noticias/").read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("div", {"class": "card-news"})
+    items = list(set(items)) # Elimina elementos duplicados
+
 
 # Universidad de la Frontera
 def ufro():
