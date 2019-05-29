@@ -39,6 +39,39 @@ def region(request, region):
     # Paginación
     news = pagination(request, news)
 
+    if region == '1':
+        region = 'Tarapacá'
+    elif region == '2':
+        region = 'Antofagasta'
+    elif region == '3':
+        region = 'Atacama'
+    elif region == '4':
+        region = 'Coquimbo'
+    elif region == '5':
+        region = 'Valparaíso'
+    elif region == '6':
+        region = "Libertador Bernardo O'Higgins"
+    elif region == '7':
+        region = 'Maule'
+    elif region == '8':
+        region = 'Bío-Bío'
+    elif region == '9':
+        region = 'Araucanía'
+    elif region == '10':
+        region = 'Los Lagos'
+    elif region == '11':
+        region = 'Aysén del Gral Carlos Ibáñez del Campo'
+    elif region == '12':
+        region = 'Magallanes y la Antártica Chilena'
+    elif region == '13':
+        region = 'Metropolitana'
+    elif region == '14':
+        region = 'Los Ríos'
+    elif region == '15':
+        region = 'Arica y Parinacota'
+    elif region == '2':
+        region = 'Tarapacá'
+
     return render(request, "news/region.html", {'news':news, 'news_most_view':news_most_view, 'region':region})
 
 def university(request, alias):
