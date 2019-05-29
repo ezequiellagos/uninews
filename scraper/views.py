@@ -64,8 +64,8 @@ def scraper(request):
         userena()
         uoh()
         ucm()
-        ubiobio()
-        #ucsc()
+        ubiobio() # Por hacer
+        ucsc() # Funcionando
         ufro()
         uct()
         uach()
@@ -143,7 +143,11 @@ def formatear_fecha(fecha, universidad):
         fecha = fecha.lower().split('/')
         dia = fecha[0]
         mes = fecha[1]
-        anno = fecha[2]       
+        anno = fecha[2]
+    elif universidad == "ucsc":
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -517,9 +521,28 @@ def ucsc():
     universidad = Universidad.objects.get(alias='UCSC')
     contents = urllib.request.urlopen("https://www.ucsc.cl/noticias/").read()
     bs = BeautifulSoup(contents, "html.parser")
-    items = bs.find_all("div", {"class": "card-news"})
+    items = bs.find_all("article", {"class": "hentry-news"})
     items = list(set(items)) # Elimina elementos duplicados
-
+    
+    for item in items:
+        try:
+            link = item.header.h2.a['href']
+            titulo = item.header.h2.a.text
+            fecha = item.header.p.time['datetime']
+            fecha = formatear_fecha(fecha, 'ucsc')
+            
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+            bajada = bs_noticia.find("div", {"class": "entry-summary"}).p.text
+            imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
+            categoria_busqueda = bs_noticia.find("a", {"rel": "category tag"})
+            categoria_busqueda = elimina_tildes(categoria_busqueda.text.lower()).replace(" ", "-")
+            
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            pass
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad de la Frontera
 def ufro():

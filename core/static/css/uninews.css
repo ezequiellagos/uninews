@@ -79,12 +79,20 @@
 .post-meta .post-category.cat-8 {
     background-color: #056563;
 }
-/* UNAP */
+/* UCSC */
 .post-meta .post-category.cat-9 {
+    background-color: #d10024;
+}
+/* UBIOBIO */
+.post-meta .post-category.cat-10 {
+    background-color: #054993;
+}
+/* UNAP */
+.post-meta .post-category.cat-11 {
     background-color: #003cff;
 }
 /* UA */
-.post-meta .post-category.cat-10 {
+.post-meta .post-category.cat-12 {
     background-color: #003cff;
 }
 /* UDA */
@@ -101,14 +109,6 @@
 }
 /* UCM */
 .post-meta .post-category.cat-14 {
-    background-color: #003cff;
-}
-/* UBIOBIO */
-.post-meta .post-category.cat-15 {
-    background-color: #003cff;
-}
-/* UCSC */
-.post-meta .post-category.cat-15 {
     background-color: #003cff;
 }
 /* UFRO */
