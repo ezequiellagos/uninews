@@ -57,6 +57,8 @@ def scraper(request):
         udec() # Funcionando
         utalca() # Funcionando
         ulagos() # Funcionando
+        ucsc() # Funcionando
+        ubiobio() # Funcionando
 
         unap()
         ua()
@@ -64,8 +66,6 @@ def scraper(request):
         userena()
         uoh()
         ucm()
-        ubiobio() # Por hacer
-        ucsc() # Funcionando
         ufro()
         uct()
         uach()
@@ -148,6 +148,11 @@ def formatear_fecha(fecha, universidad):
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == "ubiobio":
+        fecha = fecha.split()
+        dia = fecha[1]
+        mes = fecha[2].lower()
+        anno = fecha[3]
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -465,6 +470,61 @@ def ulagos():
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
 
+# Universidad Católica de la Santísima Concepción
+def ucsc():
+    logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UCSC')
+    contents = urllib.request.urlopen("https://www.ucsc.cl/noticias/").read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("article", {"class": "hentry-news"})
+    items = list(set(items)) # Elimina elementos duplicados
+    
+    for item in items:
+        try:
+            link = item.header.h2.a['href']
+            titulo = item.header.h2.a.text
+            fecha = item.header.p.time['datetime']
+            fecha = formatear_fecha(fecha, 'ucsc')
+            
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+            bajada = bs_noticia.find("div", {"class": "entry-summary"}).p.text
+            imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
+            categoria_busqueda = bs_noticia.find("a", {"rel": "category tag"})
+            categoria_busqueda = elimina_tildes(categoria_busqueda.text.lower()).replace(" ", "-")
+            
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            pass
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
+
+# Universidad del Bío-Bío
+def ubiobio():
+    logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UBIOBIO')
+    d = feedparser.parse("http://noticias.ubiobio.cl/feed/")
+    for e in d.entries:
+        try:
+            titulo = (e.title)
+            link = (e.link)
+            categoria_busqueda = elimina_tildes(e.category.lower())
+            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            bajada = (e.description).replace("[&#8230;]", "")
+            bs_bajada = BeautifulSoup(bajada, "html.parser")
+            bajada = bs_bajada.find("p").text
+            fecha = e.published
+            fecha = formatear_fecha(fecha,'ubiobio')
+            cuerpo = e['content']
+            contenido = cuerpo[0].value
+            imagen = re.search('(?P<url>https?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
+
+
 # Universidad Arturo Prat
 def unap():
     logging.debug('Lanzado')
@@ -507,42 +567,6 @@ def ucm():
     logging.debug('Deteniendo')
     # http://portal.ucm.cl/
     pass
-
-# Universidad del Bío-Bío
-def ubiobio():
-    logging.debug('Lanzado')
-    logging.debug('Deteniendo')
-    # http://www.ubiobio.cl/w/
-    pass
-
-# Universidad Católica de la Santísima Concepción
-def ucsc():
-    logging.debug('Lanzado')
-    universidad = Universidad.objects.get(alias='UCSC')
-    contents = urllib.request.urlopen("https://www.ucsc.cl/noticias/").read()
-    bs = BeautifulSoup(contents, "html.parser")
-    items = bs.find_all("article", {"class": "hentry-news"})
-    items = list(set(items)) # Elimina elementos duplicados
-    
-    for item in items:
-        try:
-            link = item.header.h2.a['href']
-            titulo = item.header.h2.a.text
-            fecha = item.header.p.time['datetime']
-            fecha = formatear_fecha(fecha, 'ucsc')
-            
-            noticia = urllib.request.urlopen(link).read()
-            bs_noticia = BeautifulSoup(noticia, "html.parser")
-            bajada = bs_noticia.find("div", {"class": "entry-summary"}).p.text
-            imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
-            categoria_busqueda = bs_noticia.find("a", {"rel": "category tag"})
-            categoria_busqueda = elimina_tildes(categoria_busqueda.text.lower()).replace(" ", "-")
-            
-            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
-        except Exception as e:
-            pass
-            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
-    logging.debug('Deteniendo')
 
 # Universidad de la Frontera
 def ufro():
