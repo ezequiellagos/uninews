@@ -14,6 +14,7 @@ def scraper(request):
     hora["start"] = time.strftime("%H:%M:%S")
     hora_inicio = time.time()
 
+    
     if settings.DEBUG == False:
         # Usar hilos para Producción
         logging.basicConfig( level=logging.DEBUG, format='[%(levelname)s] - %(threadName)-10s : %(message)s')
@@ -96,7 +97,7 @@ def saveNew(new):
             categoria=new['categoria'],
             contador_visitas=0
             )
-        n.save()
+        #n.save()
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
         e = "Insertada"
         result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
@@ -327,7 +328,7 @@ def utfsm():
             region_u = "5"
             cuerpo = e['content']
             contenido = cuerpo[0].value
-            imagen = re.search('(?P<url>http?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
+            imagen = re.search('(?P<url>https?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -390,35 +391,32 @@ def udec():
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
-    
+
 # Universidad de Talca
 def utalca():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UTALCA')
-    items = []
-    # Se quitó la categoría 'admision' porque causa muchos conflictos. Error en la página de la universidad
-    categorias = ['Academia', 'Conocimiento', 'DeportesRecreacion', 'Estudiantes', 'Extension', 'Institucional', 'Investigacion', 'RSU']
-    for categoria in categorias:
-        contents = urllib.request.urlopen("http://www.utalca.cl/link.cgi/SalaPrensa/"+ categoria).read()
-        bs = BeautifulSoup(contents, "html.parser")
-        items.extend(bs.find_all("div", {"class": "noti clearfix"}))
+    contents = urllib.request.urlopen("https://www.utalca.cl/noticias/").read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("div", {"class": "card-news"})
+    items = list(set(items)) # Elimina elementos duplicados
     
     for item in items:
         try:
-            link = "http://www.utalca.cl" + item.a['href']
-            titulo = item.h2.text
-            bajada = item.find("p").text.replace(' ver más', '')
-            categoria_busqueda = item.a['href'].replace("/link.cgi//SalaPrensa/", "").split("/")[0].lower()
-            if categoria_busqueda == "rsu":
-                categoria_busqueda = "vinculacion"
-            elif categoria_busqueda == "deportesrecreacion":
-                categoria_busqueda = "deportes"
+            link = item.a['href']
+            titulo = item.find("h5").text
+
+            if item.div.p is None:
+                categoria_busqueda = 'sin-categoria'
+            else:
+                categoria_busqueda = item.div.p.text.lower()
+            
             noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(noticia, "html.parser")
-            fecha = bs_noticia.find("p", {"class":"fecha"}).text
-            fecha = formatear_fecha(fecha, "utalca")
-            imagen = "http://www.utalca.cl" + item.img["src"]
-
+            bajada = bs_noticia.find("div", {"class": "interior-body"}).h6.text
+            fecha = bs_noticia.find("div", {"class": "interior-body"}).span.text
+            fecha = formatear_fecha(fecha, 'utalca')
+            imagen = bs_noticia.find("img", {"class": "attachment-post-thumbnail size-post-thumbnail wp-post-image"})['src']
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -451,8 +449,11 @@ def ulagos():
             categoria_busqueda = categoria_busqueda.replace("é", "e")
 
             fecha = bs_noticia.find("div", {"class":"conten-post-date"}).text.strip()
-            fecha = formatear_fecha(fecha, "ulagos")
-            imagen = bs_noticia.find("img", {"class": "img-destacado"})["src"]
+            fecha = formatear_fecha(fecha, "ulagos")            
+            if bs_noticia.find("img", {"class": "img-destacado"}) is None:
+                imagen = ''
+            else:
+                imagen = bs_noticia.find("img", {"class": "img-destacado"})["src"]
 
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
