@@ -22,9 +22,14 @@ $(document).ready(function(){
 var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
-      $('.loading').show();
+        $('.loading').show();
     },
     onAfterPageLoad: function ($items) {
-      $('.loading').hide();
+        $('.loading').hide();
+
+        // Si no encuentra una imagen la reemplaza
+        $(".img-fluid").on("error", function(){
+            $(this).attr('src', '/static/img/no-image.png');
+        });
     }
-  });
+});
