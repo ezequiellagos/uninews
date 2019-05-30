@@ -202,6 +202,16 @@ def formatear_fecha(fecha, universidad):
     fecha = anno + "-" + mes + "-" + dia
     return fecha
 
+# Realiza limpieza a cada categoria
+def setCategoria(categoria = ''):
+    if categoria == '' or categoria == None:
+        return 'sin-categoria'
+    else:
+        categoria = categoria.lower()
+        categoria = elimina_tildes(categoria)
+        categoria = categoria.replace(" ", "-")
+    return categoria
+
 def elimina_tildes(s):
    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
 
@@ -217,14 +227,11 @@ def upla():
             titulo =  item['title']
             bajada =  item['summary']
             link = item['link']
-            categoria = item['category']
             fecha = item['published']
             fecha = formatear_fecha(fecha, "upla")
 
             # Parsea la categoria para ser buscada
-            categoria_busqueda = categoria.lower()
-            categoria_busqueda = elimina_tildes(categoria_busqueda)
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            categoria_busqueda = setCategoria(item['category'])
 
             # Entra en la pagina de cada categoria y busca todas las noticias
             contents = urllib.request.urlopen("http://www.upla.cl/noticias/category/"+categoria_busqueda).read()
@@ -265,12 +272,16 @@ def pucv():
             pagina_noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
             titulo = bs_noticia.find("h1", { "class" : "titular" }).text
-
-            bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
             if fecha is None:
                 fecha = time.strftime("%Y-%m-%d")
             else:
                 fecha = formatear_fecha(fecha.text,nombre_uni)
+
+            try:
+                bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
+            except Exception as e:
+                bajada = ''
+                result.append({'status':"warning", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
             # No encuentra una categoría
             try:
@@ -280,9 +291,8 @@ def pucv():
                 categorias = categoria.findAll("a")
 
                 category = categorias[2].text
-                categoria_busqueda = category.lower()
-                categoria_busqueda = elimina_tildes(categoria_busqueda)
-                categoria_busqueda = categoria_busqueda.replace(" ", "-")
+                categoria_busqueda = setCategoria(category)
+
             except Exception as e:
                 categoria_busqueda = 'sin-categoria'
                 result.append({'status':"warning", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -301,10 +311,7 @@ def ucn():
             titulo = (e.title)
             nombre_uni = "ucn"
             link = (e.link)
-            categoria = (e.category)
-            categoria_busqueda = categoria.lower()
-            categoria_busqueda = elimina_tildes(categoria_busqueda)
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            categoria_busqueda = setCategoria((e.category))
             fecha = e.published
             fecha = formatear_fecha(fecha,nombre_uni)
             description = e.description.split("/>")
@@ -327,10 +334,7 @@ def utfsm():
             titulo = (e.title)
             nombre_uni = "ufsm"
             link = (e.link)
-            categoria = (e.category)
-            categoria_busqueda = categoria.lower()
-            categoria_busqueda = elimina_tildes(categoria_busqueda)
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            categoria_busqueda = setCategoria((e.category))
             bajada = (e.description).replace("[&#8230;]", "")
             fecha = e.published
             fecha = formatear_fecha(fecha,nombre_uni)
@@ -370,7 +374,7 @@ def uv():
                 imagen = div.find("img", ["sombra"])['src']
                 imagen = "http://www.uv.cl/pdn" + imagen.replace("..", "")
 
-            categoria_busqueda = 'sin-categoria'
+            categoria_busqueda = setCategoria()
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -389,7 +393,7 @@ def udec():
             link = "http://www.udec.cl" + item.a['href']
             titulo = item.a.text
             bajada = item.p.text
-            categoria_busqueda = 'sin-categoria'
+            categoria_busqueda = setCategoria()
             noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(noticia, "html.parser")
             fecha = bs_noticia.find("span", {"class": "submitted"}).span["content"]
@@ -414,12 +418,10 @@ def utalca():
         try:
             link = item.a['href']
             titulo = item.find("h5").text
-
             if item.div.p is None:
-                categoria_busqueda = 'sin-categoria'
+                categoria_busqueda = setCategoria()
             else:
-                categoria_busqueda = elimina_tildes(item.div.p.text.lower())
-                categoria_busqueda = categoria_busqueda.replace(" ", "-")
+                categoria_busqueda = setCategoria(item.div.p.text)
             
             noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(noticia, "html.parser")
@@ -453,10 +455,7 @@ def ulagos():
 
             bajada = bs_noticia.find("div", {"class":"title-post"}).span.text.strip()
             categoria_busqueda = bs_noticia.find("div", {"class":"category-post"}).a.text.lower().strip()
-            if(categoria_busqueda == "vinculación con el medio"):
-                categoria_busqueda = "vinculacion"
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
-            categoria_busqueda = elimina_tildes(categoria_busqueda)
+            categoria_busqueda = setCategoria(categoria_busqueda)
 
             fecha = bs_noticia.find("div", {"class":"conten-post-date"}).text.strip()
             fecha = formatear_fecha(fecha, "ulagos")            
@@ -491,7 +490,7 @@ def ucsc():
             bajada = bs_noticia.find("div", {"class": "entry-summary"}).p.text
             imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
             categoria_busqueda = bs_noticia.find("a", {"rel": "category tag"})
-            categoria_busqueda = elimina_tildes(categoria_busqueda.text.lower()).replace(" ", "-")
+            categoria_busqueda = setCategoria(categoria_busqueda.text)
             
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
@@ -508,8 +507,7 @@ def ubiobio():
         try:
             titulo = (e.title)
             link = (e.link)
-            categoria_busqueda = elimina_tildes(e.category.lower())
-            categoria_busqueda = categoria_busqueda.replace(" ", "-")
+            categoria_busqueda = setCategoria(e.category)
             bajada = (e.description).replace("[&#8230;]", "")
             bs_bajada = BeautifulSoup(bajada, "html.parser")
             bajada = bs_bajada.find("p").text
