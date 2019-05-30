@@ -31,7 +31,7 @@
 		<link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}"/>
 
 		<!-- Uninews stlylesheet -->
-		<link type="text/css" rel="stylesheet" href="{% static 'css/uninews.css' %}"/>
+		<link type="text/css" rel="stylesheet" href="{% static 'css/uninews.css' %}?r={% now 'U' %}"/>
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -250,7 +250,7 @@ Copyright <script>document.write(new Date().getFullYear());</script> Todos los d
 		<script src="{% static 'js/imakewebthings-waypoints/lib/shortcuts/infinite.min.js' %}"></script>
 
 		<script src="{% static 'js/main.js' %}"></script>
-		<script src="{% static 'js/uninews.js' %}"></script>
+		<script src="{% static 'js/uninews.js' %}?r={% now 'U' %}"></script>
 
 	</body>
 </html>
