@@ -34,7 +34,7 @@
                         <div class="post-body">
                             <div class="post-meta">
                                 <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a>
-                                <a class="post-category cat-{{new.id_universidad.id_universidad}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
+                                <a class="post-category cat-{{new.id_universidad.alias}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
                                 <span class="post-date">{{new.fecha}}</span>
                             </div>
                         </div>

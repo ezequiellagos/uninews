@@ -27,7 +27,7 @@
                     {% endwith %}
                     <div class="post-body">
                         <div class="post-meta">
-                            <a class="post-category cat-{{university.id_universidad}}" href="{% url 'university' university.alias %}">{{university.alias}}</a>
+                            <a class="post-category cat-{{university.alias}}" href="{% url 'university' university.alias %}">{{university.alias}}</a>
                         </div>
                         <h3 class="post-title"><a href="{% url 'university' university.alias %}" target="_self" style="text-decoration:none;">{{university.nombre}}</a></h3>
                     </div>
