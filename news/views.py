@@ -95,24 +95,23 @@ def detail(request, id_noticia):
 def statistics(request):
     # Crea objeto con la tabla de noticias
     news = Noticia.objects.order_by('-contador_visitas')
+    universidades = Universidad.objects.order_by('-alias')
 
-    # Suma de todas las visitas por universidad
-    contador_pucv = news.filter(id_universidad__alias="PUCV").aggregate(Sum('contador_visitas'))
-    contador_upla = news.filter(id_universidad__alias="UPLA").aggregate(Sum('contador_visitas'))
-    contador_ufsm = news.filter(id_universidad__alias="UTFSM").aggregate(Sum('contador_visitas'))
-    contador_ucn = news.filter(id_universidad__alias="UCN").aggregate(Sum('contador_visitas'))
-    contador_uv = news.filter(id_universidad__alias="UV").aggregate(Sum('contador_visitas'))
-    contador_udec = news.filter(id_universidad__alias="UDEC").aggregate(Sum('contador_visitas'))
-    contador_ulagos = news.filter(id_universidad__alias="ULAGOS").aggregate(Sum('contador_visitas'))
-    contador_utalca = news.filter(id_universidad__alias="UTALCA").aggregate(Sum('contador_visitas'))
+    date = mostViewed()
+    estadisticas = []
+    for universidad in universidades:
+        estadisticas.append({
+            'nombre': universidad.alias,
+            # Suma de todas las visitas por universidad
+            'total_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
+            'noticia_mas_vista': news.filter(id_universidad__alias=universidad.alias).latest('contador_visitas'),
+            'noticia_mas_vista_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Max('contador_visitas')))['contador_visitas__max'],
 
-    mejores_noticia_pucv = news.filter(id_universidad__alias="PUCV").aggregate(Max('contador_visitas'))
-    
-    # Asigna los contadores al diccionario contador
-    contador = {'upla':contador_upla, 'pucv':contador_pucv, 'ucn':contador_ucn, 'ufsm':contador_ufsm, 'uv':contador_uv, 
-                'udec':contador_udec, 'ulagos':contador_ulagos, 'utalca':contador_utalca, 'mejores_noticia_pucv':mejores_noticia_pucv}
+            # Noticia más reciente últimas 2 semanas
+            'noticia_mas_vista_reciente': news.filter(id_universidad__alias=universidad.alias).filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+        })
 
-    return render(request, 'news/statistics.html', {'noticias':news , 'contador':contador})
+    return render(request, 'news/statistics.html', {'noticias':news , 'estadisticas':estadisticas})
 
 def search(request):
     info = False

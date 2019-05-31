@@ -25,18 +25,41 @@
         <div class="row">
             <div class="col-12">
                 <h3>Cantidad de visitas por Universidad</h3>
-                <p>UPLA : {{ contador.upla.contador_visitas__sum }}</p>
-                <p>UTFSM : {{ contador.ufsm.contador_visitas__sum }}</p>
-                <p>UV : {{ contador.uv.contador_visitas__sum }}</p>
-                <p>UCN : {{ contador.ucn.contador_visitas__sum }}</p>
-                <p>PUCV : {{ contador.pucv.contador_visitas__sum }}</p>
-                <p>UDEC : {{ contador.udec.contador_visitas__sum }}</p>
-                <p>ULAGOS : {{ contador.ulagos.contador_visitas__sum }}</p>
-                <p>UTALCA : {{ contador.utalca.contador_visitas__sum }}</p>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm ">
+                        <thead>
+                            <tr>
+                                <th class="align-middle text-center">Alias</th>
+                                <th class="align-middle text-center">Total de visitas (Total)</th>
+                                <th class="align-middle text-center">Visitas noticia más vista (Siempre)</th>
+                                <th class="align-middle text-center">Noticia con más visitas (Siempre)</th>
+                                <th class="align-middle text-center">Visitas noticia más vista (14 días)</th>
+                                <th class="align-middle text-center">Noticia con más visitas (14 días)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for estadistica in estadisticas %}
+                            <tr>
+                                <td class="align-middle ">{{estadistica.nombre}}</td>
+                                <td class="align-middle text-right">{{estadistica.total_visitas}}</td>
+                                <td class="align-middle text-right">{{estadistica.noticia_mas_vista_visitas}}</td>
+                                <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista.titulo}}</a></td>
+                                <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas}}</td>
+                                <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista_reciente.titulo}}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-                <br>
-
-                <p>Mejor Noticia PUCV: {{ contador.mejores_noticia_pucv.bajada }}</p>
+                <hr>
+                <code>
+                    {% comment %}
+                    {{estadisticas}}
+                    {% endcomment %}
+                </code>
+                
             </div>
         </div>
         <!-- /row -->
