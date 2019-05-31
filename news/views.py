@@ -104,9 +104,8 @@ def statistics(request):
             'nombre': universidad.alias,
             # Suma de todas las visitas por universidad
             'total_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
+            # Noticia más vista de todo el tiempo
             'noticia_mas_vista': news.filter(id_universidad__alias=universidad.alias).latest('contador_visitas'),
-            'noticia_mas_vista_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Max('contador_visitas')))['contador_visitas__max'],
-
             # Noticia más reciente últimas 2 semanas
             'noticia_mas_vista_reciente': news.filter(id_universidad__alias=universidad.alias).filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
         })
