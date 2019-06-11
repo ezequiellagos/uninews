@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Noticia, Universidad
+from .models import Noticia, Universidad, Region
 
 # Register your models here.
 class UniversidadAdmin(admin.ModelAdmin):
@@ -20,5 +20,11 @@ class NoticiaAdmin(admin.ModelAdmin):
     get_alias.short_description = 'Alias'
     get_alias.admin_order_field = 'id_universidad__alias'
 
+class RegionAdmin(admin.ModelAdmin):
+    readonly_fields = ('created', 'updated', 'id_region')
+    list_display = ('id_region', 'nombre', 'slug', 'numero_region', 'letra_region')
+    prepopulated_fields = {"slug": ("nombre",)}
+
 admin.site.register(Noticia, NoticiaAdmin)
 admin.site.register(Universidad, UniversidadAdmin)
+admin.site.register(Region, RegionAdmin)

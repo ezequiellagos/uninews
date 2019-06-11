@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Universidad, Noticia
+from .models import Universidad, Noticia, Region
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
 from django.db.models import Max,Sum
@@ -30,47 +30,14 @@ def category(request, category):
     return render(request, "news/category.html", {'news':news, 'news_most_view':news_most_view, 'category':category})
 
 def region(request, region):
-    news = Noticia.objects.filter(id_universidad__region=region).order_by('-fecha')
+    news = Noticia.objects.filter(id_universidad__region__slug=region).order_by('-fecha')
 
     # Noticias por Categoria
     date = mostViewed()
-    news_most_view = Noticia.objects.filter(id_universidad__region=region).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = Noticia.objects.filter(id_universidad__region__slug=region).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
 
     # Paginación
     news = pagination(request, news)
-
-    if region == '1':
-        region = 'Tarapacá'
-    elif region == '2':
-        region = 'Antofagasta'
-    elif region == '3':
-        region = 'Atacama'
-    elif region == '4':
-        region = 'Coquimbo'
-    elif region == '5':
-        region = 'Valparaíso'
-    elif region == '6':
-        region = "Libertador Bernardo O'Higgins"
-    elif region == '7':
-        region = 'Maule'
-    elif region == '8':
-        region = 'Bío-Bío'
-    elif region == '9':
-        region = 'Araucanía'
-    elif region == '10':
-        region = 'Los Lagos'
-    elif region == '11':
-        region = 'Aysén del Gral Carlos Ibáñez del Campo'
-    elif region == '12':
-        region = 'Magallanes y la Antártica Chilena'
-    elif region == '13':
-        region = 'Metropolitana'
-    elif region == '14':
-        region = 'Los Ríos'
-    elif region == '15':
-        region = 'Arica y Parinacota'
-    elif region == '2':
-        region = 'Tarapacá'
 
     return render(request, "news/region.html", {'news':news, 'news_most_view':news_most_view, 'region':region})
 

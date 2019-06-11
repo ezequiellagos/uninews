@@ -22,12 +22,12 @@
             <!-- post -->
             <div class="col-md-4">
                 <div class="post post-thumb">
-                    <a class="post-img" href="{% url 'region' region.region %}" target="_self"><img src="{% static './img/category.png' %}" alt="" class="img-fluid" style="max-height: 15em; object-fit: cover;"></a>
+                    <a class="post-img" href="{% url 'region' region.slug %}" target="_self"><img src="{% static './img/category.png' %}" alt="" class="img-fluid" style="max-height: 15em; object-fit: cover;"></a>
                     <div class="post-body">
                         {% comment %} <div class="post-meta">
                             <a class="post-category cat-" href="#">{{category.categoria}}</a>
                         </div> {% endcomment %}
-                        <h3 class="post-title"><a href="{% url 'region' region.region %}" target="_self" style="text-decoration:none;">Región: {{region.nombre|upper}}</a></h3>
+                        <h3 class="post-title"><a href="{% url 'region' region.slug %}" target="_self" style="text-decoration:none;">Región: {{region.slug|upper}}</a></h3>
                     </div>
                 </div>
             </div>

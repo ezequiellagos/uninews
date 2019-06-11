@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from news.models import Universidad, Noticia
+from news.models import Universidad, Noticia, Region
 from .models import Email
 from django.db import IntegrityError
 from django.core.mail import send_mail
@@ -24,41 +24,7 @@ def categories(request):
     return render(request, "core/categories.html", {'categories':categories})
 
 def regiones(request):
-    regiones = Universidad.objects.all().values('region').order_by('region').distinct()
-    for region in regiones:
-        if region['region'] == '1':
-            region['nombre'] = 'Tarapacá'
-        elif region['region'] == '2':
-            region['nombre'] = 'Antofagasta'
-        elif region['region'] == '3':
-            region['nombre'] = 'Atacama'
-        elif region['region'] == '4':
-            region['nombre'] = 'Coquimbo'
-        elif region['region'] == '5':
-            region['nombre'] = 'Valparaíso'
-        elif region['region'] == '6':
-            region['nombre'] = "Libertador Bernardo O'Higgins"
-        elif region['region'] == '7':
-            region['nombre'] = 'Maule'
-        elif region['region'] == '8':
-            region['nombre'] = 'Bío-Bío'
-        elif region['region'] == '9':
-            region['nombre'] = 'Araucanía'
-        elif region['region'] == '10':
-            region['nombre'] = 'Los Lagos'
-        elif region['region'] == '11':
-            region['nombre'] = 'Aysén del Gral Carlos Ibáñez del Campo'
-        elif region['region'] == '12':
-            region['nombre'] = 'Magallanes y la Antártica Chilena'
-        elif region['region'] == '13':
-            region['nombre'] = 'Metropolitana'
-        elif region['region'] == '14':
-            region['nombre'] = 'Los Ríos'
-        elif region['region'] == '15':
-            region['nombre'] = 'Arica y Parinacota'
-        elif region['region'] == '2':
-            region['nombre'] = 'Tarapacá'
-            
+    regiones = Region.objects.all().values('slug')            
     return render(request, "core/regiones.html", {'regiones':regiones})
 
 def error_404(request):

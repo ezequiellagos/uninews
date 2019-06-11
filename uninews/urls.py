@@ -30,7 +30,7 @@ urlpatterns = [
     path('detalle/<int:id_noticia>', news_views.detail, name='detail'),
     path('universidad/<str:alias>', news_views.university, name='university'),
     path('categoria/<slug:category>', news_views.category, name='category'),
-    path('region/<str:region>', news_views.region, name='region'),
+    path('region/<slug:region>', news_views.region, name='region'),
     path('estadisticas/', news_views.statistics, name='statistics'),
     path('busqueda/', news_views.search, name='search'),
 
