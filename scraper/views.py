@@ -338,7 +338,6 @@ def utfsm():
             bajada = (e.description).replace("[&#8230;]", "")
             fecha = e.published
             fecha = formatear_fecha(fecha,nombre_uni)
-            region_u = "5"
             cuerpo = e['content']
             contenido = cuerpo[0].value
             imagen = re.search('(?P<url>https?://[^\s]+(png|jpeg|jpg))', contenido).group("url")

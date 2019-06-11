@@ -24,7 +24,7 @@ def categories(request):
     return render(request, "core/categories.html", {'categories':categories})
 
 def regiones(request):
-    regiones = Region.objects.all().values('slug')            
+    regiones = Region.objects.filter(numero_region__in=Universidad.objects.values_list('region_id', flat=True)).order_by('numero_region')
     return render(request, "core/regiones.html", {'regiones':regiones})
 
 def error_404(request):

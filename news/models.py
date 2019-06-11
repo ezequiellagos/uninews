@@ -27,7 +27,6 @@ class Universidad(models.Model):
     id_universidad = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
     alias = models.CharField(max_length=10)
-    # region = models.CharField(max_length=2)
     region = models.ForeignKey('Region', to_field='numero_region', default=None, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
