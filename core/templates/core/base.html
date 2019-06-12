@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<meta property="og:url" content="http://uninews.datoslab.cl/" />
+		<meta property="og:url" content="https://uninews.datoslab.cl/" />
 		<meta property="og:title" content="Uninews - Noticias Universitarias" />
 		<meta property="og:description" content="Noticias sobre distintas universidades en un solo lugar" />
 		<meta property="og:image" content="{% static './img/logo_uninews_700x110.png' %}" />
@@ -50,18 +50,12 @@
 		gtag('config', 'UA-130572691-2');
 		</script>
 
-		<div id="fb-root"></div>
-		<script>(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v3.2&appId=328054081132640&autoLogAppEvents=1';
-		fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));</script>
-
-
     </head>
 	<body>
+
+		<!-- Facebook SDK -->
+		<div id="fb-root"></div>
+		<script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v3.3&appId=328054081132640&autoLogAppEvents=1"></script>
 
 		<!-- Header -->
 		<header id="header">

@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:url" content="{{new.link_noticia}}" />
+    <meta property="og:title" content="{{new.titulo}}" />
+    <meta property="og:description" content="{{new.bajada}}" />
+    <meta property="og:image" content="{{new.link_recurso}}" />
+    
+    <title>Uninews - {{new.titulo}}</title>
+
+    <link rel="icon" type="image/png" href="{% static './img/favicon.png' %}" />
+    <meta name="theme-color" content="#0180ff">
+</head>
+<body>
+    <!-- <div id="link">{{new.link_noticia}}</div> -->
+
+    <script>window.location.replace("{{new.link_noticia}}");</script>
+    <!-- <script>window.location.href = "{{new.link}}";</script> -->
+    <!-- <script>document.getElementById("link")</script> -->
+</body>
+</html>

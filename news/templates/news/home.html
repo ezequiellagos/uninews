@@ -67,7 +67,10 @@
                         </div>
                         <div class="post-body">
                             <div class="post-meta">
-                                <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a>
+                                <!-- <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a> -->
+                                <!-- <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a> -->
+                                <div class="fb-share-button" data-href="{% url 'detail' new.id_noticia %}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Funinews.datoslab.cl%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>
+                                
                                 <a class="post-category cat-{{new.id_universidad.alias}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
                                 <span class="post-date">{{new.fecha}}</span>
                             </div>
