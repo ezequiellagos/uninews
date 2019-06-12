@@ -57,8 +57,8 @@ def detail(request, id_noticia):
     new = get_object_or_404(Noticia, pk=id_noticia)
     new.contador_visitas += 1
     # new.save(update_fields=['contador_visitas'])
-    # return redirect(new.link_noticia)
-    return render(request, "news/new.html", {'new':new})
+    return redirect(new.link_noticia)
+    # return render(request, "news/new.html", {'new':new})
 
 def statistics(request):
     # Crea objeto con la tabla de noticias
