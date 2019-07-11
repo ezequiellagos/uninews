@@ -14,7 +14,6 @@ def scraper(request):
     hora["start"] = time.strftime("%H:%M:%S")
     hora_inicio = time.time()
 
-    
     if settings.DEBUG == False:
         # Usar hilos para Producción
         logging.basicConfig( level=logging.DEBUG, format='[%(levelname)s] - %(threadName)-10s : %(message)s')
@@ -59,10 +58,10 @@ def scraper(request):
         ulagos() # Funcionando
         ucsc() # Funcionando
         ubiobio() # Funcionando
+        uda() # En Funcionando
 
         unap()
         ua()
-        uda()
         userena()
         uoh()
         ucm()
@@ -153,6 +152,10 @@ def formatear_fecha(fecha, universidad):
         dia = fecha[1]
         mes = fecha[2].lower()
         anno = fecha[3]
+    elif universidad == 'uda':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -474,7 +477,7 @@ def ucsc():
     universidad = Universidad.objects.get(alias='UCSC')
     contents = urllib.request.urlopen("https://www.ucsc.cl/noticias/").read()
     bs = BeautifulSoup(contents, "html.parser")
-    items = bs.find_all("article", {"class": "hentry-news"})
+    items = bs.find_all("article", {"class": "hentry-news"})    
     items = list(set(items)) # Elimina elementos duplicados
     
     for item in items:
@@ -539,9 +542,24 @@ def ua():
 # Universidad de Atacama
 def uda():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UDA')
+    url_rss = "http://www.uda.cl/index.php?option=com_content&view=category&layout=blog&id=15&Itemid=253&format=feed&type=atom"
+    feed = feedparser.parse( url_rss )
+
+    for item in feed['items']:
+        try:
+            titulo =  item['title']
+            bajada =  BeautifulSoup(item['summary'], "html.parser").find('p').text
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "uda")
+            categoria_busqueda = setCategoria(item['category'])
+            imagen = "http://www.uda.cl/" + BeautifulSoup(item['summary'], "html.parser").find('img')['src']
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
-    #http://www.uda.cl/
-    pass
 
 # Universidad de La Serena
 # Región de Coquimbo
