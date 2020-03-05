@@ -1,10 +1,4 @@
-{% extends "core/base.html" %}
-
-{% load static %}
-
-{% block title %}Nosotros{% endblock %}
-
-{% block content %}
+{% extends "core/base.html" %} {% load static %} {% block title %}Nosotros{% endblock %} {% block content %}
 
 <!-- section -->
 <div class="section">
@@ -14,7 +8,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="section-title">
-                    <div class="display-4">Sobre Nosotros</div>
+                    <div class="display-4">Acerca de</div>
                 </div>
             </div>
         </div>
@@ -22,12 +16,16 @@
 
         <div class="row">
             <div class="col-md-12">
-                
+
                 <div class="row">
                     <div class="col-md-8">
-                        <p class="text-justify">Este es un proyecto realizado por Ezequiel Lagos y Diego Cisternas para el ramo de Taller Integrado de la Universidad de Playa Ancha, 
-                        con el fin de crear un sistema capaz de obtener noticias de distintas fuentes universitarias y mostrarlas en un solo lugar. 
-                        Además se recopilan algunas estadísticas cuando se visitan las noticias desde este sitio.</p>
+                        <p class="text-justify">Esta aplicación forma parte del proyecto de título de Ezequiel Lagos, alumno de la carrera de Ingeniría Informática de la Universidad de Playa Ancha. El proyecto consta de capturar noticias de distintas fuentes universitarias,
+                            para poder centralizar la información y así proveer un lugar donde estudiantes y académicos puedan conocer las actividades, investigaciones y eventos que están realizando las demás universidades. Y así poder contribuir a la
+                            búsqueda de actividades regionales y de vinculación con el medio que puedan ayudar para futuros proyectos e investigaciones.
+                        </p>
+
+                        <p class="text-justify">Este proyecto se encuentra alojado en el servidor de DatosLab de la Universidad de Playa Ancha. Para más información ir al sitio de <a href="https://datoslab.cl/" target="_blank">DatosLab</a>
+                        </p>
                     </div>
                     <div class="col-md-4">
                         <img class="img-fluid" src="{% static './img/logo_uninews_700x110.png' %}" class="img-fluid" alt="">
