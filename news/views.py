@@ -6,7 +6,7 @@ from django.db.models import Max, Sum, Q
 
 # Create your views here.
 def home(request):
-    news = Noticia.objects.order_by('-fecha')[:2]
+    news = Noticia.objects.order_by('-fecha')
     
     # Paginación
     news = pagination(request, news)
