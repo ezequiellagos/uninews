@@ -222,7 +222,7 @@ def elimina_tildes(s):
 def upla():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UPLA')
-    url_rss = "https://www.upla.cl/noticias/feed/"
+    url_rss = "http://www.upla.cl/noticias/feed/"
     feed = feedparser.parse( url_rss )
 
     for item in feed['items']:
