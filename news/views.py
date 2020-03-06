@@ -2,11 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Universidad, Noticia, Region
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
-from django.db.models import Max,Sum
+from django.db.models import Max, Sum, Q
 
 # Create your views here.
 def home(request):
-    news = Noticia.objects.order_by('-fecha')
+    news = Noticia.objects.order_by('-fecha')[:2]
     
     # Paginación
     news = pagination(request, news)
@@ -82,7 +82,8 @@ def statistics(request):
 def search(request):
     info = False
     if request.method == 'GET':
-        news = Noticia.objects.filter(titulo__icontains=request.GET['search'])
+        search = request.GET['search']
+        news = Noticia.objects.filter( Q(titulo__icontains=search) | Q(bajada__icontains=search) )
         info = True
 
         # Paginación
