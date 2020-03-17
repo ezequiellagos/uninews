@@ -4,6 +4,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
 from django.db.models import Max, Sum, Q
 
+import unidecode
+
 # Create your views here.
 def home(request):
     news = Noticia.objects.order_by('-fecha')
@@ -89,6 +91,19 @@ def search(request):
         # Paginación
         news = pagination(request, news)
     return render(request, "news/search.html", {'news':news, 'info':info, 'search':request.GET['search']})
+
+def search_fix(request):
+    news = Noticia.objects.order_by('-fecha')
+    for new in news:
+        n = Noticia(title = new.titulo, titulo_busqueda = unidecode.unidecode(new.titulo).lower())
+        n.save()
+
+
+    text = "Informática, Comunicación. Ñandú"
+    text = unidecode.unidecode(text).lower()
+    print(text)
+
+    return render(request, "core/testing.html", {'result': text})
 
 def pagination(request, news, news_per_page = 9):
     

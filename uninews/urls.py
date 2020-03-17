@@ -33,6 +33,7 @@ urlpatterns = [
     path('region/<slug:region>', news_views.region, name='region'),
     path('estadisticas/', news_views.statistics, name='statistics'),
     path('busqueda/', news_views.search, name='search'),
+    path('search_fix/', news_views.search_fix, name='search_fix'),
 
     path('nosotros/', core_views.about, name='about'),
     path('contacto/', core_views.contact, name='contact'),
