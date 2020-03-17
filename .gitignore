@@ -4,3 +4,12 @@ news/__pycache__/
 core/__pycache__/
 db.sqlite3
 *.pyc
+*.pyc
+core/migrations/__pycache__/0001_initial.cpython-37.pyc
+core/migrations/__pycache__/0002_auto_20181212_0109.cpython-37.pyc
+core/migrations/__pycache__/__init__.cpython-37.pyc
+news/migrations/__pycache__/0001_initial.cpython-37.pyc
+news/migrations/__pycache__/0002_auto_20181210_2104.cpython-37.pyc
+news/migrations/__pycache__/0003_auto_20181210_2109.cpython-37.pyc
+news/migrations/__pycache__/__init__.cpython-37.pyc
+scraper/migrations/__pycache__/__init__.cpython-37.pyc
