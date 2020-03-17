@@ -85,7 +85,9 @@ def search(request):
     info = False
     if request.method == 'GET':
         search = request.GET['search']
-        news = Noticia.objects.filter( Q(titulo__icontains=search) | Q(bajada__icontains=search) )
+        search = unidecode.unidecode(search).lower()
+        # news = Noticia.objects.filter( Q(titulo__icontains=search) | Q(bajada__icontains=search) )
+        news = Noticia.objects.filter( Q(titulo_busqueda__icontains=search) | Q(bajada_busqueda__icontains=search) )
         info = True
 
         # Paginación
@@ -95,15 +97,11 @@ def search(request):
 def search_fix(request):
     news = Noticia.objects.order_by('-fecha')
     for new in news:
-        n = Noticia(title = new.titulo, titulo_busqueda = unidecode.unidecode(new.titulo).lower())
-        n.save()
+        new.titulo_busqueda = unidecode.unidecode(new.titulo).lower()
+        new.bajada_busqueda = unidecode.unidecode(new.bajada).lower()
+        new.save(update_fields=['titulo_busqueda', 'bajada_busqueda'])
 
-
-    text = "Informática, Comunicación. Ñandú"
-    text = unidecode.unidecode(text).lower()
-    print(text)
-
-    return render(request, "core/testing.html", {'result': text})
+    return render(request, "core/testing.html", {'result': 'ok'})
 
 def pagination(request, news, news_per_page = 9):
     

@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from news.models import Universidad, Noticia
 from bs4 import BeautifulSoup
+from django.conf import settings
+
 import feedparser, unicodedata, urllib.request, time, re, datetime, time, threading
 import dateutil.parser
-from django.conf import settings
 import logging
+import unidecode
 
 result = []
 
@@ -88,7 +90,9 @@ def saveNew(new):
     except Noticia.DoesNotExist as e:
         n = Noticia(
             titulo=new['titulo'],
+            titulo_busqueda=unidecode.unidecode(new['titulo']).lower(),
             bajada=new['bajada'],
+            bajada_busqueda=unidecode.unidecode(new['bajada']).lower(),
             fecha=new['fecha'],
             link_noticia=new['link_noticia'],
             link_recurso=new['link_recurso'],
