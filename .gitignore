@@ -3,12 +3,4 @@ scraper/__pycache__/
 news/__pycache__/
 core/__pycache__/
 db.sqlite3
-news/migrations/__pycache__/0009_region_slug.cpython-37.pyc
-news/migrations/__pycache__/0004_auto_20190531_1558.cpython-37.pyc
-news/migrations/__pycache__/0005_auto_20190610_2215.cpython-37.pyc
-news/migrations/__pycache__/0006_auto_20190610_2216.cpython-37.pyc
-news/migrations/__pycache__/0007_auto_20190610_2221.cpython-37.pyc
-news/migrations/__pycache__/0008_auto_20190610_2251.cpython-37.pyc
-news/migrations/__pycache__/0010_auto_20190610_2323.cpython-37.pyc
-news/migrations/__pycache__/0011_auto_20190610_2325.cpython-37.pyc
-news/migrations/__pycache__/0012_auto_20190610_2329.cpython-37.pyc
+*.pyc
