@@ -4,6 +4,7 @@ from .models import Email
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.conf import settings
 
 # Create your views here.
 def about(request):
@@ -27,9 +28,16 @@ def regiones(request):
     regiones = Region.objects.filter(numero_region__in=Universidad.objects.values_list('region_id', flat=True)).order_by('numero_region')
     return render(request, "core/regiones.html", {'regiones':regiones})
 
-def error_404(request):
-    data = {}
-    return render(request,'core/error_404.html', data)
+if settings.DEBUG == False:
+    def error_404(request):
+        data = {}
+        return render(request,'core/error_404.html', data)
+else:
+    def error_404(request, exception):
+        data = {}
+        return render(request,'core/error_404.html', data)
+
+
 
 def error_500(request):
     data = {}
