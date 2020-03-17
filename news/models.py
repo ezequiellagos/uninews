@@ -5,9 +5,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Noticia(models.Model):
     id_noticia = models.IntegerField(primary_key=True)
     titulo = models.CharField(max_length=200)
-    titulo_busqueda = models.CharField(max_length=200, default=None)
+    # titulo_busqueda = models.CharField(max_length=200, default=None)
     bajada = models.TextField()
-    bajada_busqueda = models.TextField(default=None)
+    # bajada_busqueda = models.TextField(default=None)
     fecha = models.DateField(blank=True, null=True)
     link_noticia = models.CharField(max_length=200)
     link_recurso = models.CharField(max_length=200)
