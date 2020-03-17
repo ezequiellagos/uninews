@@ -24,7 +24,7 @@
 
             <div class="infinite-container d-flex flex-wrap" style="">
                 {% for new in news %}
-                <div class="col-md-4 infinite-item " >
+                <div class="{% if news|length == 1 %}col-md-12{% elif news|length == 2 %}col-md-6{% else %}col-md-4{% endif %} infinite-item " >
                     <div class="post">
                         <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
                         <div class="div-imagen">
