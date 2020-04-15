@@ -61,10 +61,10 @@ def scraper(request):
         ucsc() # Funcionando
         ubiobio() # Funcionando
         uda() # En Funcionando
+        userena() # En Funcionando
 
         unap()
         ua()
-        userena()
         uoh()
         ucm()
         ufro()
@@ -157,6 +157,10 @@ def formatear_fecha(fecha, universidad):
         mes = fecha[2].lower()
         anno = fecha[3]
     elif universidad == 'uda':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'userena':
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -569,9 +573,30 @@ def uda():
 # Región de Coquimbo
 def userena():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='USERENA')
+    url_rss = ['http://www.userena.cl/actualidad-uls.feed?type=rss',
+                'http://www.userena.cl/cultura-y-extension.feed?type=rss',
+                'http://www.userena.cl/dgae.feed?type=rss']
+
+    feeds = []
+    for url in url_rss:
+        feeds.append(feedparser.parse( url ))
+
+    for feed in feeds:
+        for item in feed['items']:
+            try:
+                titulo =  item['title']
+                bajada =  BeautifulSoup(item['summary'], "html.parser").find_all('p')[2].text
+                link = item['link']
+                fecha = item['published']
+                fecha = formatear_fecha(fecha, "userena")
+                categoria_busqueda = setCategoria(item['category'])
+                imagen = BeautifulSoup(item['summary'], "html.parser").p.img['src']
+
+                saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+            except Exception as e:
+                result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
-    # http://www.userena.cl/
-    pass
 
 # Universidad de O'Higgins
 def uoh():
