@@ -133,7 +133,6 @@ def formatear_fecha(fecha, universidad):
         mes = fecha[3].lower()
         anno = fecha[5]
     elif universidad == "udec":
-        # Esta universidad tambien entrega la hora pero no se esta usando por ahora
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -394,23 +393,20 @@ def uv():
 def udec():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UDEC')
-    contents = urllib.request.urlopen("http://www.udec.cl/panoramaweb2016/noticias").read()
-    bs = BeautifulSoup(contents, "html.parser")
-    items = bs.find_all("tr")
+    url_rss = "https://noticias.udec.cl/feed/"
+    feed = feedparser.parse( url_rss )
 
-    for item in items:
+    for item in feed['items']:
         try:
-            link = "http://www.udec.cl" + item.a['href']
-            titulo = item.a.text
-            bajada = item.p.text
-            categoria_busqueda = setCategoria()
-            noticia = urllib.request.urlopen(link).read()
-            bs_noticia = BeautifulSoup(noticia, "html.parser")
-            fecha = bs_noticia.find("span", {"class": "submitted"}).span["content"]
+            titulo =  item['title']
+            link = item['link']
+            bajada =  BeautifulSoup(item['summary'], "html.parser").find('p').text.strip()
+            fecha = item['published']
             fecha = formatear_fecha(fecha, "udec")
-            imagen = bs_noticia.find("div", {"class": "content node-noticias"}).img["src"]
+            categoria_busqueda = setCategoria(item['category'])
+            imagen = BeautifulSoup(urllib.request.urlopen(link).read(), "html.parser").find_all('img', {'class': 'attachment-large size-large'})[1]['src']
 
-            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
