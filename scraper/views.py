@@ -220,6 +220,7 @@ def setCategoria(categoria = ''):
         categoria = categoria.lower()
         categoria = elimina_tildes(categoria)
         categoria = categoria.replace(" ", "-")
+        categoria = categoria.replace("&", "y")
     return categoria
 
 def elimina_tildes(s):
