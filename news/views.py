@@ -97,11 +97,27 @@ def search(request):
 def search_fix(request):
     news = Noticia.objects.order_by('-fecha')
     for new in news:
-        new.titulo_busqueda = unidecode.unidecode(new.titulo).lower()
-        new.bajada_busqueda = unidecode.unidecode(new.bajada).lower()
+        new.titulo_busqueda = formatear_busqueda(new.titulo)
+        new.bajada_busqueda = formatear_busqueda(new.bajada)
         new.save(update_fields=['titulo_busqueda', 'bajada_busqueda'])
 
     return render(request, "core/testing.html", {'result': 'ok'})
+
+def formatear_busqueda(text):
+    # Al cambiar algo tambien debe ser modificado en views de scraper
+    text = unidecode.unidecode(text).lower()
+    text = text.replace('"', "")
+    text = text.replace('?', "")
+    text = text.replace('¿', "")
+    text = text.replace(':', "")
+    text = text.replace('#', "")
+    text = text.replace('.', "")
+    text = text.replace(',', "")
+    text = text.replace(';', "")
+    text = text.replace('(', "")
+    text = text.replace(')', "")
+
+    return text
 
 def pagination(request, news, news_per_page = 9):
     
@@ -124,3 +140,34 @@ def mostViewed():
     fecha_actual = hoy.strftime(formato)
     fecha_pasada = semana_atras.strftime(formato)
     return {'current_date':fecha_actual, 'last_date':fecha_pasada}
+
+
+# Topic News
+def topicNewWidget(request):
+    # Palabras clave para cada tema
+    if request.path == '/coronavirus/':
+        topic = 'Coronavirus'
+        key_words = ['coronavirus', 'covid', 'covid-19', 'covid19', 'pandemia', 'cuarentena', 'sars', 'cov-2', 'cov2', 'sars-cov2', 'sars-cov-2']
+    else:
+        return redirect('/')
+
+    # Filtra para cada palabra clave
+    news = Noticia.objects.none()
+    for key in key_words:
+        news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+
+    # Entrega determinada cantidad de items
+    if request.GET.get('items') and request.GET.get('items').isnumeric() :
+        news_request = int(request.GET['items'])
+        if news_request == 0:
+            n_r = 10000
+        elif news_request >= 1:
+            n_r = news_request
+        else:
+            n_r = 10
+    else:
+        n_r = 10
+    news = news.distinct().order_by('-fecha')[:n_r]
+
+    return render(request, "news/thematic.html", {'news':news, 'topic':topic})
+

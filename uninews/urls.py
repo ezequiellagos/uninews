@@ -43,6 +43,9 @@ urlpatterns = [
     path('regiones/', core_views.regiones, name='regiones'),
     path('email/', core_views.email, name='email'),
 
+    # Noticias temáticas
+    path('coronavirus/', news_views.topicNewWidget, name='coronavirus'),
+
     path('scraper/', scraper_views.scraper, name='scraper'),
 
     path('admin/', admin.site.urls),

@@ -54,14 +54,14 @@ def scraper(request):
         ucn() # Funcionando
         utfsm() # Funcionando
         uv() # Funcionando
-        upla() # Funcionando
+        upla() # Funcionando #Revisar
         udec() # Funcionando
-        utalca() # Funcionando
+        utalca() # Funcionando #Revisar
         ulagos() # Funcionando
         ucsc() # Funcionando
         ubiobio() # Funcionando
         uda() # En Funcionando
-        userena() # En Funcionando
+        userena() # En Funcionando #Revisar
 
         unap()
         ua()
@@ -90,9 +90,9 @@ def saveNew(new):
     except Noticia.DoesNotExist as e:
         n = Noticia(
             titulo=new['titulo'],
-            titulo_busqueda=unidecode.unidecode(new['titulo']).lower(),
+            titulo_busqueda=formatear_busqueda(new['titulo']),
             bajada=new['bajada'],
-            bajada_busqueda=unidecode.unidecode(new['bajada']).lower(),
+            bajada_busqueda=formatear_busqueda(new['bajada']),
             fecha=new['fecha'],
             link_noticia=new['link_noticia'],
             link_recurso=new['link_recurso'],
@@ -104,6 +104,22 @@ def saveNew(new):
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
         e = "Insertada"
         result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
+
+def formatear_busqueda(text):
+    # Al cambiar algo tambien debe ser modificado en search_fix de views de news
+    text = unidecode.unidecode(text).lower()
+    text = text.replace('"', "")
+    text = text.replace('?', "")
+    text = text.replace('¿', "")
+    text = text.replace(':', "")
+    text = text.replace('#', "")
+    text = text.replace('.', "")
+    text = text.replace(',', "")
+    text = text.replace(';', "")
+    text = text.replace('(', "")
+    text = text.replace(')', "")
+
+    return text
 
 def formatear_fecha(fecha, universidad):
     
@@ -339,19 +355,22 @@ def ucn():
 def utfsm():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UTFSM')
-    d = feedparser.parse("http://www.noticias.usm.cl/feed/")
+    d = feedparser.parse("https://noticias.usm.cl/feed/")
     for e in d.entries:
         try:
             titulo = (e.title)
             nombre_uni = "ufsm"
             link = (e.link)
             categoria_busqueda = setCategoria((e.category))
-            bajada = (e.description).replace("[&#8230;]", "")
+            bajada = (e.description).replace("[&#8230;]", "").strip()
             fecha = e.published
             fecha = formatear_fecha(fecha,nombre_uni)
             cuerpo = e['content']
             contenido = cuerpo[0].value
-            imagen = re.search('(?P<url>https?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
+            try:
+                imagen = re.search('(?P<url>https?://[^\s]+(png|jpeg|jpg))', contenido).group("url")
+            except:
+                imagen = ''
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
