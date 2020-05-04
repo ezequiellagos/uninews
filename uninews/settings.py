@@ -129,3 +129,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email Settings
 
+X_FRAME_OPTIONS = 'coronavirus.datoslab.cl'
