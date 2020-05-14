@@ -41,38 +41,27 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130572691-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+    {% if request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
+    <script></script>
+    {% else %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130572691-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
 
-        gtag('config', 'UA-130572691-2');
-    </script>
+            gtag('config', 'UA-130572691-2');
+        </script>
+    {% endif %}
+    
 
 </head>
 
 <body>
-    
-    
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    
-
-    {% if request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
-        <p>La url es la que esta en el if</p>
-    {% else %}
-        <p>URL: {{ request.build_absolute_uri }} </p>
-    {% endif %}
-
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
