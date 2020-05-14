@@ -41,8 +41,8 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 
-    {% if request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
-    <script></script>
+    {% if '127.0.0.1:8000' in request.build_absolute_uri %}
+    <script>Google Analytics</script>
     {% else %}
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130572691-2"></script>
