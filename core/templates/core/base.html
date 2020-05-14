@@ -57,6 +57,17 @@
 </head>
 
 <body>
+    
+    
+
+    {% if not request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p>URL: {{ request.build_absolute_uri }} </p>
+    {% endif %}
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
@@ -251,6 +262,8 @@ Copyright <script>document.write(new Date().getFullYear());</script> Todos los d
 
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/uninews.js' %}?r={% now 'U' %}"></script>
+
+    {% block more_js_footer %}{% endblock %}
 
 </body>
 
