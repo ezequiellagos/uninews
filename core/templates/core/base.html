@@ -60,7 +60,7 @@
     
     
 
-    {% if not request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
+    {% if request.build_absolute_uri|first not in 'http://127.0.0.1:8000/' %}
     <br>
     <br>
     <br>
