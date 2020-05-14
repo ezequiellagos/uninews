@@ -60,14 +60,19 @@
     
     
 
-    {% if request.build_absolute_uri|first not in 'http://127.0.0.1:8000/' %}
     <br>
     <br>
     <br>
     <br>
     <br>
-    <p>URL: {{ request.build_absolute_uri }} </p>
+    
+
+    {% if request.build_absolute_uri|first in 'http://127.0.0.1:8000/' %}
+        <p>La url es la que esta en el if</p>
+    {% else %}
+        <p>URL: {{ request.build_absolute_uri }} </p>
     {% endif %}
+
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
