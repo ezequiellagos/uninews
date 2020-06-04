@@ -160,13 +160,46 @@ def mostViewed():
     fecha_pasada = semana_atras.strftime(formato)
     return {'current_date':fecha_actual, 'last_date':fecha_pasada}
 
+def topicos(request):
+    return home(request)
 
-# Topic News
+def topicKeyWords(topic):
+
+    if topic == 'coronavirus':
+        key_words = ['coronavirus', 'covid', 'covid-19', 'covid19', 'pandemia', 'cuarentena', 'sars', 'cov-2', 'cov2', 'sars-cov2', 'sars-cov-2']
+    elif topic == 'uninews':
+        key_words = ['uninews']
+    else:
+        key_words = ['uninews']
+
+    return key_words
+
+def topicNew(request):
+
+    topic = 'Coronavirus'
+    key_words = topicKeyWords('coronavirus')
+
+    news = Noticia.objects.none()
+    for key in key_words:
+        news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+    news = news.distinct().order_by('-fecha')
+
+
+    # Noticias por Categoria
+    date = mostViewed()
+    news_most_view = news.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+
+    # Paginación
+    news = pagination(request, news)
+
+    return render(request, "news/topic_coronavirus.html", {'news':news, 'news_most_view':news_most_view, 'topic':topic})
+
+# Topic News Widget
 def topicNewWidget(request):
     # Palabras clave para cada tema
     if request.path == '/coronavirus/':
         topic = 'Coronavirus'
-        key_words = ['coronavirus', 'covid', 'covid-19', 'covid19', 'pandemia', 'cuarentena', 'sars', 'cov-2', 'cov2', 'sars-cov2', 'sars-cov-2']
+        key_words = topicKeyWords('coronavirus')
     else:
         return redirect('/')
 
