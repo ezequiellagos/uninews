@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Universidad, Noticia, Region
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
-from django.db.models import Max, Sum, Q
+from django.db.models import Max, Sum, Q, Count
+
+from django.db.models.functions import ExtractYear
 
 import unidecode
 
@@ -67,19 +69,36 @@ def statistics(request):
     universidades = Universidad.objects.order_by('-alias')
 
     date = mostViewed()
-    estadisticas = []
+    estadisticas_universidades = []
     for universidad in universidades:
-        estadisticas.append({
-            'nombre': universidad.alias,
+        estadisticas_universidades.append({
+            'nombre_corto': universidad.alias,
+            'nombre_largo': universidad.nombre,
             # Suma de todas las visitas por universidad
             'total_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
             # Noticia más vista de todo el tiempo
             'noticia_mas_vista': news.filter(id_universidad__alias=universidad.alias).latest('contador_visitas'),
             # Noticia más reciente últimas 2 semanas
             'noticia_mas_vista_reciente': news.filter(id_universidad__alias=universidad.alias).filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+
+            'test': news.filter(id_universidad__alias=universidad.alias).extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha')
         })
 
-    return render(request, 'news/statistics.html', {'noticias':news , 'estadisticas':estadisticas})
+
+
+
+
+
+
+    estadisticas_generales = {}
+
+    estadisticas_generales['estadisticas_fecha'] = Noticia.objects.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia'))
+    
+    
+    return render(request, 'news/statistics.html', {
+        'estadisticas_universidades':estadisticas_universidades, 
+        'estadisticas_generales':estadisticas_generales
+        })
 
 def search(request):
     info = False
@@ -160,7 +179,7 @@ def topicNewWidget(request):
     if request.GET.get('items') and request.GET.get('items').isnumeric() :
         news_request = int(request.GET['items'])
         if news_request == 0:
-            n_r = 10000
+            n_r = 100000
         elif news_request >= 1:
             n_r = news_request
         else:
