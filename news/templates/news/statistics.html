@@ -21,51 +21,297 @@
         </div>
         <!-- /row -->
 
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">General</a>
+                    <a class="nav-link" id="v-pills-debug-tab" data-toggle="pill" href="#v-pills-debug" role="tab" aria-controls="v-pills-debug" aria-selected="false">Depuración</a>
+
+                    
+                    {% for universidad in estadisticas_universidades %}
+                    <a class="nav-link" id="v-pills-{{universidad.nombre_corto}}-tab" data-toggle="pill" href="#v-pills-{{universidad.nombre_corto}}" role="tab" aria-controls="v-pills-{{universidad.nombre_corto}}" aria-selected="false"> {{ universidad.nombre_corto }} </a>
+                    {% endfor %}                    
+
+                    <a class="nav-link" id="v-pills-other-tab" data-toggle="pill" href="#v-pills-other" role="tab" aria-controls="v-pills-other" aria-selected="false">Otros</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <!-- Estadísticas generales -->
+                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                        <!-- Grafico de calendario -->
+                        <div class="col-12">
+                            <div id="calendar_basic" style="width: 1000px; height: 650px;"></div>
+                        </div>
+
+
+                        <div class="col-12">
+                            <h3>Cantidad de visitas por Universidad</h3>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-sm ">
+                                    <thead>
+                                        <tr>
+                                            <th class="align-middle text-center">Alias</th>
+                                            <th class="align-middle text-center">Total de visitas (Total)</th>
+                                            <th class="align-middle text-center">Visitas noticia más vista (Siempre)</th>
+                                            <th class="align-middle text-center">Noticia con más visitas (Siempre)</th>
+                                            <th class="align-middle text-center">Visitas noticia más vista (14 días)</th>
+                                            <th class="align-middle text-center">Noticia con más visitas (14 días)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for estadistica in estadisticas_universidades %}
+                                        <tr>
+                                            <td class="align-middle ">{{estadistica.nombre_corto}}</td>
+                                            <td class="align-middle text-right">{{estadistica.total_visitas}}</td>
+                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista.contador_visitas}}</td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista.titulo}}</a></td>
+                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas}}</td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista_reciente.titulo}}</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Depuración -->
+                    <div class="tab-pane fade" id="v-pills-debug" role="tabpanel" aria-labelledby="v-pills-debug-tab">
+                        <div class="col-12">
+                            <h2>Depuración</h2>
+                            <hr>
+                            <code>
+                                <h3>Estadísticas generales</h3>
+                                {{ estadisticas_generales.estadisticas_fecha }}
+                                <hr>
+                                <h3>Estadísticas por universidad</h3>
+                                {{ estadisticas_universidades }}
+                            </code>
+                        </div>
+                    </div>
+
+                    <!-- Panel para universidades -->
+                    {% for universidad in estadisticas_universidades %}
+                    <div class="tab-pane fade" id="v-pills-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="v-pills-{{universidad.nombre_corto}}-tab">
+
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-{{universidad.nombre_corto}}-general-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-general" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-general" aria-selected="true">General</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico1-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico1" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico1" aria-selected="false">a</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico2-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico2" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico2" aria-selected="false">{{universidad.nombre_corto}}-grafico2</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="pills-tabContent">
+
+                            <!-- Información general -->
+                            <div class="tab-pane fade show active" id="pills-{{universidad.nombre_corto}}-general" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-general-tab">
+                                <div id="curve_chart_{{universidad.nombre_corto}}" style="width: 900px; height: 500px"></div>
+                            </div>
+
+                            <!-- Gráfico 1 -->
+                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico1" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico1-tab">
+                                {{universidad.nombre_corto}} - {{universidad.nombre_corto}} - {{universidad.nombre_corto}} - {{universidad.nombre_corto}}
+                            </div>
+
+                            <!-- Gráfico 2 -->
+                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico2" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico2-tab">{{universidad.nombre_largo}}</div>
+                        
+                        </div>
+
+                    </div>
+                    {% endfor %}
+
+                    <!-- Otra información -->
+                    <div class="tab-pane fade" id="v-pills-other" role="tabpanel" aria-labelledby="v-pills-other-tab">
+                        {% lorem 5 %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- row -->
         <div class="row">
-            <div class="col-12">
-                <h3>Cantidad de visitas por Universidad</h3>
-                
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm ">
-                        <thead>
-                            <tr>
-                                <th class="align-middle text-center">Alias</th>
-                                <th class="align-middle text-center">Total de visitas (Total)</th>
-                                <th class="align-middle text-center">Visitas noticia más vista (Siempre)</th>
-                                <th class="align-middle text-center">Noticia con más visitas (Siempre)</th>
-                                <th class="align-middle text-center">Visitas noticia más vista (14 días)</th>
-                                <th class="align-middle text-center">Noticia con más visitas (14 días)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for estadistica in estadisticas %}
-                            <tr>
-                                <td class="align-middle ">{{estadistica.nombre}}</td>
-                                <td class="align-middle text-right">{{estadistica.total_visitas}}</td>
-                                <td class="align-middle text-right">{{estadistica.noticia_mas_vista.contador_visitas}}</td>
-                                <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista.titulo}}</a></td>
-                                <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas}}</td>
-                                <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista_reciente.titulo}}</a></td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            
+            
 
-                <hr>
-                <code>
-                    {% comment %}
-                    {{estadisticas}}
-                    {% endcomment %}
-                </code>
-                
+            <div class="col-12">
+                <!--Div that will hold the pie chart-->
+                <div id="piechart_universidades_noticias_mas_vistas" style="width: 900px; height: 500px;"></div>
             </div>
+
+            <div class="col-12">
+                <div id="barchart_universidades_noticias_mas_vistas"></div>
+            </div> 
+
+            
+
+            
+            
         </div>
         <!-- /row -->
     </div>
     <!-- /container -->
 </div>
 <!-- /section -->
+
+{% endblock %}
+
+{% block more_js_footer %}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart', 'calendar']});
+
+
+    // Gráfico de lineas - cantidad de noticias por día
+    {% for universidad in estadisticas_universidades %}
+    
+    google.charts.setOnLoadCallback(grafico_4_{{universidad.nombre_corto}});
+    function grafico_4_{{universidad.nombre_corto}}() {
+        var data = google.visualization.arrayToDataTable([
+            ['Fecha', 'Noticias'],
+            {% for estadistica in universidad.test %}
+                ['{{estadistica.day}}',  {{estadistica.noticias}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+            title: 'Noticias por día',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            chartArea: {
+                width: 900,
+                height: 500
+            },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart_{{universidad.nombre_corto}}'));
+
+        chart.draw(data, options);
+    }
+    {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // piechart_universidades_noticias_mas_vistas
+    google.charts.setOnLoadCallback(grafico_1);
+    function grafico_1() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Universidades');
+        data.addColumn('number', 'Total de visitas');
+
+        data.addRows([
+        {% for estadistica in estadisticas_universidades %}
+           ['{{estadistica.nombre}}', {{estadistica.total_visitas}}],
+        {% endfor %}
+
+        ]);
+
+        // Set chart options
+        var options = {
+            'title':'Cantidad de noticias vistas por universidad',
+            is3D: true,
+            };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_universidades_noticias_mas_vistas'));
+        chart.draw(data, options);
+    }
+
+    // barchart_universidades_noticias_mas_vistas
+    google.charts.setOnLoadCallback(grafico_2);
+    function grafico_2() {
+        var data = google.visualization.arrayToDataTable([
+        ["Universidad", "Cantidad de visitas" ],
+        {% for estadistica in estadisticas_universidades %}
+           ['{{estadistica.nombre}}', {{estadistica.total_visitas}}],
+        {% endfor %}
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" }]);
+
+      var options = {
+        title: "Noticias más vistas por universidad",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.BarChart(document.getElementById("barchart_universidades_noticias_mas_vistas"));
+      chart.draw(view, options);
+    }
+    
+
+    // grafico tipo calendario apra poner las noticis por año y por día
+    google.charts.setOnLoadCallback(grafico_3);
+    function grafico_3() {
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'date', id: 'Date' });
+        dataTable.addColumn({ type: 'number', id: 'Won/Loss' });
+        dataTable.addRows([
+
+        {% for estadistica in estadisticas_generales.estadisticas_fecha %}
+           [ new Date( Date.parse("{{estadistica.day}}", "Y-m-d") ), {{estadistica.noticias}} ],
+        {% endfor %}
+
+        ]);
+
+        var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+        var options = {
+            title: "Total de noticias en el tiempo",
+            colorAxis: {
+                minValue: 1,
+                // colors: ['#FFFFFF', '#FF0000']
+            },
+            noDataPattern: {
+                backgroundColor: '#a0ffd6',
+                color: '#b5ffdf'
+            },
+            calendar: {
+                cellColor: {
+                    stroke: '#76a7fa',
+                    strokeOpacity: 0.5,
+                    strokeWidth: 1,
+                },
+                daysOfWeek: 'DLMMJVS',
+            }
+        };
+
+       chart.draw(dataTable, options);
+    }
+
+
+    
+
+    
+</script>
 
 {% endblock %}
