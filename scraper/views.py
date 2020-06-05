@@ -259,20 +259,31 @@ def upla():
 
             # Parsea la categoria para ser buscada
             categoria_busqueda = setCategoria(item['category'])
+            if categoria_busqueda == 'gestion-institucional':
+                categoria_busqueda = 'gestion'
 
             # Entra en la pagina de cada categoria y busca todas las noticias
-            contents = urllib.request.urlopen("http://www.upla.cl/noticias/category/"+categoria_busqueda).read()
+            contents = urllib.request.urlopen("https://www.upla.cl/noticias/category/"+categoria_busqueda).read()
             bs = BeautifulSoup(contents, "html.parser")
-            articles = bs.find_all("article", ["item-list"])
-
+            
+            if categoria_busqueda == 'coronavirus':
+                articles = bs.find_all("div", ["timeline-content"])
+            else:
+                articles = bs.find_all("article", ["item-list"])
+            
             # Por cada noticia obtiene su titulo
-            for article in articles:
-                titulo_articulo = article.find("a").text
+            for article in articles:                
+                if categoria_busqueda == 'coronavirus':
+                    titulo_articulo = article.h2.a.text
+                else:
+                    titulo_articulo = article.find("a").text
 
                 # Si el titulo de la noticia es igual al titulo obtenido del XML, obtiene la imagen de esa noticia y termina el ciclo
                 if titulo_articulo == titulo:
                     imagen = article.find("img")['src']
                     break
+                else: 
+                    imagen = ''
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
@@ -514,13 +525,17 @@ def ucsc():
             noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(noticia, "html.parser")
             bajada = bs_noticia.find("div", {"class": "entry-summary"}).p.text
-            imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
+            
+            try:
+                imagen = bs_noticia.find("article", {"class": "hentry hentry-news"}).header.span.img['src']
+            except Exception as e:
+                imagen = ''
+
             categoria_busqueda = bs_noticia.find("a", {"rel": "category tag"})
             categoria_busqueda = setCategoria(categoria_busqueda.text)
             
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
-            pass
             result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
 
