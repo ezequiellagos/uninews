@@ -80,7 +80,8 @@ def statistics(request):
             'noticia_mas_vista': news.filter(id_universidad__alias=universidad.alias).latest('contador_visitas'),
             # Noticia más reciente últimas 2 semanas
             'noticia_mas_vista_reciente': news.filter(id_universidad__alias=universidad.alias).filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
-
+            # Cantidad de noticias totales
+            'total_noticias': news.filter(id_universidad__alias=universidad.alias).count(),
             'test': news.filter(id_universidad__alias=universidad.alias).extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha')
         })
 
