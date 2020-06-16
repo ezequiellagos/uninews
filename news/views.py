@@ -87,7 +87,7 @@ def statistics(request):
 
             'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
             # Noticias por mes, colocar en grafico
-            'test2': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')),
+            'test2': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
         })
 
 
