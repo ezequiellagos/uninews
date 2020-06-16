@@ -5,6 +5,7 @@ from datetime import datetime, date, time, timedelta
 from django.db.models import Max, Sum, Q, Count
 
 from django.db.models.functions import ExtractYear
+from django.db.models.functions import TruncMonth
 
 import unidecode
 
@@ -71,25 +72,29 @@ def statistics(request):
     date = mostViewed()
     estadisticas_universidades = []
     for universidad in universidades:
+        n = news.filter(id_universidad__alias=universidad.alias)
         estadisticas_universidades.append({
             'nombre_corto': universidad.alias,
             'nombre_largo': universidad.nombre,
             # Suma de todas las visitas por universidad
-            'total_visitas': (news.filter(id_universidad__alias=universidad.alias).aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
+            'total_visitas': (n.aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
             # Noticia más vista de todo el tiempo
-            'noticia_mas_vista': news.filter(id_universidad__alias=universidad.alias).latest('contador_visitas'),
+            'noticia_mas_vista': n.latest('contador_visitas'),
             # Noticia más reciente últimas 2 semanas
-            'noticia_mas_vista_reciente': news.filter(id_universidad__alias=universidad.alias).filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+            'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
             # Cantidad de noticias totales
-            'total_noticias': news.filter(id_universidad__alias=universidad.alias).count(),
-            'test': news.filter(id_universidad__alias=universidad.alias).extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha')
+            'total_noticias': n.count(),
+
+            'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
+            # Noticias por mes, colocar en grafico
+            'test2': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')),
         })
 
 
 
 
 
-
+# agregar una estadisticas que sea la tasa de crecimiento mensual por universidad y otra de la plataforma en cantidad de noticias
 
     estadisticas_generales = {}
 

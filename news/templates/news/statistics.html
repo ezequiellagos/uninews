@@ -104,10 +104,10 @@
                                 <a class="nav-link active" id="pills-{{universidad.nombre_corto}}-general-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-general" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-general" aria-selected="true">General</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico1-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico1" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico1" aria-selected="false">a</a>
+                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico1-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico1" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico1" aria-selected="false">Gráficos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico2-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico2" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico2" aria-selected="false">{{universidad.nombre_corto}}-grafico2</a>
+                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico2-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico2" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico2" aria-selected="false">No definido</a>
                             </li>
                         </ul>
 
@@ -115,16 +115,28 @@
 
                             <!-- Información general -->
                             <div class="tab-pane fade show active" id="pills-{{universidad.nombre_corto}}-general" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-general-tab">
-                                <div id="curve_chart_{{universidad.nombre_corto}}" style="width: 900px; height: 500px"></div>
+                                <p>Nombre: {{universidad.nombre_largo}} </p>
+                                <p>Alias: {{universidad.nombre_corto}} </p>
+                                <p>Cantidad total de noticias: {{universidad.total_noticias}} </p>
+                                <p>Cantidad total de visitas: {{universidad.total_visitas}} </p>
+                                <p>Noticia más vista: <a target="_blank" href="{% url 'detail' universidad.noticia_mas_vista.id_noticia %}">{{universidad.noticia_mas_vista.titulo}}</a> </p>
+                                <p>Visitas de noticia más vista: {{universidad.noticia_mas_vista.contador_visitas}} </p>
                             </div>
 
                             <!-- Gráfico 1 -->
                             <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico1" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico1-tab">
-                                {{universidad.nombre_corto}} - {{universidad.nombre_corto}} - {{universidad.nombre_corto}} - {{universidad.nombre_corto}}
+                                <p>Cantidad de noticias agregadas en el tiempo</p>
+                                <div class="col-12">
+                                    <div id="curve_chart_{{universidad.nombre_corto}}"></div>
+                                </div>
                             </div>
 
                             <!-- Gráfico 2 -->
-                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico2" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico2-tab">{{universidad.nombre_largo}}</div>
+                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico2" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico2-tab">
+                                {% for month in universidad.test2 %}
+                                    <p>Mes: {{month.month}} - Noticias: {{month.total}} </p>
+                                {% endfor %}
+                            </div>
                         
                         </div>
 
@@ -192,8 +204,8 @@
             curveType: 'function',
             legend: { position: 'bottom' },
             chartArea: {
-                width: 900,
-                height: 500
+                width: $(window).width(),
+                height: $(window).height()*0.75
             },
         };
 
@@ -226,7 +238,7 @@
 
         data.addRows([
         {% for estadistica in estadisticas_universidades %}
-           ['{{estadistica.nombre}}', {{estadistica.total_visitas}}],
+           ['{{estadistica.nombre_corto}}', {{estadistica.total_visitas}}],
         {% endfor %}
 
         ]);
