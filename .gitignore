@@ -22,3 +22,4 @@ news/migrations/__pycache__/0003_auto_20181210_2109.cpython-37.pyc
 news/migrations/__pycache__/__init__.cpython-37.pyc
 scraper/migrations/__pycache__/__init__.cpython-37.pyc
 *.pyc
+db.sqlite3
