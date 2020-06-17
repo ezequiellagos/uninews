@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Miniconda3\\envs\\uninews\\python.exe",
+    "python.pythonPath": "C:\\Users\\lagos\\.conda\\envs\\uninews\\python.exe",
     "python.linting.pylintArgs": [
         "--errors-only",
         "--load-plugins",
