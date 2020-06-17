@@ -68,9 +68,9 @@
                                             <td class="align-middle ">{{estadistica.total_noticias}}</td>
                                             <td class="align-middle text-right">{{estadistica.total_visitas}}</td>
                                             <td class="align-middle text-right">{{estadistica.noticia_mas_vista.contador_visitas}}</td>
-                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista.titulo}}</a></td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}" title="{{estadistica.noticia_mas_vista.titulo}}">{{estadistica.noticia_mas_vista.titulo|truncatechars:15}}</a></td>
                                             <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas}}</td>
-                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}">{{estadistica.noticia_mas_vista_reciente.titulo}}</a></td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista_reciente.id_noticia %}" title="{{estadistica.noticia_mas_vista_reciente.titulo}}">{{estadistica.noticia_mas_vista_reciente.titulo|truncatechars:15}}</a></td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -99,7 +99,7 @@
                     {% for universidad in estadisticas_universidades %}
                     <div class="tab-pane fade" id="v-pills-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="v-pills-{{universidad.nombre_corto}}-tab">
 
-                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="pills-{{universidad.nombre_corto}}-general-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-general" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-general" aria-selected="true">General</a>
                             </li>
@@ -115,12 +115,34 @@
 
                             <!-- Información general -->
                             <div class="tab-pane fade show active" id="pills-{{universidad.nombre_corto}}-general" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-general-tab">
-                                <p>Nombre: {{universidad.nombre_largo}} </p>
-                                <p>Alias: {{universidad.nombre_corto}} </p>
-                                <p>Cantidad total de noticias: {{universidad.total_noticias}} </p>
-                                <p>Cantidad total de visitas: {{universidad.total_visitas}} </p>
-                                <p>Noticia más vista: <a target="_blank" href="{% url 'detail' universidad.noticia_mas_vista.id_noticia %}">{{universidad.noticia_mas_vista.titulo}}</a> </p>
-                                <p>Visitas de noticia más vista: {{universidad.noticia_mas_vista.contador_visitas}} </p>
+                                <table class="table table-bordered table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>Nombre:</td>
+                                            <td>{{universidad.nombre_largo}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alias:</td>
+                                            <td>{{universidad.nombre_corto}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cantidad total de noticias:</td>
+                                            <td>{{universidad.total_noticias}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cantidad total de visitas:</td>
+                                            <td>{{universidad.total_visitas}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Noticia más vista:</td>
+                                            <td><a target="_blank" href="{% url 'detail' universidad.noticia_mas_vista.id_noticia %}">{{universidad.noticia_mas_vista.titulo}}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Visitas de noticia más vista:</td>
+                                            <td>{{universidad.noticia_mas_vista.contador_visitas}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
                             <!-- Gráfico 1 -->
@@ -330,7 +352,7 @@
         var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
 
         var options = {
-            title: "Total de noticias en el tiempo",
+            title: "Publicaciones de noticias a lo largo del tiempo",
             colorAxis: {
                 minValue: 1,
                 // colors: ['#FFFFFF', '#FF0000']
