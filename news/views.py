@@ -84,10 +84,11 @@ def statistics(request):
             'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
             # Cantidad de noticias totales
             'total_noticias': n.count(),
+            # Noticias por mes, colocar en grafico
+            'noticias_por_mes': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
 
             'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
-            # Noticias por mes, colocar en grafico
-            'test2': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
+            
         })
 
 

@@ -127,15 +127,28 @@
                             <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico1" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico1-tab">
                                 <p>Cantidad de noticias agregadas en el tiempo</p>
                                 <div class="col-12">
-                                    <div id="curve_chart_{{universidad.nombre_corto}}"></div>
+                                    <div id="noticias_por_mes_{{universidad.nombre_corto}}"></div>
                                 </div>
                             </div>
 
                             <!-- Gráfico 2 -->
                             <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico2" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico2-tab">
-                                {% for month in universidad.test2 %}
-                                    <p>Mes: {{month.month}} - Noticias: {{month.total}} </p>
-                                {% endfor %}
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Mes</th>
+                                            <th>Noticias</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for month in universidad.noticias_por_mes %}
+                                        <tr>
+                                            <td>{{month.month|date:"F Y"}}</td>
+                                            <td>{{month.total}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         
                         </div>
@@ -184,41 +197,58 @@
 
 <script type="text/javascript">
     // Load the Visualization API and the corechart package.
-    google.charts.load('current', {'packages':['corechart', 'calendar']});
+    google.charts.load('current', {'packages':['corechart', 'calendar', 'line'], 'language': 'es'});
 
 
-    // Gráfico de lineas - cantidad de noticias por día
+    // Gráfico de lineas - cantidad de noticias por mes
     {% for universidad in estadisticas_universidades %}
     
-    google.charts.setOnLoadCallback(grafico_4_{{universidad.nombre_corto}});
-    function grafico_4_{{universidad.nombre_corto}}() {
-        var data = google.visualization.arrayToDataTable([
-            ['Fecha', 'Noticias'],
-            {% for estadistica in universidad.test %}
-                ['{{estadistica.day}}',  {{estadistica.noticias}}],
+    google.charts.setOnLoadCallback(noticias_por_mes_{{universidad.nombre_corto}});
+    function noticias_por_mes_{{universidad.nombre_corto}}() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Mes');
+        data.addColumn('number', 'Noticias');
+
+        data.addRows([
+            {% for month in universidad.noticias_por_mes %}
+                [new Date({{month.month|date:"Y, m, d"}}),  {{month.total}}],
             {% endfor %}
         ]);
 
+        // Create three formatters in three styles.
+        var formatter_date = new google.visualization.DateFormat({pattern: 'MMMM yyyy'});
+
+        // Reformat our data.
+        formatter_date.format(data, 0);
+
         var options = {
-            title: 'Noticias por día',
-            curveType: 'function',
-            legend: { position: 'bottom' },
-            chartArea: {
-                width: $(window).width(),
-                height: $(window).height()*0.75
+            title: 'Noticias por mes',
+            curveType: 'none',
+            legend: { position: 'right' },
+            chartArea:{left:20,top:20,width:"75%",height:"75%"},
+            width: 900,
+            height: 300,
+            explorer: {
+                axis: 'horizontal',
+                keepInBounds: true,
+                maxZoomIn: 4.0
             },
+            hAxis: {
+                title: 'Meses',
+                format: 'MMM yy',
+                slantedText: true,
+                logscale: true
+            },
+            vAxis: {
+                title: 'Noticias',
+                minValue: 0
+            }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart_{{universidad.nombre_corto}}'));
-
+        var chart = new google.visualization.LineChart(document.getElementById('noticias_por_mes_{{universidad.nombre_corto}}'));
         chart.draw(data, options);
     }
     {% endfor %}
-
-
-
-
-
 
 
 
