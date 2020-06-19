@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %}Estadísticas{% endblock %}
 
@@ -65,14 +66,23 @@
                                     {% for estadistica in estadisticas_universidades %}
                                         <tr>
                                             <td class="align-middle ">{{estadistica.nombre_corto}}</td>
-                                            <td class="align-middle ">{{estadistica.total_noticias}}</td>
-                                            <td class="align-middle text-right">{{estadistica.total_visitas}}</td>
-                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista.contador_visitas}}</td>
+                                            <td class="align-middle text-right">{{estadistica.total_noticias|intcomma}}</td>
+                                            <td class="align-middle text-right">{{estadistica.total_visitas|intcomma}}</td>
+                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista.contador_visitas|intcomma}}</td>
                                             <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}" title="{{estadistica.noticia_mas_vista.titulo}}">{{estadistica.noticia_mas_vista.titulo|truncatechars:15}}</a></td>
-                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas}}</td>
+                                            <td class="align-middle text-right">{{estadistica.noticia_mas_vista_reciente.contador_visitas|intcomma}}</td>
                                             <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista_reciente.id_noticia %}" title="{{estadistica.noticia_mas_vista_reciente.titulo}}">{{estadistica.noticia_mas_vista_reciente.titulo|truncatechars:15}}</a></td>
                                         </tr>
                                     {% endfor %}
+                                        <tr>
+                                            <td>Total</td>
+                                            <td class="align-middle text-right">{{estadisticas_generales.total_noticias|intcomma}}</td>
+                                            <td class="align-middle text-right">{{estadisticas_generales.total_visitas|intcomma}}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -127,11 +137,11 @@
                                         </tr>
                                         <tr>
                                             <td>Cantidad total de noticias:</td>
-                                            <td>{{universidad.total_noticias}}</td>
+                                            <td>{{universidad.total_noticias|intcomma}}</td>
                                         </tr>
                                         <tr>
                                             <td>Cantidad total de visitas:</td>
-                                            <td>{{universidad.total_visitas}}</td>
+                                            <td>{{universidad.total_visitas|intcomma}}</td>
                                         </tr>
                                         <tr>
                                             <td>Noticia más vista:</td>
@@ -139,7 +149,7 @@
                                         </tr>
                                         <tr>
                                             <td>Visitas de noticia más vista:</td>
-                                            <td>{{universidad.noticia_mas_vista.contador_visitas}}</td>
+                                            <td>{{universidad.noticia_mas_vista.contador_visitas|intcomma}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

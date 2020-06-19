@@ -71,8 +71,15 @@ def statistics(request):
 
     date = mostViewed()
     estadisticas_universidades = []
+    total_noticias = 0
+    total_visitas = 0
+
     for universidad in universidades:
         n = news.filter(id_universidad__alias=universidad.alias)
+
+        total_noticias += n.count()
+        total_visitas += (n.aggregate(Sum('contador_visitas')))['contador_visitas__sum']
+
         estadisticas_universidades.append({
             'nombre_corto': universidad.alias,
             'nombre_largo': universidad.nombre,
@@ -100,6 +107,8 @@ def statistics(request):
     estadisticas_generales = {}
 
     estadisticas_generales['estadisticas_fecha'] = Noticia.objects.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia'))
+    estadisticas_generales['total_noticias'] = total_noticias
+    estadisticas_generales['total_visitas'] = total_visitas
     
     
     return render(request, 'news/statistics.html', {
