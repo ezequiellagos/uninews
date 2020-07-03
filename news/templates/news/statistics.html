@@ -235,7 +235,7 @@
 
         data.addRows([
             {% for month in universidad.noticias_por_mes %}
-                [new Date({{month.month|date:"Y, m, d"}}),  {{month.total}}],
+                [new Date({{month.month|date:"Y, m-1, d"}}),  {{month.total}}],
             {% endfor %}
         ]);
 
@@ -264,8 +264,7 @@
                 logscale: true
             },
             vAxis: {
-                title: 'Noticias',
-                minValue: 0
+                title: 'Noticias'
             }
         };
 
