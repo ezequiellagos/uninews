@@ -7,7 +7,6 @@ import feedparser, unicodedata, urllib.request, time, re, datetime, time, thread
 import dateutil.parser
 import logging
 import unidecode
-import os
 
 result = []
 
@@ -45,7 +44,6 @@ def scraper(request):
             {'target':uta, 'name':'UTA'}
         ]
 
-        # Por cada universidad crea un hilo de ejecución
         for universidad in universidades:
             threading.Thread(target=universidad['target'], name=universidad['name']).start()
     else:
@@ -83,38 +81,13 @@ def scraper(request):
     result.append({'status':"", 'error_message':'', 'universidad':'', 'titulo':'', 'bajada':'', 'fecha':'', 'link_noticia':'', 'link_recurso':'', 'categoria':''})
     return render(request, "scraper/scraper.html", {'result':result, 'hora':hora})
 
-def log(request):
-    date = datetime.datetime.now().strftime("%Y_%m_%d")
-    time_now = datetime.datetime.now().strftime("%H:%M:%S")
-
-    path = os.path.dirname(__file__)
-    filename = 'log_' + date + '.txt'
-    full_filename = path + '/' + filename
-
-    if os.path.exists( full_filename ):
-        append_write = 'a' # append if already exists
-    else:
-        append_write = 'w' # make a new file if not
-
-    with open( full_filename, append_write) as file:
-        file.write( f"test: {time_now} \n" )
-
-    return render(request, "scraper/test.html", {'result':result})
-    
-# Guarda las noticias en la base de datos
 def saveNew(new):
     try:
-        # Busca la noticia en la base de datos
-        # Si no la encuentra genera un error y ejecuta el except
         n = Noticia.objects.get(titulo=new['titulo'], id_universidad__alias = new['universidad'].alias)
         print(new['universidad'].alias + ": " + new['titulo'] + " | Existe")
-        e = "Existe"
-        # Si la encuentra agrega un mensaje que se mostrará al de depuración
-        result.append({'status':"exist", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 
-                        'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 
-                        'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
+        e = "Existe" 
+        result.append({'status':"exist", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
     except Noticia.DoesNotExist as e:
-        # Si la noticia no se encuentra la crea
         n = Noticia(
             titulo=new['titulo'],
             titulo_busqueda=formatear_busqueda(new['titulo']),
@@ -127,13 +100,10 @@ def saveNew(new):
             categoria=new['categoria'],
             contador_visitas=0
             )
-        n.save() # Guarda la noticia en la base de datos
+        n.save()
         print(new['universidad'].alias + ": " + new['titulo'] + " | Insertada")
         e = "Insertada"
-        # Agrega un mensaje que se mostrará al de depuración
-        result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 
-                        'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 
-                        'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
+        result.append({'status':"ok", 'error_message':e, 'universidad':new['universidad'], 'titulo':new['titulo'], 'bajada':new['bajada'], 'fecha':new['fecha'], 'link_noticia':new['link_noticia'], 'link_recurso':new['link_recurso'], 'categoria':new['categoria']})
 
 def formatear_busqueda(text):
     # Al cambiar algo tambien debe ser modificado en search_fix de views de news
@@ -276,10 +246,9 @@ def elimina_tildes(s):
 def upla():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UPLA')
-    url_rss = "https://www.upla.cl/noticias/feed/" # URL de feed RSS
-    feed = feedparser.parse( url_rss ) # Se obtiene el XML y se procesa
+    url_rss = "http://www.upla.cl/noticias/feed/"
+    feed = feedparser.parse( url_rss )
 
-    # Por cada item o noticia se obtienen sus datos
     for item in feed['items']:
         try:
             titulo =  item['title']
@@ -288,7 +257,7 @@ def upla():
             fecha = item['published']
             fecha = formatear_fecha(fecha, "upla")
 
-            # Se obtiene y filtra la categoria para ser buscada
+            # Parsea la categoria para ser buscada
             categoria_busqueda = setCategoria(item['category'])
             if categoria_busqueda == 'gestion-institucional':
                 categoria_busqueda = 'gestion'
@@ -297,37 +266,27 @@ def upla():
             contents = urllib.request.urlopen("https://www.upla.cl/noticias/category/"+categoria_busqueda).read()
             bs = BeautifulSoup(contents, "html.parser")
             
-            # Se realizan ajustes para las catergorias con alguna particularidad
             if categoria_busqueda == 'coronavirus':
                 articles = bs.find_all("div", ["timeline-content"])
             else:
                 articles = bs.find_all("article", ["item-list"])
             
-            # Por cada noticia de cada categoria obtiene su titulo
+            # Por cada noticia obtiene su titulo
             for article in articles:                
                 if categoria_busqueda == 'coronavirus':
                     titulo_articulo = article.h2.a.text
                 else:
                     titulo_articulo = article.find("a").text
 
-                # Si el titulo de la noticia es igual al del XML
-                # obtiene la imagen de esa noticia y termina el ciclo
+                # Si el titulo de la noticia es igual al titulo obtenido del XML, obtiene la imagen de esa noticia y termina el ciclo
                 if titulo_articulo == titulo:
                     imagen = article.find("img")['src']
                     break
                 else: 
                     imagen = ''
-            # Se ejecuta la función para guardar la noticia en la base de datos
-            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada,
-                        'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen,
-                        'categoria':categoria_busqueda})
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
-            # Si ocurre un error se individualiza y se prepara para mostrar
-            # en la pantalla de depuración
-            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 
-                                'titulo':titulo, 'bajada':bajada, 'fecha':fecha,
-                                'link_noticia':link,'link_recurso':imagen, 
-                                'categoria':categoria_busqueda})
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
 
 # Pontificia Universidad Católica de Valparaíso
@@ -335,13 +294,10 @@ def pucv():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='PUCV')
     nombre_uni = "pucv"
-    # Se obtiene el HTML del sitio de noticias
     contents = urllib.request.urlopen("http://www.pucv.cl/pucv/site/tax/port/all/taxport_1___1.html").read()
-    # Se analiza y prepara el HTML
     bs = BeautifulSoup(contents, "html.parser")
     articulos = bs.find_all("article")
     
-    # Por cada noticia dentro de la etiqueta articulos obtiene sus datos
     for articulo in articulos:
         try:
             link = articulo.a['href']
@@ -351,8 +307,6 @@ def pucv():
             imagen = articulo.img['src']
             imagen = "http://pucv.cl" + imagen.replace("..","")
 
-            # Por cada noticia se obtiene su URL y se accede a ella
-            # para obtener más información
             pagina_noticia = urllib.request.urlopen(link).read()
             bs_noticia = BeautifulSoup(pagina_noticia, "html.parser")
             titulo = bs_noticia.find("h1", { "class" : "titular" }).text
@@ -365,12 +319,9 @@ def pucv():
                 bajada = bs_noticia.find("p",{ "class" : "bajada" }).text
             except Exception as e:
                 bajada = ''
-                result.append({'status':"warning", 'error_message':e,
-                                'universidad':universidad, 'titulo':titulo, 
-                                'bajada':bajada, 'fecha':fecha, 'link_noticia':link,
-                                'link_recurso':imagen, 'categoria':categoria_busqueda})
+                result.append({'status':"warning", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
-            # Intenta encontrar la categoría de la noticia
+            # No encuentra una categoría
             try:
                 newpage = urllib.request.urlopen(link).read()
                 bs_cate = BeautifulSoup(newpage, "html.parser")
@@ -382,22 +333,10 @@ def pucv():
 
             except Exception as e:
                 categoria_busqueda = 'sin-categoria'
-                result.append({'status':"warning", 'error_message':e, 
-                                'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 
-                                'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 
-                                'categoria':categoria_busqueda})
-            
-            # Se ejecuta la función para guardar la noticia en la base de datos
-            saveNew({'status':"ok", 'error_message':'', 'universidad':universidad, 
-                        'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 
-                        'link_recurso':imagen, 'categoria':categoria_busqueda})
+                result.append({'status':"warning", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+            saveNew({'status':"ok", 'error_message':'', 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
         except Exception as e:
-            # Si ocurre un error se individualiza y se prepara para mostrar
-            # en la pantalla de depuración
-            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 
-                                'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 
-                                'link_noticia':link, 'link_recurso':imagen, 
-                                'categoria':categoria_busqueda})
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
 
 # Universidad Católica del Norte
@@ -452,7 +391,7 @@ def utfsm():
 def uv():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UV')
-    contents = urllib.request.urlopen("https://www.uv.cl/pdn/archivo/").read()
+    contents = urllib.request.urlopen("http://www.uv.cl/pdn/archivo/").read()
     bs = BeautifulSoup(contents, "html.parser")
     divs = bs.find_all("div", ["item n_caja borde6", "item n_caja borde6 fin"])
 
@@ -461,7 +400,7 @@ def uv():
             fecha = div.find("div", ["fecha"]).text
             fecha = formatear_fecha(fecha, "uv")
             link = div.a['href']
-            link = "https://www.uv.cl/pdn" + link.replace("..", "")
+            link = "http://www.uv.cl/pdn" + link.replace("..", "")
 
             # Accede a la pagina de la noticia
             pagina_noticia = urllib.request.urlopen(link).read()
@@ -470,10 +409,10 @@ def uv():
             bajada = bs_noticia.find("div", id="n_bajada").text
             try:
                 imagen = bs_noticia.find("div", id="n_clipex").img['src']
-                imagen = "https://www.uv.cl" + imagen
+                imagen = "http://www.uv.cl" + imagen
             except TypeError:
                 imagen = div.find("img", ["sombra"])['src']
-                imagen = "https://www.uv.cl/pdn" + imagen.replace("..", "")
+                imagen = "http://www.uv.cl/pdn" + imagen.replace("..", "")
 
             categoria_busqueda = setCategoria()
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
