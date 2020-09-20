@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 
 import feedparser, unicodedata, urllib.request, time, re, datetime, time, threading
+import ssl
 import dateutil.parser
 import logging
 import unidecode
@@ -303,7 +304,8 @@ def pucv():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='PUCV')
     nombre_uni = "pucv"
-    contents = urllib.request.urlopen("https://www.pucv.cl/pucv/site/tax/port/all/taxport_1___1.html").read()
+    context = ssl._create_unverified_context()
+    contents = urllib.request.urlopen("https://www.pucv.cl/pucv/site/tax/port/all/taxport_1___1.html", context=context).read()
     bs = BeautifulSoup(contents, "html.parser")
     articulos = bs.find_all("article")
     
@@ -352,7 +354,11 @@ def pucv():
 def ucn():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UCN')
+
+    if hasattr(ssl, '_create_unverified_context'):
+        ssl._create_default_https_context = ssl._create_unverified_context
     d = feedparser.parse("https://www.noticias.ucn.cl/feed/")
+
     for e in d.entries:
         try:
             titulo = (e.title)
