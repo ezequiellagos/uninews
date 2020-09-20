@@ -11,12 +11,13 @@ import unidecode
 
 # Create your views here.
 def home(request):
+    # Obtiene las noticias ordenadas de sde la más reciente
     news = Noticia.objects.order_by('-fecha')
     
-    # Paginación
+    # Devuelve las noticias para la paginación
     news = pagination(request, news)
 
-    # Más Vistos
+    # Filtra las ultimas dos noticias más vistas
     date = mostViewed()
     news_most_view = Noticia.objects.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
 
@@ -88,7 +89,7 @@ def statistics(request):
             # Noticia más vista de todo el tiempo
             'noticia_mas_vista': n.latest('contador_visitas'),
             # Noticia más reciente últimas 2 semanas
-            'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+            # 'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
             # Cantidad de noticias totales
             'total_noticias': n.count(),
             # Noticias por mes, colocar en grafico
