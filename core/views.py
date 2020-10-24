@@ -29,7 +29,7 @@ def regiones(request):
     return render(request, "core/regiones.html", {'regiones':regiones})
 
 if settings.DEBUG == False:
-    def error_404(request):
+    def error_404(request, exception):
         data = {}
         return render(request,'core/error_404.html', data)
 else:
