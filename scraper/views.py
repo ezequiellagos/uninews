@@ -64,8 +64,9 @@ def scraper(request):
         ubiobio() # Funcionando
         uda() # En Funcionando
         userena() # En Funcionando #Revisar
+        unap() # Funcionando
 
-        unap()
+
         ua()
         uoh()
         ucm()
@@ -185,6 +186,12 @@ def formatear_fecha(fecha, universidad):
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'unap':
+        fecha = fecha.lower().split()
+        dia = fecha[1]
+        mes = fecha[3]
+        anno = fecha[5]
+
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -583,9 +590,39 @@ def ubiobio():
 # Universidad Arturo Prat
 def unap():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UNAP')
+    url_base = "http://www.unap.cl"
+    contents = urllib.request.urlopen("http://www.unap.cl/prontus_unap/site/cache/nroedic/taxport/38_39_0_1.html").read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("div", {"class": "taxport-item"})    
+    items = list(set(items)) # Elimina elementos duplicados
+    
+    for item in items:
+        try:
+            link = url_base + item.find("div", {"class": "titular"}).a['href']
+            titulo = item.find("div", {"class": "titular"}).a.text.strip()
+            fecha = item.find("div", {"class": "fecha"}).text.strip()
+            fecha = formatear_fecha(fecha, 'unap')
+            
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+            try:
+                bajada = bs_noticia.find(id='content').find('h2', {'class': 'bajada'}).text.strip()
+            except Exception:
+                bajada = bs_noticia.find("div", {"class": "CUERPO"}).find_all('p', {'style': 'text-align: justify;'})
+                for b in bajada:
+                    b = b.text.strip()
+                    if b: # Si la bajada no está vacia devuelvela y termina de buscar
+                        bajada = b
+                        break
+
+            imagen = url_base + bs_noticia.find("div", {"class": "CUERPO"}).find("img", {"alt": "Imagen"})['src']
+            categoria_busqueda = ''
+            
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
-    # http://www.unap.cl/prontus_unap/site/edic/base/port/inicio.html
-    pass
 
 # Universidad de Antofagasta
 def ua():
