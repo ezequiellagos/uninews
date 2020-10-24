@@ -617,7 +617,7 @@ def unap():
                         break
 
             imagen = url_base + bs_noticia.find("div", {"class": "CUERPO"}).find("img", {"alt": "Imagen"})['src']
-            categoria_busqueda = ''
+            categoria_busqueda = setCategoria()
             
             saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
         except Exception as e:
