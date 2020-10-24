@@ -52,6 +52,7 @@ def scraper(request):
         # Este metodo de ejecutar los scraper es muy lento
         # Pero el panel uninews.datoslab.cl/scraper solo muestra información acerca de los errores e información si se usa este metodo
         # Usar solo para Desarrollo
+
         pucv() # Funcionando
         ucn() # Funcionando
         utfsm() # Funcionando
@@ -65,9 +66,8 @@ def scraper(request):
         uda() # En Funcionando
         userena() # En Funcionando #Revisar
         unap() # Funcionando
+        ua() # Funcionando
 
-
-        ua()
         uoh()
         ucm()
         ufro()
@@ -191,6 +191,10 @@ def formatear_fecha(fecha, universidad):
         dia = fecha[1]
         mes = fecha[3]
         anno = fecha[5]
+    elif universidad == 'ua':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
 
 
     if mes == "enero" or mes == "jan" or mes == '1':
@@ -254,6 +258,7 @@ def setCategoria(categoria = ''):
 
 def elimina_tildes(s):
    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+
 
 # Universidad de Playa Ancha
 def upla():
@@ -627,9 +632,26 @@ def unap():
 # Universidad de Antofagasta
 def ua():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UA')
+    url_rss = "http://www.comunicacionesua.cl/feed/"
+    feed = feedparser.parse( url_rss )
+
+    for item in feed['items']:
+        try:
+            titulo =  item['title']
+            bajada =  item['description']
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "ua")
+            categoria_busqueda = setCategoria(item['category'])
+
+            noticia = urllib.request.urlopen(link).read()
+            imagen = BeautifulSoup(noticia, "html.parser").find('div', {'class': 'qode-post-image'}).img['src']
+            
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
-    # http://www.uantof.cl/
-    pass
 
 # Universidad de Atacama
 def uda():
