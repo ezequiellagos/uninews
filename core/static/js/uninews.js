@@ -31,21 +31,17 @@ var infinite = new Waypoint.Infinite({
     onAfterPageLoad: function($items) {
         $('.loading').hide();
 
-        // Si no encuentra una imagen la reemplaza
-        $(".img-fluid").on("error", function() {
-            $(this).attr('src', '/static/img/no-image.png');
-        });
+        // // Si no encuentra una imagen la reemplaza
+        // $(".img-fluid").on("error", function() {
+        //     $(this).attr('src', '/static/img/no-image.png');
+        // });
     }
 });
 
 
-$(function() {
-    setTimeout(
-        function() 
-        {
-            // Si no encuentra una imagen la reemplaza
-            $(".img-fluid").on("error", function() {
-                $(this).attr('src', '/static/img/no-image.png');
-            });
-        }, 3000);
-});
+// $(function() {
+//     // Si no encuentra una imagen la reemplaza
+//     $(".img-fluid").on("error", function() {
+//         $(this).attr('src', '/static/img/no-image.png');
+//     });
+// });

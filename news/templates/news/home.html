@@ -56,7 +56,7 @@
                         <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
                         <div class="div-imagen">
                             <div class="font-weight-bold">{{new.bajada|truncatechars:250 }}</div>
-                            <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; "></a>
+                            <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; " onerror="this.onerror=null;this.src='/static/img/no-image.png';"></a>
                         </div>
                         <div class="post-body">
                             <div class="post-meta">
