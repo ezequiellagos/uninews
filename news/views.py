@@ -182,23 +182,27 @@ def topicos(request):
 
 def topicKeyWords(topic):
 
+    universities = []
+
     if topic == 'coronavirus':
         key_words = ['coronavirus', 'covid', 'covid-19', 'covid19', 'pandemia', 'cuarentena', 'sars', 'cov-2', 'cov2', 'sars-cov2', 'sars-cov-2']
     elif topic == 'uninews':
         key_words = ['uninews']
+    elif topic == 'obsnieves':
+        key_words = ['observatorio satelital', 'satelital', 'nieves', 'observatorio satelital de nieves']
     else:
         key_words = ['uninews']
 
     return key_words
 
-def topicNew(request):
+def topicNew(request, topic):
 
-    topic = 'Coronavirus'
-    key_words = topicKeyWords('coronavirus')
+    key_words = topicKeyWords(topic)
 
     news = Noticia.objects.none()
     for key in key_words:
         news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+
     news = news.distinct().order_by('-fecha')
 
 
@@ -209,7 +213,7 @@ def topicNew(request):
     # Paginación
     news = pagination(request, news)
 
-    return render(request, "news/topic_coronavirus.html", {'news':news, 'news_most_view':news_most_view, 'topic':topic})
+    return render(request, "news/topic.html", {'news':news, 'news_most_view':news_most_view, 'topic':topic})
 
 # Topic News Widget
 def topicNewWidget(request):
