@@ -190,6 +190,8 @@ def topicKeyWords(topic):
         key_words = ['uninews']
     elif topic == 'obsnieves':
         key_words = ['observatorio satelital', 'satelital', 'nieves', 'observatorio satelital de nieves']
+    elif topic == 'datoslab':
+        key_words = ['datoslab', 'miguel guevara', 'uninews', 'fastask', 'moneda social']
     else:
         key_words = ['uninews']
 

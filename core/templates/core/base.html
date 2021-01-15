@@ -88,8 +88,21 @@
                             <!-- <li><a href="{% url 'categories' %}">Categorías</a></li> -->
                             <li><a href="{% url 'regiones' %}">Regiones</a></li>
                             <li><a href="{% url 'about' %}">Acerca de</a></li>
-                            <li><a href="{% url 'topico' 'coronavirus' %}"> <u>Coronavirus</u> </a></li>
-                            <li><a href="{% url 'topico' 'obsnieves' %}"> <u>Observatorio Nieves</u> </a></li>
+
+                            <li class="nav-item dropdown">
+                                <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Especiales
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{% url 'topico' 'coronavirus' %}">Coronavirus</a>
+                                    <a class="dropdown-item" href="{% url 'topico' 'obsnieves' %}">Observatorio Satelital de Nieves</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url 'topico' 'uninews' %}">Uninews</a>
+                                    <a class="dropdown-item" href="{% url 'topico' 'datoslab' %}">DatosLab</a>
+                                </div>
+                            </li>
+                            
                         </ul>
                         <!-- /nav -->
 
