@@ -238,8 +238,13 @@ def topicNewWidget(request):
 
     # Filtra para cada palabra clave
     news = Noticia.objects.none()
-    for key in key_words:
-        news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+    if len(universities) != 0:
+        for alias in universities:
+            for key in key_words:
+                news |= Noticia.objects.filter(id_universidad__alias=alias).filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+    else:
+        for key in key_words:
+            news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
 
     # Entrega determinada cantidad de items
     if request.GET.get('items') and request.GET.get('items').isnumeric() :
