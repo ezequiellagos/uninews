@@ -229,10 +229,10 @@ def topicNewWidget(request):
     # Palabras clave para cada tema
     if request.path == '/coronavirus/':
         topic = 'Coronavirus'
-        key_words = topicKeyWords('coronavirus')
+        key_words, universities = topicKeyWords('coronavirus')
     elif request.path == '/obsnieves/':
         topic = 'Observatorio Satelital de Nieves'
-        key_words = topicKeyWords('obsnieves')
+        key_words, universities = topicKeyWords('obsnieves')
     else:
         return redirect('/')
 
