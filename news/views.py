@@ -190,25 +190,32 @@ def topicKeyWords(topic):
         key_words = ['uninews']
     elif topic == 'obsnieves':
         key_words = ['observatorio satelital', 'satelital', 'nieves', 'observatorio satelital de nieves']
+        universities = ['UPLA']
     elif topic == 'datoslab':
         key_words = ['datoslab', 'miguel guevara', 'uninews', 'fastask', 'moneda social']
     else:
         key_words = ['uninews']
 
-    return key_words
+    return key_words, universities
 
 def topicNew(request, topic):
 
-    key_words = topicKeyWords(topic)
+    key_words, universities = topicKeyWords(topic)
 
     news = Noticia.objects.none()
-    for key in key_words:
-        news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
 
+    if len(universities) != 0:
+        for alias in universities:
+            for key in key_words:
+                news |= Noticia.objects.filter(id_universidad__alias=alias).filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+    else:
+        for key in key_words:
+            news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
+    
     news = news.distinct().order_by('-fecha')
 
 
-    # Noticias por Categoria
+    # Noticias más vistas
     date = mostViewed()
     news_most_view = news.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
 
@@ -223,6 +230,9 @@ def topicNewWidget(request):
     if request.path == '/coronavirus/':
         topic = 'Coronavirus'
         key_words = topicKeyWords('coronavirus')
+    elif request.path == '/obsnieves/':
+        topic = 'Observatorio Satelital de Nieves'
+        key_words = topicKeyWords('obsnieves')
     else:
         return redirect('/')
 

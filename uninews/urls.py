@@ -45,9 +45,11 @@ urlpatterns = [
 
     # Noticias temáticas
     path('especial/', news_views.home, name='topicos'),
-    # path('especial/coronavirus', news_views.topicNew, name='topico_coronavirus'),
     path('especial/<str:topic>', news_views.topicNew, name='topico'),
+
+    # Widget Noticias temáticas
     path('coronavirus/', news_views.topicNewWidget, name='coronavirus'),
+    path('obsnieves/', news_views.topicNewWidget, name='coronavirus'),
 
     path('scraper/', scraper_views.scraper, name='scraper'),
 
