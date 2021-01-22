@@ -183,6 +183,9 @@ def topicos(request):
 def topicKeyWords(topic):
 
     universities = []
+    date_range = {}
+
+    hoy = datetime.today().strftime("%Y-%m-%d")
 
     if topic == 'coronavirus':
         key_words = ['coronavirus', 'covid', 'covid-19', 'covid19', 'pandemia', 'cuarentena', 'sars', 'cov-2', 'cov2', 'sars-cov2', 'sars-cov-2']
@@ -191,16 +194,20 @@ def topicKeyWords(topic):
     elif topic == 'obsnieves':
         key_words = ['observatorio satelital', 'satelital', 'nieves', 'observatorio satelital de nieves']
         universities = ['UPLA']
+        date_range = {
+            'last_date': '2018-11-23',
+            'current_date': hoy
+        }
     elif topic == 'datoslab':
         key_words = ['datoslab', 'miguel guevara', 'uninews', 'fastask', 'moneda social']
     else:
         key_words = ['uninews']
 
-    return key_words, universities
+    return key_words, universities, date_range
 
 def topicNew(request, topic):
 
-    key_words, universities = topicKeyWords(topic)
+    key_words, universities, date_range = topicKeyWords(topic)
 
     news = Noticia.objects.none()
 
@@ -212,7 +219,11 @@ def topicNew(request, topic):
         for key in key_words:
             news |= Noticia.objects.filter( Q(titulo_busqueda__icontains=key) | Q(bajada_busqueda__icontains=key) )
     
-    news = news.distinct().order_by('-fecha')
+
+    if len(date_range) != 0:
+        news = news.distinct().filter(fecha__range=[date_range['last_date'], date_range['current_date']]).order_by('-fecha')
+    else:
+        news = news.distinct().order_by('-fecha')
 
 
     # Noticias más vistas
@@ -229,10 +240,10 @@ def topicNewWidget(request):
     # Palabras clave para cada tema
     if request.path == '/coronavirus/':
         topic = 'Coronavirus'
-        key_words, universities = topicKeyWords('coronavirus')
+        key_words, universities, date_range = topicKeyWords('coronavirus')
     elif request.path == '/obsnieves/':
         topic = 'Observatorio Satelital de Nieves'
-        key_words, universities = topicKeyWords('obsnieves')
+        key_words, universities, date_range = topicKeyWords('obsnieves')
     else:
         return redirect('/')
 
@@ -257,7 +268,11 @@ def topicNewWidget(request):
             n_r = 10
     else:
         n_r = 10
-    news = news.distinct().order_by('-fecha')[:n_r]
+
+    if len(date_range) != 0:
+        news = news.distinct().filter(fecha__range=[date_range['last_date'], date_range['current_date']]).order_by('-fecha')[:n_r]
+    else:
+        news = news.distinct().order_by('-fecha')[:n_r]
 
     return render(request, "news/thematic.html", {'news':news, 'topic':topic})
 
