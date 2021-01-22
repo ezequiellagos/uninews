@@ -89,7 +89,7 @@ def statistics(request):
             # Noticia más vista de todo el tiempo
             'noticia_mas_vista': n.latest('contador_visitas'),
             # Noticia más reciente últimas 2 semanas
-            'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+            # 'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
             # Cantidad de noticias totales
             'total_noticias': n.count(),
             # Noticias por mes, colocar en grafico
