@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700%7CNunito:300,600" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
@@ -62,51 +62,63 @@
 
     <!-- section -->
     <div class="section">
-        <!-- container -->
-        <div class="container">
 
-            <!-- row -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="navbar-brand">
-                        <a href="{% url 'home' %}" class="logo"><img src="{% static './img/logo_uninews.png' %}" class="img-fluid" alt=""></a>
-                    </div>
-                    <div class="section-title">
-                        <h2> {{ topic }} </h2>
+        <!-- NOTICIAS -->
+        <div class="album py-1 ">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="navbar-brand">
+                            <a href="{% url 'home' %}" class="logo"><img src="{% static './img/logo_uninews.png' %}" class="img-fluid" alt=""></a>
+                        </div>
+                        <div class="section-title">
+                            <h2> {{ topic }} </h2>
+                        </div>
                     </div>
                 </div>
-
-                <div class="infinite-container d-flex flex-wrap" style="">
+        
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    
                     {% for new in news %}
-                    <div class="col-md-4 infinite-item ">
-                        <div class="post">
-                            <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank" style="text-decoration:none;">{{new.titulo}}</a></h3>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <!-- Imagen -->
                             <div class="div-imagen">
-                                <div class="font-weight-bold">{{new.bajada|truncatechars:250 }}</div>
-                                <a class="post-img" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 14em; overflow:auto; "></a>
+                                <span class="texto-bajada text-dark">{{new.bajada|truncatechars:260 }}</span>
+                                <a href="{% url 'detail' new.id_noticia %}" class="desvanecer-thumb" target="_blank">
+                                    <img src="{{new.link_recurso}}" alt="{{new.titulo}}" class="card-img-top desvanecer no-image" width="100%" height="225">
+                                </a>
                             </div>
-                            <div class="post-body">
-                                <div class="post-meta">
-                                    <!-- <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a> -->
-                                    {% comment %} <a class="post-category " href="{% url 'category' new.categoria %}">{{new.categoria}}</a> {% endcomment %}
-                                    <!-- <div class="fb-share-button" data-href="{% url 'detail' new.id_noticia %}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Funinews.datoslab.cl%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div> -->
+                            
+                            <!-- Cuerpo -->
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <a href="{% url 'detail' new.id_noticia %}" class="text-decoration-none" target="_blank">
+                                        {{new.titulo}}
+                                    </a>
+                                </p>
 
-                                    <a class="post-category cat-{{new.id_universidad.alias}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
-                                    <span class="post-date">{{new.fecha}}</span>
+                                <!-- Botones -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'university' new.id_universidad.alias %}" target="_blank" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
+                                            {{new.id_universidad.alias}}
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
+                                    </div>
+                                    <small class="text-muted">{{new.fecha}}</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
+
                 </div>
-
-                <div class="clearfix visible-md visible-lg"></div>
-
             </div>
-            <!-- /row -->
-
         </div>
-        <!-- /container -->
+        <!-- FIN NOTICIAS -->
+      
     </div>
     <!-- /section -->
     
@@ -116,7 +128,9 @@
 
     <!-- jQuery Plugins -->
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
     <!-- Waypoints -->
     <!-- <script src="{% static 'js/imakewebthings-waypoints/lib/jquery.waypoints.min.js' %}"></script>
