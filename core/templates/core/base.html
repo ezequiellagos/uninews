@@ -11,7 +11,7 @@
     <meta property="og:url" content="https://uninews.datoslab.cl/" />
     <meta property="og:title" content="Uninews - Noticias Universitarias" />
     <meta property="og:description" content="Noticias sobre distintas universidades en un solo lugar" />
-    <meta property="og:image" content="{% static './img/logo_uninews_700x110.png' %}" />
+    <meta property="og:image" content="{{request.get_host}}{% static './img/logo_uninews_700x110.png' %}" />
 
     <link rel="icon" type="image/png" href="{% static './img/favicon.png' %}" />
     <meta name="theme-color" content="#0180ff">
@@ -65,7 +65,7 @@
 
     <!-- Facebook SDK -->
     <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v3.3&appId=328054081132640&autoLogAppEvents=1"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v9.0&appId=328054081132640&autoLogAppEvents=1" nonce="UvCgofOZ"></script>
 
     <!-- Header -->
     <header id="header">
@@ -233,7 +233,7 @@
                                 <!-- Botones -->
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <a href="{% url 'university' new.id_universidad.alias %}" target="_blank" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
+                                        <a href="{% url 'university' new.id_universidad.alias %}" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
                                             {{new.id_universidad.alias}}
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
@@ -251,7 +251,7 @@
         <!-- FIN NOTICIAS DESTCADAS -->
 
         <!-- NOTICIAS -->
-        <div class="album py-1 ">
+        <div class="album py-5 ">
             <div class="container">
 
                 <div class="row">
@@ -286,10 +286,15 @@
                                 <!-- Botones -->
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <a href="{% url 'university' new.id_universidad.alias %}" target="_blank" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
+                                        <a href="{% url 'university' new.id_universidad.alias %}" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
                                             {{new.id_universidad.alias}}
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
+
+                                        <!-- <div class="fb-share-button" data-href="{% url 'detail' new.id_noticia %}" data-layout="button" data-size="small" data-lazy="true">
+                                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={% url 'detail' new.id_noticia %}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
+                                        </div> -->
+
                                     </div>
                                     <small class="text-muted">{{new.fecha}}</small>
                                 </div>
