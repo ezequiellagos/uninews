@@ -1,8 +1,15 @@
 $(document).ready(function() {
 
     // Si no encuentra una imagen la reemplaza
-    $(".img-fluid").on("error", function() {
+    $(".no-image").on("error", function() {
         $(this).attr('src', '/static/img/no-image.png');
+    });
+
+    // Si no tiene fuente src, la reemplaza
+    const images = document.querySelectorAll('.no-image');
+    images.forEach((image) => {
+    let src = image.getAttribute('src');
+    if (src === '') image.src = '/static/img/no-image.png';
     });
 
     $(window).scroll(function() {
@@ -37,7 +44,7 @@ var infinite = new Waypoint.Infinite({
         $('.loading').hide();
 
         // Si no encuentra una imagen la reemplaza
-        $(".img-fluid").on("error", function() {
+        $(".no-image").on("error", function() {
             $(this).attr('src', '/static/img/no-image.png');
         });
     }

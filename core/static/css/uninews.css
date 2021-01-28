@@ -5,16 +5,22 @@ html {
 /* Opacidad de Post */
 .div-imagen {
     /* display:fluid; */
-    position:relative;
+    position: relative;
+    z-index: 1;
 }
 
-.div-imagen > div {
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:-1;
-    padding:10px;
-    margin:0;
+.texto-bajada {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    padding: 20px;
+    margin: 0;
+}
+
+
+.desvanecer{
+    background-image: url("../img/category.png");
 }
 
 .desvanecer:hover {
@@ -43,7 +49,9 @@ html {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    width: 3em;
     display:none;
+    z-index: 10;
 }
 /* Fin Back To Top */
 
@@ -52,91 +60,91 @@ html {
 \*----------------------------*/
 
 /* PUCV */
-.post-meta .post-category.cat-PUCV {
+.cat-PUCV {
     background-color: #a75154;
 }
 /* UCN */
-.post-meta .post-category.cat-UCN {
+.cat-UCN {
     background-color: #BD6222;
 }
 /* UTFSM */
-.post-meta .post-category.cat-UTFSM {
+.cat-UTFSM {
     background-color: #f7ae00;
 }
 /* UPLA */
-.post-meta .post-category.cat-UPLA {
+.cat-UPLA {
     background-color: #0099cc;
 }
 /* UV */
-.post-meta .post-category.cat-UV {
+.cat-UV {
     background-color: #003399;
 }
 /* UDEC */
-.post-meta .post-category.cat-UDEC {
+.cat-UDEC {
     background-color: #9c9a9a;
 }
 /* UTALCA */
-.post-meta .post-category.cat-UTALCA {
+.cat-UTALCA {
     background-color: #AE0E36;
 }
 /* ULAGOS */
-.post-meta .post-category.cat-ULAGOS {
+.cat-ULAGOS {
     background-color: #056563;
 }
 /* UCSC */
-.post-meta .post-category.cat-UCSC {
+.cat-UCSC {
     background-color: #d10024;
 }
 /* UBIOBIO */
-.post-meta .post-category.cat-UBIOBIO {
+.cat-UBIOBIO {
     background-color: #054993;
 }
 /* UNAP */
-.post-meta .post-category.cat-UNAP {
+.cat-UNAP {
     background-color: #004b80;
 }
 /* UA */
-.post-meta .post-category.cat-UA {
+.cat-UA {
     background-color: #0c5dc5;
 }
 /* UDA */
-.post-meta .post-category.cat-UDA {
+.cat-UDA {
     background-color: #364b57;
 }
 /* USERENA */
-.post-meta .post-category.cat-USERENA {
+.cat-USERENA {
     background-color: #003cff;
 }
 /* UOH */
-.post-meta .post-category.cat-UOH {
+.cat-UOH {
     background-color: #003cff;
 }
 /* UCM */
-.post-meta .post-category.cat-UCM {
+.cat-UCM {
     background-color: #003cff;
 }
 /* UFRO */
-.post-meta .post-category.cat-UFRO {
+.cat-UFRO {
     background-color: #003cff;
 }
 /* UCT */
-.post-meta .post-category.cat-UCT {
+.cat-UCT {
     background-color: #003cff;
 }
 /* UACH */
-.post-meta .post-category.cat-UACH {
+.cat-UACH {
     background-color: #003cff;
 }
 /* UAYSEN */
-.post-meta .post-category.cat-UAYSEN {
+.cat-UAYSEN {
     background-color: #003cff;
 }
 /* UMAG */
-.post-meta .post-category.cat-UMAG {
+.cat-UMAG {
     background-color: #003cff;
 }
 /* UTA */
-.post-meta .post-category.cat-UTA {
+.cat-UTA {
     background-color: #003cff;
 }
 
@@ -145,10 +153,5 @@ html {
     body{
         font-size: 0.6rem;
     }
-}
-
-.desvanecer{
-    border-radius: 5px;
-    background-image: url("../img/category.png");
 }
 

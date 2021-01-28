@@ -5,8 +5,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <meta property="og:url" content="https://uninews.datoslab.cl/" />
@@ -23,7 +22,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700%7CNunito:300,600" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <!-- <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
@@ -184,12 +184,14 @@
     {% block content %}
 
         <!-- section -->
-        <div class="section">
-            <!-- container -->
+        <div class="section bg-light">
+
+
+        <!-- NOTICIAS DESTACADAS -->
+        <div class="album py-1 ">
             <div class="container">
-                <!-- row -->
+
                 <div class="row">
-                
                     <div class="col-md-12">
                         <div class="section-title">
                             <!-- Encabezado de la Página -->
@@ -201,44 +203,180 @@
                         <div class="section-title">
                             {% if not news_most_view %}
                             {% else %}
-                            <h2>Más Vistos</h2>
+                            <h2>Destacados</h2>
                             {% endif %}
                         </div>
                     </div>
-
+                </div>
+        
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    
                     {% for new in news_most_view %}
-                    <!-- post -->
-                    <div class="col-md-6">
-                        <div class="post post-thumb">
-                                
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <!-- Imagen -->
                             <div class="div-imagen">
-                                <div class="font-weight-bold">{{new.bajada}}</div>
-                                <a class="post-img desvanecer-thumb" href="{% url 'detail' new.id_noticia %}" target="_blank"><img src="{{new.link_recurso}}" alt="" class="img-fluid desvanecer" style="height:auto; max-height: 18em; overflow:auto; "></a>
+                                <span class="texto-bajada text-dark">{{new.bajada|truncatechars:260 }}</span>
+                                <a href="{% url 'detail' new.id_noticia %}" class="desvanecer-thumb" target="_blank">
+                                    <img src="{{new.link_recurso}}" alt="{{new.titulo}}" class="card-img-top desvanecer no-image" width="100%" height="225">
+                                </a>
                             </div>
                             
-                            <div class="post-body">
-                                <div class="post-meta">
-                                    {% comment %} <a class="post-category" href="{% url 'category' new.categoria %}">{{new.categoria}}</a> {% endcomment %}
-                                    <a class="post-category cat-{{new.id_universidad.alias}}" href="{% url 'university' new.id_universidad.alias %}">{{new.id_universidad.alias}}</a>
-                                    <span class="post-date">{{new.fecha}}</span>
+                            <!-- Cuerpo -->
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <a href="{% url 'detail' new.id_noticia %}" class="text-decoration-none" target="_blank">
+                                        {{new.titulo}}
+                                    </a>
+                                </p>
+
+                                <!-- Botones -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'university' new.id_universidad.alias %}" target="_blank" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
+                                            {{new.id_universidad.alias}}
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
+                                    </div>
+                                    <small class="text-muted">{{new.fecha}}</small>
                                 </div>
-                                <h3 class="post-title"><a href="{% url 'detail' new.id_noticia %}" target="_blank">{{new.titulo}}</a></h3>
                             </div>
                         </div>
                     </div>
-                    <!-- /post -->
                     {% endfor %}
 
                 </div>
-                <!-- /row -->
+            </div>
+        </div>
+        <!-- FIN NOTICIAS DESTCADAS -->
 
-                <!-- row -->
+        <!-- NOTICIAS -->
+        <div class="album py-1 ">
+            <div class="container">
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="section-title">
                             <h2>Noticias</h2>
                         </div>
                     </div>
+                </div>
+        
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    
+                    {% for new in news %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <!-- Imagen -->
+                            <div class="div-imagen">
+                                <span class="texto-bajada text-dark">{{new.bajada|truncatechars:260 }}</span>
+                                <a href="{% url 'detail' new.id_noticia %}" class="desvanecer-thumb" target="_blank">
+                                    <img src="{{new.link_recurso}}" alt="{{new.titulo}}" class="card-img-top desvanecer no-image" width="100%" height="225">
+                                </a>
+                            </div>
+                            
+                            <!-- Cuerpo -->
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <a href="{% url 'detail' new.id_noticia %}" class="text-decoration-none" target="_blank">
+                                        {{new.titulo}}
+                                    </a>
+                                </p>
+
+                                <!-- Botones -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'university' new.id_universidad.alias %}" target="_blank" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
+                                            {{new.id_universidad.alias}}
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
+                                    </div>
+                                    <small class="text-muted">{{new.fecha}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                
+                <!-- Pagination -->
+                <div class="row py-5">
+
+                    <div class="col"></div>
+                    <div class="col">
+
+                        <div class="paginator mx-auto">
+                            <div class="loading" style="display: none;">
+                                Cargando...
+                            </div>
+                            
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    {% if news.has_previous %}
+                                        <!-- <li class="page-item">
+                                            <a href="?page=1" aria-label="Inicio" class="page-link">
+                                                <span aria-hidden="true">Inicio</span>
+                                            </a>
+                                        </li> -->
+                                        <li class="page-item">
+                                            <a href="?page={{ news.previous_page_number }}" aria-label="Anterior" class="page-link">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    
+                                    {% else %}
+                                        <!-- <li class="page-item disabled"><span aria-hidden="true" class="page-link">Inicio</span></li> -->
+                                        <!-- <li class="page-item disabled"><span aria-hidden="true" class="page-link">&laquo;</span></li> -->
+                                    {% endif %}
+    
+                                    {% for num in news.paginator.page_range %}
+    
+                                        {% if news.number == num %}
+                                            <li class="page-item active"><a class="page-link">{{ num }}</a></li>
+                                        {% elif num > news.number|add:'-3' and num < news.number|add:'3' %}
+                                            <li class="page-item"><a href="?page={{ num }}" class="page-link">{{ num }}</a></li>
+                                        {% endif %}
+                                    
+                                    {% endfor %}
+    
+                                    {% if news.has_next %}
+                                        <li class="page-item">
+                                            <a href="?page={{news.next_page_number}}" aria-label="Siguiente" class="page-link">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                        <!-- <li class="page-item">
+                                            <a href="?page={{news.paginator.num_pages}}" aria-label="Última" class="page-link">
+                                                <span aria-hidden="true">Última</span>
+                                            </a>
+                                        </li> -->
+                                    {% else %}
+                                        <!-- <li class="page-item disabled"><span aria-hidden="true" class="page-link">&raquo;</span></li> -->
+                                        <!-- <li class="page-item disabled"><span aria-hidden="true" class="page-link">Última</span></li> -->
+                                    {% endif %}
+                                </ul>
+                            </nav>    
+                        </div>
+
+                    </div>
+                    <div class="col"></div>
+
+                    
+                </div>
+                <!-- /Pagination -->
+
+            </div>
+        </div>
+        <!-- FIN NOTICIAS -->
+
+            <!-- container -->
+            <div class="container">
+                
+
+                <!-- row -->
+                <!-- <div class="row">
+                    
 
                     <div class="infinite-container d-flex flex-wrap" style="">
                         {% for new in news %}
@@ -263,71 +401,10 @@
 
                     <div class="clearfix visible-md visible-lg"></div>
 
-                </div>
+                </div> -->
                 <!-- /row -->
                 
-                <!-- Pagination -->
-                <div class="row">
-                    <div class="paginator mx-auto">
-                        {% if news.has_next %}
-                            <a class="infinite-more-link" href="?page={{ news.next_page_number }}">Más Noticias</a>
-                        {% endif %}
-
-                        <div class="loading" style="display: none;">
-                            Cargando...
-                        </div>
-                        
-                        {% comment %} 
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                {% if news.has_previous %}
-                                    <li class="page-item">
-                                        <a href="?page=1" aria-label="Inicio" class="page-link">
-                                            <span aria-hidden="true">Inicio</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="?page={{ news.previous_page_number }}" aria-label="Anterior" class="page-link">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                
-                                {% else %}
-                                    <li class="page-item disabled"><span aria-hidden="true" class="page-link">Inicio</span></li>
-                                    <li class="page-item disabled"><span aria-hidden="true" class="page-link">&laquo;</span></li>
-                                {% endif %}
-
-                                {% for num in news.paginator.page_range %}
-
-                                    {% if news.number == num %}
-                                        <li class="page-item active"><a class="page-link">{{ num }}</a></li>
-                                    {% elif num > news.number|add:'-3' and num < news.number|add:'3' %}
-                                        <li class="page-item"><a href="?page={{ num }}" class="page-link">{{ num }}</a></li>
-                                    {% endif %}
-                                
-                                {% endfor %}
-
-                                {% if news.has_next %}
-                                    <li class="page-item">
-                                        <a href="?page={{news.next_page_number}}" aria-label="Siguiente" class="page-link">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="?page={{news.paginator.num_pages}}" aria-label="Última" class="page-link">
-                                            <span aria-hidden="true">Última</span>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled"><span aria-hidden="true" class="page-link">&raquo;</span></li>
-                                    <li class="page-item disabled"><span aria-hidden="true" class="page-link">Última</span></li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                        {% endcomment %}
-                    </div>
-                </div>
-                <!-- /Pagination -->
+                
 
             </div>
             <!-- /container -->
@@ -418,7 +495,10 @@ Copyright <script>document.write(new Date().getFullYear());</script> Todos los d
 
     <!-- jQuery Plugins -->
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <!-- <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
     <!-- Waypoints -->
     <script src="{% static 'js/imakewebthings-waypoints/lib/jquery.waypoints.min.js' %}"></script>

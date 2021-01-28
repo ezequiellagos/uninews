@@ -9,6 +9,8 @@ from django.db.models.functions import TruncMonth
 
 import unidecode
 
+CANTIDAD_NOTICIAS_MAS_VISTAS = 3
+
 # Create your views here.
 def home(request):
     # Obtiene las noticias ordenadas de sde la más reciente
@@ -19,7 +21,7 @@ def home(request):
 
     # Filtra las ultimas dos noticias más vistas
     date = mostViewed()
-    news_most_view = Noticia.objects.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = Noticia.objects.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:CANTIDAD_NOTICIAS_MAS_VISTAS]
 
     return render(request, "news/home.html", {'news':news, 'news_most_view':news_most_view})
 
@@ -28,7 +30,7 @@ def category(request, category):
 
     # Noticias por Categoria
     date = mostViewed()
-    news_most_view = Noticia.objects.filter(categoria=category).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = Noticia.objects.filter(categoria=category).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:CANTIDAD_NOTICIAS_MAS_VISTAS]
 
     # Paginación
     news = pagination(request, news)
@@ -40,7 +42,7 @@ def region(request, region):
 
     # Noticias por Categoria
     date = mostViewed()
-    news_most_view = Noticia.objects.filter(id_universidad__region__slug=region).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = Noticia.objects.filter(id_universidad__region__slug=region).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:CANTIDAD_NOTICIAS_MAS_VISTAS]
 
     # Paginación
     news = pagination(request, news)
@@ -52,7 +54,7 @@ def university(request, alias):
 
     # Noticias por Universidad
     date = mostViewed()
-    news_most_view = Noticia.objects.filter(id_universidad__alias=alias).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = Noticia.objects.filter(id_universidad__alias=alias).filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:CANTIDAD_NOTICIAS_MAS_VISTAS]
 
     # Paginación
     news = pagination(request, news)
@@ -155,7 +157,7 @@ def formatear_busqueda(text):
 
     return text
 
-def pagination(request, news, news_per_page = 9):
+def pagination(request, news, news_per_page = 21):
     
     page = request.GET.get('page')
     paginator = Paginator(news, news_per_page)
@@ -228,7 +230,7 @@ def topicNew(request, topic):
 
     # Noticias más vistas
     date = mostViewed()
-    news_most_view = news.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:2]
+    news_most_view = news.filter(fecha__range=[date['last_date'], date['current_date']]).order_by('-contador_visitas')[:CANTIDAD_NOTICIAS_MAS_VISTAS]
 
     # Paginación
     news = pagination(request, news)
