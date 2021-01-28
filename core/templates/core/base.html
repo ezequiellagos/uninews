@@ -9,6 +9,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <meta property="og:url" content="{{request.build_absolute_uri}}" />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="Uninews - Noticias Universitarias" />
     <meta property="og:description" content="Noticias sobre distintas universidades en un solo lugar" />
     <meta property="og:image" content="{{request.build_absolute_uri|slice:':-1'}}{% static './img/social/logo_uninews_facebook.png' %}" />
