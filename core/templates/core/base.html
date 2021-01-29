@@ -239,7 +239,7 @@
                                         <a href="{% url 'university' new.id_universidad.alias %}" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
                                             {{new.id_universidad.alias}}
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary ">Compartir</button>
                                     </div>
                                     <small class="text-muted">{{new.fecha}}</small>
                                 </div>
@@ -292,11 +292,16 @@
                                         <a href="{% url 'university' new.id_universidad.alias %}" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{new.id_universidad.alias}}">
                                             {{new.id_universidad.alias}}
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">Compartir</button>
 
-                                        <!-- <div class="fb-share-button" data-href="{% url 'detail' new.id_noticia %}" data-layout="button" data-size="small" data-lazy="true">
+                                        <button type="button" id="shareBtn-{{new.id_noticia}}" class="btn btn-sm btn-outline-secondary " >
+                                            Compartir
+                                        </button>
+
+                                        {% comment %}
+                                        <div class="fb-share-button" data-href="{% url 'detail' new.id_noticia %}" data-layout="button" data-size="small" data-lazy="true"  >
                                             <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={% url 'detail' new.id_noticia %}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
-                                        </div> -->
+                                        </div>
+                                        {% endcomment %}
 
                                     </div>
                                     <small class="text-muted">{{new.fecha}}</small>
@@ -304,6 +309,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        document.getElementById('shareBtn-{{new.id_noticia}}').onclick = function() {
+                          FB.ui({
+                            display: 'popup',
+                            method: 'share',
+                            href: "{{request.build_absolute_uri|slice:':-1'}}{% url 'detail' new.id_noticia %}",
+                          }, function(response){});
+                        }
+                    </script>
                     {% endfor %}
 
                 </div>
