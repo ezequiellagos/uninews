@@ -315,7 +315,7 @@
                           FB.ui({
                             display: 'popup',
                             method: 'share',
-                            href: "{{request.build_absolute_uri|slice:':-1'}}{% url 'detail' new.id_noticia %}",
+                            href: "{{ request.scheme }}://{{ request.get_host }}{% url 'detail' new.id_noticia %}",
                           }, function(response){});
                         }
                     </script>
