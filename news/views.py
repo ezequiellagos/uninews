@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.template import RequestContext, Template
 from .models import Universidad, Noticia, Region
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
@@ -62,10 +63,44 @@ def university(request, alias):
     return render(request, "news/university.html", {'news':news, 'news_most_view':news_most_view, 'university':Universidad.objects.get(alias=alias)})
 
 def detail(request, id_noticia):
-    new = get_object_or_404(Noticia, pk=id_noticia)
+    # new = get_object_or_404(Noticia, pk=id_noticia)
+    # new.contador_visitas += 1
+    # new.save(update_fields=['contador_visitas'])
+    # return redirect(new.link_noticia)
+
+    new = Noticia.objects.get(id_noticia=id_noticia)
     new.contador_visitas += 1
+
+    context = RequestContext(request)
+    visits = int( request.COOKIES.get('visits', '0') )
+    response = render(request, "news/noticia.html", {'news':new})
+
+    if 'last_visit' in request.COOKIES.keys():
+        last_visit = request.COOKIES['last_visit']
+        # the cookie is a string - convert back to a datetime type
+        last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+        curr_time = datetime.now()
+        if (curr_time-last_visit_time).days > 0:
+            # if at least one day has gone by then inc the visit count.
+            response.set_cookie('visits', visits + 1 )
+            response.set_cookie('last_visit', datetime.now())
+    else:
+        response.set_cookie('last_visit', datetime.now())
+
+    print("-----------------------------------")
+    
+
+    # print(request.GET['fbclid'])
+    print(request.COOKIES)
+    # if request.GET and request.GET['fbclid']:
+    #     print('Encontre Algo')
+    # else:
+    #     print('no hay nada')
+    print("-----------------------------------")
+
     new.save(update_fields=['contador_visitas'])
-    return redirect(new.link_noticia)
+    return response
+
 
 def statistics(request):
     # Crea objeto con la tabla de noticias

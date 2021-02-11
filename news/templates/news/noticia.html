@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uninews | {{news.titulo}}</title>
+
+    <meta property="og:url" content="{{request.build_absolute_uri}}detalle/{{news.id_noticia}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Uninews | {{news.titulo}}" />
+    <meta property="og:description" content="{{news.bajada}}" />
+    <meta property="og:image" content="{{news.link_recurso}}" />
+</head>
+<body>
+    <h1>{{news.titulo}}</h1>
+    <img src="{{news.link_recurso}}" alt="">
+
+    <p>
+        {{ request.scheme }}://{{ request.get_host }}
+    </p>
+    <p>
+        {{ request.build_absolute_uri }}
+    </p>
+</body>
+</html>
