@@ -94,17 +94,17 @@
                             <li><a href="{% url 'about' %}">Acerca de</a></li>
 
                             <li class="nav-item dropdown">
-                                <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="false">
                                 Especiales
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{% url 'topico' 'coronavirus' %}">Coronavirus</a>
-                                    <a class="dropdown-item" href="{% url 'topico' 'obsnieves' %}">Observatorio Satelital de Nieves</a>
+                                <ul class="dropdown-menu" >
+                                    <li><a class="dropdown-item" href="{% url 'topico' 'coronavirus' %}">Coronavirus</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'topico' 'obsnieves' %}">Observatorio Satelital de Nieves</a></li>
 
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url 'topico' 'uninews' %}">Uninews</a>
-                                    <a class="dropdown-item" href="{% url 'topico' 'datoslab' %}">DatosLab</a>
-                                </div>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'topico' 'uninews' %}">Uninews</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'topico' 'datoslab' %}">DatosLab</a></li>
+                                </ul>
                             </li>
                             
                         </ul>
