@@ -11,7 +11,7 @@ class NoticiaAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'updated', 'id_noticia', 'contador_visitas')
     list_display = ('titulo', 'fecha', 'get_alias', 'categoria', 'contador_visitas')
     ordering = ('-fecha', 'id_universidad', 'categoria', 'contador_visitas')
-    search_fields = ('titulo', 'categoria')
+    search_fields = ('titulo', 'categoria', 'fecha')
     date_hierarchy = 'fecha'
     list_filter = ('id_universidad__alias', 'categoria', 'id_universidad__region')
 
