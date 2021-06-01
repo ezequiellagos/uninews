@@ -80,29 +80,39 @@ def statistics(request):
     total_visitas = 0
 
     for universidad in universidades:
+        if( universidad.alias == 'UNAP' ):
+            continue
+
         n = news.filter(id_universidad__alias=universidad.alias)
 
         total_noticias += n.count()
         total_visitas += (n.aggregate(Sum('contador_visitas')))['contador_visitas__sum']
 
-        estadisticas_universidades.append({
-            'nombre_corto': universidad.alias,
-            'nombre_largo': universidad.nombre,
-            # Suma de todas las visitas por universidad
-            'total_visitas': (n.aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
-            # Noticia más vista de todo el tiempo
-            'noticia_mas_vista': n.latest('contador_visitas'),
-            # Noticia más reciente últimas 2 semanas
-            'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
-            # Cantidad de noticias totales
-            'total_noticias': n.count(),
-            # Noticias por mes, colocar en grafico
-            'noticias_por_mes': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
+        try:
+            estadisticas_universidades.append({
+                'nombre_corto': universidad.alias,
+                'nombre_largo': universidad.nombre,
+                # Suma de todas las visitas por universidad
+                'total_visitas': (n.aggregate(Sum('contador_visitas')))['contador_visitas__sum'],
+                # Noticia más vista de todo el tiempo
+                'noticia_mas_vista': n.latest('contador_visitas'),
+                # Noticia más reciente últimas 2 semanas
+                'noticia_mas_vista_reciente': n.filter(fecha__range=[date['last_date'], date['current_date']]).latest('contador_visitas'),
+                # Cantidad de noticias totales
+                'total_noticias': n.count(),
+                # Noticias por mes, colocar en grafico
+                'noticias_por_mes': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
 
-            'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
+                'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
+                
+            })
+
             
-        })
-
+        except Exception as e:
+            print("-------------------------")
+            print(universidad.alias)
+            print(e)
+            print("-------------------------")
 
 
 

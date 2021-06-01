@@ -29,7 +29,7 @@ def scraper(request):
             {'target':udec, 'name':'UDEC'},
             {'target':utalca, 'name':'UTALCA'},
             {'target':ulagos, 'name':'ULAGOS'},
-            {'target':unap, 'name':'UNAP'},
+            # {'target':unap, 'name':'UNAP'},
             {'target':ua, 'name':'UA'},
             {'target':uda, 'name':'UDA'},
             {'target':userena, 'name':'USERENA'},
@@ -65,7 +65,7 @@ def scraper(request):
         ubiobio() # Funcionando
         uda() # En Funcionando
         userena() # En Funcionando #Revisar
-        unap() # Funcionando
+        # unap() # Funcionando
         ua() # Funcionando
 
         uoh()
