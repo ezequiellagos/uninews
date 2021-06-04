@@ -2,7 +2,7 @@ astroid==2.2.5
 beautifulsoup4==4.6.3
 certifi==2019.3.9
 colorama==0.4.1
-Django==2.2.13
+Django==2.2.21
 feedparser==5.2.1
 isort==4.3.16
 lazy-object-proxy==1.3.1
