@@ -4,6 +4,7 @@ from .models import Universidad, Noticia, Region
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime, date, time, timedelta
 from django.db.models import Max, Sum, Q, Count
+from django.conf import settings
 
 from django.db.models.functions import ExtractYear
 from django.db.models.functions import TruncMonth
@@ -108,6 +109,7 @@ def statistics(request):
             
         except Exception as e:
             print("-------------------------")
+            print(settings.BASE_DIR + "/logs/")
             print(universidad.alias)
             print(e)
             log([
@@ -298,7 +300,7 @@ def log(content = [] ):
         content[i] = str(content[i]) + "\n"
 
     # Opening a file
-    file = open('logs/log_statistics.txt', 'a+')
+    file = open(settings.BASE_DIR + '/logs/' + 'log_statistics.txt', 'a+')
 
     # Text
     separator = "---------------------------------\n"
