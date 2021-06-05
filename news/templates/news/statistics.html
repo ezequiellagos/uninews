@@ -18,37 +18,48 @@
                     <h2>Estadísticas</h2>
                 </div>
             </div>
-
         </div>
         <!-- /row -->
 
+        <!-- Inicio Paneles Estadísticas -->
         <div class="row">
-            <div class="col-3">
-                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">General</a>
-                    {% comment %} 
-                    <a class="nav-link" id="v-pills-debug-tab" data-toggle="pill" href="#v-pills-debug" role="tab" aria-controls="v-pills-debug" aria-selected="false">Depuración</a>
-                    {% endcomment %}
+            <div class="d-flex align-items-start">
+                <div class="nav flex-column nav-pills me-5" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <!-- Botón General -->
+                    <button class="nav-link active" id="v-pills-general-tab" data-bs-toggle="pill" data-bs-target="#v-pills-general"
+                        type="button" role="tab" aria-controls="v-pills-general" aria-selected="true">General</button>
                     
+                    <!-- Botón Depuración -->
+                    <!-- <button class="nav-link" id="v-pills-depuracion-tab" data-bs-toggle="pill" data-bs-target="#v-pills-depuracion"
+                        type="button" role="tab" aria-controls="v-pills-depuracion" aria-selected="false">Depuración</button> -->
+                    
+                    <!-- Botones Universidades -->
                     {% for universidad in estadisticas_universidades %}
-                    <a class="nav-link" id="v-pills-{{universidad.nombre_corto}}-tab" data-toggle="pill" href="#v-pills-{{universidad.nombre_corto}}" role="tab" aria-controls="v-pills-{{universidad.nombre_corto}}" aria-selected="false"> {{ universidad.nombre_corto }} </a>
-                    {% endfor %}                    
+                        <!-- Botón {{universidad.nombre_corto}} -->
+                        <button class="nav-link" id="v-pills-{{universidad.nombre_corto}}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-{{universidad.nombre_corto}}"
+                            type="button" role="tab" aria-controls="v-pills-{{universidad.nombre_corto}}" aria-selected="false">{{universidad.nombre_corto}}</button>
+                    {% endfor %}
 
-                    <a class="nav-link" id="v-pills-other-tab" data-toggle="pill" href="#v-pills-other" role="tab" aria-controls="v-pills-other" aria-selected="false">Otros</a>
+                    <!-- Botón Otras Estadísticas -->
+                    <button class="nav-link" id="v-pills-otros-tab" data-bs-toggle="pill" data-bs-target="#v-pills-otros"
+                        type="button" role="tab" aria-controls="v-pills-otros" aria-selected="false">Otros</button>
                 </div>
-            </div>
-            <div class="col-9">
+
+                <!-- Acá empieza el contenido de las tabs -->
+
                 <div class="tab-content" id="v-pills-tabContent">
-                    <!-- Estadísticas generales -->
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <!-- Inicio Contenido General -->
+                    <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
+
+                        <h1>Estadísticas Generales</h1>
+                        <hr>
 
                         <!-- Grafico de calendario -->
-                        <div class="col-12">
+                        <div class="col">
                             <div id="calendar_basic" style="width: 1000px; height: 800px;"></div>
                         </div>
-
-
-                        <div class="col-12">
+                        
+                        <div class="col">
                             <h3>Cantidad de visitas por Universidad</h3>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-sm ">
@@ -64,17 +75,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {% for estadistica in estadisticas_universidades %}
+                                        {% for estadistica in estadisticas_universidades %}
                                         <tr>
                                             <td class="align-middle ">{{estadistica.nombre_corto}}</td>
                                             <td class="align-middle text-end">{{estadistica.total_noticias|intcomma}}</td>
                                             <td class="align-middle text-end">{{estadistica.total_visitas|intcomma}}</td>
                                             <td class="align-middle text-end">{{estadistica.noticia_mas_vista.contador_visitas|intcomma}}</td>
-                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}" title="{{estadistica.noticia_mas_vista.titulo}}">{{estadistica.noticia_mas_vista.titulo|truncatechars:15}}</a></td>
-                                            <td class="align-middle text-end">{{estadistica.noticia_mas_vista_reciente.contador_visitas|intcomma}}</td>
-                                            <td class="align-middle "><a class="btn-link" target="_blank" href="{% url 'detail' estadistica.noticia_mas_vista_reciente.id_noticia %}" title="{{estadistica.noticia_mas_vista_reciente.titulo}}">{{estadistica.noticia_mas_vista_reciente.titulo|truncatechars:15}}</a></td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank"
+                                                    href="{% url 'detail' estadistica.noticia_mas_vista.id_noticia %}"
+                                                    title="{{estadistica.noticia_mas_vista.titulo}}">{{estadistica.noticia_mas_vista.titulo|truncatechars:15}}</a>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                {{estadistica.noticia_mas_vista_reciente.contador_visitas|intcomma}}</td>
+                                            <td class="align-middle "><a class="btn-link" target="_blank"
+                                                    href="{% url 'detail' estadistica.noticia_mas_vista_reciente.id_noticia %}"
+                                                    title="{{estadistica.noticia_mas_vista_reciente.titulo}}">{{estadistica.noticia_mas_vista_reciente.titulo|truncatechars:15}}</a>
+                                            </td>
                                         </tr>
-                                    {% endfor %}
+                                        {% endfor %}
                                         <tr>
                                             <td>Total</td>
                                             <td class="align-middle text-end">{{estadisticas_generales.total_noticias|intcomma}}</td>
@@ -88,127 +106,145 @@
                                 </table>
                             </div>
                         </div>
-                        
                     </div>
+                    <!-- Fin Contenido General -->
+                    
+                    <!-- Inicio Contenido Depuración -->
+                    <div class="tab-pane fade" id="v-pills-depuracion" role="tabpanel" aria-labelledby="v-pills-depuracion-tab">
 
-                    <!-- Depuración -->
-                    <div class="tab-pane fade" id="v-pills-debug" role="tabpanel" aria-labelledby="v-pills-debug-tab">
-                        <div class="col-12">
-                            <h2>Depuración</h2>
-                            <hr>
+                        <h1>Depuración</h1>
+                        <hr>
+
+                        <div class="col">
                             <code>
                                 <h3>Estadísticas generales</h3>
                                 {{ estadisticas_generales.estadisticas_fecha }}
-                                <hr>
-                                <h3>Estadísticas por universidad</h3>
+                                    <hr>
+                                    <h3>Estadísticas por universidad</h3>
                                 {{ estadisticas_universidades }}
                             </code>
                         </div>
                     </div>
+                    <!-- Fin Contenido Depuración -->
 
-                    <!-- Panel para universidades -->
+                    <!-- Inicio Contenidos Universidades -->
                     {% for universidad in estadisticas_universidades %}
-                    <div class="tab-pane fade" id="v-pills-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="v-pills-{{universidad.nombre_corto}}-tab">
+                        <!-- Inicio Contenido Universidad {{universidad.nombre_corto}} -->
+                        <div class="tab-pane fade" id="v-pills-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="v-pills-{{universidad.nombre_corto}}-tab">
 
-                        <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-{{universidad.nombre_corto}}-general-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-general" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-general" aria-selected="true">General</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico1-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico1" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico1" aria-selected="false">Gráficos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-{{universidad.nombre_corto}}-grafico2-tab" data-toggle="pill" href="#pills-{{universidad.nombre_corto}}-grafico2" role="tab" aria-controls="pills-{{universidad.nombre_corto}}-grafico2" aria-selected="false">No definido</a>
-                            </li>
-                        </ul>
+                            <div class="row">
+                                <h1>{{universidad.nombre_largo}}</h1>
+                                <hr>
 
-                        <div class="tab-content" id="pills-tabContent">
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <!-- Botón Información General {{universidad.nombre_corto}} -->
+                                        <button class="nav-link active" id="nav-info-general-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab" data-bs-target="#nav-info-general-{{universidad.nombre_corto}}" type="button"
+                                            role="tab" aria-controls="nav-info-general-{{universidad.nombre_corto}}" aria-selected="true">General</button>
 
-                            <!-- Información general -->
-                            <div class="tab-pane fade show active" id="pills-{{universidad.nombre_corto}}-general" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-general-tab">
-                                <table class="table table-bordered table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <td>Nombre:</td>
-                                            <td>{{universidad.nombre_largo}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Alias:</td>
-                                            <td>{{universidad.nombre_corto}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Cantidad total de noticias:</td>
-                                            <td>{{universidad.total_noticias|intcomma}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Cantidad total de visitas:</td>
-                                            <td>{{universidad.total_visitas|intcomma}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Noticia más vista:</td>
-                                            <td><a target="_blank" href="{% url 'detail' universidad.noticia_mas_vista.id_noticia %}">{{universidad.noticia_mas_vista.titulo}}</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Visitas de noticia más vista:</td>
-                                            <td>{{universidad.noticia_mas_vista.contador_visitas|intcomma}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                        <!-- Botón Información Gráfico 1 {{universidad.nombre_corto}} -->
+                                        <button class="nav-link" id="nav-grafico-1-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab" data-bs-target="#nav-grafico-1-{{universidad.nombre_corto}}" type="button"
+                                            role="tab" aria-controls="nav-grafico-1-{{universidad.nombre_corto}}" aria-selected="false">Gráfico 1</button>
 
-                            <!-- Gráfico 1 -->
-                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico1" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico1-tab">
-                                <p>Cantidad de noticias agregadas en el tiempo</p>
-                                <div class="col-12">
-                                    <div id="noticias_por_mes_{{universidad.nombre_corto}}"></div>
+                                        <!-- Botón Información Gráfico 2 {{universidad.nombre_corto}} -->
+                                        <button class="nav-link" id="nav-grafico-2-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab" data-bs-target="#nav-grafico-2-{{universidad.nombre_corto}}" type="button"
+                                            role="tab" aria-controls="nav-grafico-2-{{universidad.nombre_corto}}" aria-selected="false">Gráfico 2</button>
+                                    </div>
+                                </nav>
+
+                                <div class="tab-content" id="nav-tabContent">
+                                    <!-- Inicio Contenido General {{universidad.nombre_corto}} -->
+                                    <div class="tab-pane fade show active" id="nav-info-general-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="nav-info-general-{{universidad.nombre_corto}}-tab">
+                                        <table class="table table-bordered table-sm">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Nombre:</td>
+                                                    <td>{{universidad.nombre_largo}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Alias:</td>
+                                                    <td>{{universidad.nombre_corto}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cantidad total de noticias:</td>
+                                                    <td>{{universidad.total_noticias|intcomma}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cantidad total de visitas:</td>
+                                                    <td>{{universidad.total_visitas|intcomma}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Noticia más vista:</td>
+                                                    <td><a target="_blank"
+                                                            href="{% url 'detail' universidad.noticia_mas_vista.id_noticia %}">{{universidad.noticia_mas_vista.titulo}}</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Visitas de noticia más vista:</td>
+                                                    <td>{{universidad.noticia_mas_vista.contador_visitas|intcomma}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Fin Contenido General {{universidad.nombre_corto}} -->
+
+                                    <!-- Inicio Contenido Gráfico 1 {{universidad.nombre_corto}} -->
+                                    <div class="tab-pane fade" id="nav-grafico-1-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="nav-grafico-1-{{universidad.nombre_corto}}-tab">
+                                        <p>Cantidad de noticias agregadas en el tiempo</p>
+                                        <div class="col-12">
+                                            <div id="noticias_por_mes_{{universidad.nombre_corto}}"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Contenido Gráfico 1 {{universidad.nombre_corto}} -->
+
+                                    <!-- Inicio Contenido Gráfico 2 {{universidad.nombre_corto}} -->
+                                    <div class="tab-pane fade" id="nav-grafico-2-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="nav-grafico-2-{{universidad.nombre_corto}}-tab">
+                                        <table class="table table-bordered table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mes</th>
+                                                    <th>Noticias</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for month in universidad.noticias_por_mes %}
+                                                <tr>
+                                                    <td>{{month.month|date:"F Y"}}</td>
+                                                    <td>{{month.total}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Fin Contenido Gráfico 2 {{universidad.nombre_corto}} -->
                                 </div>
                             </div>
 
-                            <!-- Gráfico 2 -->
-                            <div class="tab-pane fade" id="pills-{{universidad.nombre_corto}}-grafico2" role="tabpanel" aria-labelledby="pills-{{universidad.nombre_corto}}-grafico2-tab">
-                                <table class="table table-bordered table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Mes</th>
-                                            <th>Noticias</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for month in universidad.noticias_por_mes %}
-                                        <tr>
-                                            <td>{{month.month|date:"F Y"}}</td>
-                                            <td>{{month.total}}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        
                         </div>
-
-                    </div>
+                        <!-- Fin Contenido Universidad {{universidad.nombre_corto}} -->
                     {% endfor %}
+                    <!-- Fin Contenidos Universidades -->
 
-                    <!-- Otra información -->
-                    <div class="tab-pane fade" id="v-pills-other" role="tabpanel" aria-labelledby="v-pills-other-tab">
+                    <!-- Inicio Contenido Otras Estadísticas -->
+                    <div class="tab-pane fade" id="v-pills-otros" role="tabpanel" aria-labelledby="v-pills-otros-tab">
+                        <h1>Otras Estadísticas</h1>
+                        <hr>
+
                         <div class="col-12">
                             <!--Div that will hold the pie chart-->
                             <div id="piechart_universidades_noticias_mas_vistas" style="width: 900px; height: 500px;"></div>
                         </div>
-
+                        
                         <div class="col-12">
                             <div id="barchart_universidades_noticias_mas_vistas"></div>
                         </div>
                     </div>
+                    <!-- Inicio Contenido Otras Estadísticas -->
                 </div>
             </div>
         </div>
+        <!-- Fin Paneles Estadísticas -->
 
-        <!-- row -->
-        <div class="row">
-
-        </div>
-        <!-- /row -->
     </div>
     <!-- /container -->
 </div>
