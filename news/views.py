@@ -80,8 +80,6 @@ def statistics(request):
     total_visitas = 0
 
     for universidad in universidades:
-        if( universidad.alias == 'UNAP' ):
-            continue
 
         n = news.filter(id_universidad__alias=universidad.alias)
 
@@ -112,6 +110,10 @@ def statistics(request):
             print("-------------------------")
             print(universidad.alias)
             print(e)
+            log([
+                universidad.alias,
+                e
+            ])
             print("-------------------------")
 
 
@@ -290,3 +292,23 @@ def topicNewWidget(request):
 
     return render(request, "news/thematic.html", {'news':news, 'topic':topic})
 
+
+def log(content = [] ):
+    for i in range(len(content)):
+        content[i] = str(content[i]) + "\n"
+
+    # Opening a file
+    file = open('logs/log_statistics.txt', 'a+')
+
+    # Text
+    separator = "---------------------------------\n"
+    dateTimeObj = datetime.now(tz=None)
+    timestamp = dateTimeObj.strftime("%d-%b-%Y %H:%M:%S.%f") + "\n"
+
+    # Write
+    file.write(separator)
+    file.write(timestamp)
+    file.writelines(content)
+
+    # Closing file
+    file.close()
