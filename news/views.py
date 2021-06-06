@@ -112,10 +112,10 @@ def statistics(request):
             print(settings.BASE_DIR + "/logs/")
             print(universidad.alias)
             print(e)
-            log([
-                universidad.alias,
-                e
-            ])
+            # log([
+            #     universidad.alias,
+            #     e
+            # ])
             print("-------------------------")
 
 
