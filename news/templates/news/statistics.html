@@ -30,8 +30,8 @@
                         type="button" role="tab" aria-controls="v-pills-general" aria-selected="true">General</button>
                     
                     <!-- Botón Depuración -->
-                    <!-- <button class="nav-link" id="v-pills-depuracion-tab" data-bs-toggle="pill" data-bs-target="#v-pills-depuracion"
-                        type="button" role="tab" aria-controls="v-pills-depuracion" aria-selected="false">Depuración</button> -->
+                    <button class="nav-link" id="v-pills-depuracion-tab" data-bs-toggle="pill" data-bs-target="#v-pills-depuracion"
+                        type="button" role="tab" aria-controls="v-pills-depuracion" aria-selected="false">Depuración</button>
                     
                     <!-- Botones Universidades -->
                     {% for universidad in estadisticas_universidades %}
@@ -149,6 +149,16 @@
                                         <!-- Botón Información Gráfico 2 {{universidad.nombre_corto}} -->
                                         <button class="nav-link" id="nav-grafico-2-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab" data-bs-target="#nav-grafico-2-{{universidad.nombre_corto}}" type="button"
                                             role="tab" aria-controls="nav-grafico-2-{{universidad.nombre_corto}}" aria-selected="false">Gráfico 2</button>
+
+                                        <!-- Botón Información Gráfico 3 {{universidad.nombre_corto}} -->
+                                        <button class="nav-link" id="nav-grafico-3-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-grafico-3-{{universidad.nombre_corto}}" type="button" role="tab"
+                                            aria-controls="nav-grafico-3-{{universidad.nombre_corto}}" aria-selected="false">Gráfico 3</button>
+
+                                        <!-- Botón Información Gráfico 4 {{universidad.nombre_corto}} -->
+                                        <button class="nav-link" id="nav-grafico-4-{{universidad.nombre_corto}}-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-grafico-4-{{universidad.nombre_corto}}" type="button" role="tab"
+                                            aria-controls="nav-grafico-4-{{universidad.nombre_corto}}" aria-selected="false">Gráfico 4</button>
                                     </div>
                                 </nav>
 
@@ -190,33 +200,59 @@
 
                                     <!-- Inicio Contenido Gráfico 1 {{universidad.nombre_corto}} -->
                                     <div class="tab-pane fade" id="nav-grafico-1-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="nav-grafico-1-{{universidad.nombre_corto}}-tab">
-                                        <p>Cantidad de noticias agregadas en el tiempo</p>
-                                        <div class="col-12">
-                                            <div id="noticias_por_mes_{{universidad.nombre_corto}}"></div>
+                                        <div class="row mt-3">
+                                            <h3>Cantidad de noticias agregadas en el tiempo</h3>
+                                            <div class="col-12 mt-3">
+                                                <div id="noticias_por_mes_{{universidad.nombre_corto}}"></div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Fin Contenido Gráfico 1 {{universidad.nombre_corto}} -->
 
                                     <!-- Inicio Contenido Gráfico 2 {{universidad.nombre_corto}} -->
                                     <div class="tab-pane fade" id="nav-grafico-2-{{universidad.nombre_corto}}" role="tabpanel" aria-labelledby="nav-grafico-2-{{universidad.nombre_corto}}-tab">
-                                        <table class="table table-bordered table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Mes</th>
-                                                    <th>Noticias</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for month in universidad.noticias_por_mes %}
-                                                <tr>
-                                                    <td>{{month.month|date:"F Y"}}</td>
-                                                    <td>{{month.total}}</td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
+                                        <div class="row">
+                                            <h3 class="my-3">Cantidad noticias por mes</h3>
+                                            <table class="table table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Mes</th>
+                                                        <th scope="col">Noticias</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    {% for month in universidad.noticias_por_mes %}
+                                                        <tr>
+                                                            <td>{{month.month|date:"F Y"}}</td>
+                                                            <td>{{month.total}}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <!-- Fin Contenido Gráfico 2 {{universidad.nombre_corto}} -->
+
+                                    <!-- Inicio Contenido Gráfico 3 {{universidad.nombre_corto}} -->
+                                    <div class="tab-pane fade" id="nav-grafico-3-{{universidad.nombre_corto}}" role="tabpanel"
+                                        aria-labelledby="nav-grafico-3-{{universidad.nombre_corto}}-tab">
+                                        <div class="row">
+                                            <h3 class="my-3">En construcción</h3>
+                                            <div id="G3_{{universidad.nombre_corto}}" style="width: 600px; height: 500px;"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Contenido Gráfico 3 {{universidad.nombre_corto}} -->
+
+                                    <!-- Inicio Contenido Gráfico 4 {{universidad.nombre_corto}} -->
+                                    <div class="tab-pane fade" id="nav-grafico-4-{{universidad.nombre_corto}}" role="tabpanel"
+                                        aria-labelledby="nav-grafico-4-{{universidad.nombre_corto}}-tab">
+                                        <div class="row">
+                                            <h3 class="my-3">Cantidad de noticias anuales</h3>
+                                            <div id="G4_{{universidad.nombre_corto}}" style="width: 600px; height: 500px;"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Contenido Gráfico 4 {{universidad.nombre_corto}} -->
                                 </div>
                             </div>
 
@@ -264,55 +300,154 @@
     // Gráfico de lineas - cantidad de noticias por mes
     {% for universidad in estadisticas_universidades %}
     
-    google.charts.setOnLoadCallback(noticias_por_mes_{{universidad.nombre_corto}});
-    function noticias_por_mes_{{universidad.nombre_corto}}() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Mes');
-        data.addColumn('number', 'Noticias');
+        google.charts.setOnLoadCallback(noticias_por_mes_{{universidad.nombre_corto}});
+        function noticias_por_mes_{{universidad.nombre_corto}}() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Mes');
+            data.addColumn('number', 'Noticias');
 
-        data.addRows([
-            {% for month in universidad.noticias_por_mes %}
-                [new Date({{month.month|date:"Y, m-1, d"}}),  {{month.total}}],
-            {% endfor %}
-        ]);
+            data.addRows([
+                {% for month in universidad.noticias_por_mes %}
+                    [new Date({{month.month|date:"Y, m-1, d"}}), {{month.total}}],
+                {% endfor %}
+            ]);
 
-        // Create three formatters in three styles.
-        var formatter_date = new google.visualization.DateFormat({pattern: 'MMMM yyyy'});
+            // Create three formatters in three styles.
+            var formatter_date = new google.visualization.DateFormat({pattern: 'MMMM yyyy'});
 
-        // Reformat our data.
-        formatter_date.format(data, 0);
+            // Reformat our data.
+            formatter_date.format(data, 0);
 
-        var options = {
-            title: 'Noticias por mes',
-            curveType: 'none',
-            legend: { position: 'right' },
-            chartArea:{left:20,top:20,width:"75%",height:"75%"},
-            width: 900,
-            height: 300,
-            explorer: {
-                axis: 'horizontal',
-                keepInBounds: true,
-                maxZoomIn: 4.0
-            },
-            hAxis: {
-                title: 'Meses',
-                format: 'MMM yy',
-                slantedText: true,
-                logscale: true
-            },
-            vAxis: {
-                title: 'Noticias'
-            }
+            var options = {
+                title: 'Noticias por mes',
+                curveType: 'none',
+                legend: { position: 'right' },
+                chartArea:{left:20,top:20,width:"75%",height:"75%"},
+                width: 900,
+                height: 300,
+                explorer: {
+                    axis: 'horizontal',
+                    keepInBounds: true,
+                    maxZoomIn: 4.0
+                },
+                hAxis: {
+                    title: 'Meses',
+                    format: 'MMM yy',
+                    slantedText: true,
+                    logscale: true
+                },
+                vAxis: {
+                    title: 'Noticias'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('noticias_por_mes_{{universidad.nombre_corto}}'));
+            chart.draw(data, options);
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('noticias_por_mes_{{universidad.nombre_corto}}'));
-        chart.draw(data, options);
-    }
     {% endfor %}
 
+    {% comment %}
+    {% for universidad in estadisticas_universidades %}
+        google.charts.setOnLoadCallback(G3_{{universidad.nombre_corto}});
+
+        function G3_{{universidad.nombre_corto}}() {
+            // var data = google.visualization.arrayToDataTable([
+            //     ['Mes', '2017', '2018', '2019', '2020', '2021'],
+            //     ['Enero', 1000, 400, 100, 600, 700],
+            //     ['Febrero', 1170, 460, 654, 111, 999],
+            //     ['Marzo', 660, 1120, 543, 678, 90],
+            //     ['Abril', 1030, 540, 76, 998, 656]
+            // ]);
+
+            var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Mes');
+                    data.addColumn('number', 'Noticias');
+
+                    data.addRows([
+                        ['Mes', '2017', '2018', '2019', '2020', '2021'],
+                        {% for year in universidad.noticias_por_mes %}
+                            ['{{ year.month|date: "F" }}', {{ year.total }}],
+                        {% endfor %}
+                    ]);
+
+            // Create three formatters in three styles.
+            var formatter_date = new google.visualization.DateFormat({ pattern: 'MMMM yyyy' });
+
+            var options = {
+                title: 'Comparación anual y mensual de noticias',
+                chartArea: { left: 20, top: 20, width: "75%", height: "75%" },
+                width: 900,
+                height: 300,
+                hAxis: { title: 'Mes', titleTextStyle: { color: '#333' }, format: 'decimal'},
+                vAxis: { minValue: 0 }
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('G3_{{universidad.nombre_corto}}'));
+            chart.draw(data, options);
+        };
+
+
+        
+    {% endfor %}
+    {% endcomment %}
 
 
 
+
+    {% for universidad in estadisticas_universidades %}
+        // Gráfico 4 - Noticias por año
+        google.charts.setOnLoadCallback(grafico_4_{{ universidad.nombre_corto }});
+        function grafico_4_{{universidad.nombre_corto}}() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Año');
+            // data.addColumn('date', 'Año');
+            data.addColumn('number', 'Noticias');
+
+            data.addRows([
+                {% for year in universidad.noticias_por_anio %}
+                    // [new Date({{ year.year|date:"Y, m-1, d "}}), {{ year.total }}],
+                    ['{{ year.year|date:"Y"}}', {{ year.total }}],
+                {% endfor %}
+            ]);
+            // Create three formatters in three styles.
+            var formatter_date = new google.visualization.DateFormat({ pattern: 'Año yyyy' });
+
+            // Reformat our data.
+            formatter_date.format(data, 0);
+
+            var view = new google.visualization.DataView(data);
+            // view.setColumns([0, 1,
+            //     {
+            //         calc: "stringify",
+            //         sourceColumn: 1,
+            //         type: "string",
+            //         role: "annotation"
+            //     }]);
+
+            var options = {
+                title: "Noticias por año",
+                width: 900,
+                height: 300,
+                bar: { groupWidth: "80%" },
+                legend: { position: "none" },
+                hAxis: {
+                    title: 'Años',
+                    // format: 'YYYY',
+                    slantedText: true,
+                    // logscale: false,
+                    // format: 'string',
+                },
+                vAxis: {
+                    title: 'Noticias',
+                    format: 'short',
+                    minValue: 0,
+                },
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("G4_{{universidad.nombre_corto}}"));
+            chart.draw(view, options);
+        };
+    {% endfor %}
 
 
 

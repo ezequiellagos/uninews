@@ -1,3 +1,4 @@
+from django.db.models.functions.datetime import TruncYear
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.template import RequestContext, Template
 from .models import Universidad, Noticia, Region
@@ -101,21 +102,28 @@ def statistics(request):
                 'total_noticias': n.count(),
                 # Noticias por mes, colocar en grafico
                 'noticias_por_mes': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
+                # Noticias por año
+                'noticias_por_anio': n.annotate(year=TruncYear('fecha')).values('year').annotate(total=Count('id_noticia')).order_by(),
+                # Noticias por mes por año
+                # 'noticias_por_mes_por_anio': n.annotate(year=TruncYear('fecha')).values('year').annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
 
-                'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
+                # 'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
                 
             })
+
+            # now = datetime.now()
+            # for year in range(2017, now.year):
+            #     print(year)
+
+            # print("-------------------------")
+            # print(estadisticas_universidades['noticias_por_anio'].query)
+            # print("-------------------------")
 
             
         except Exception as e:
             print("-------------------------")
-            print(settings.BASE_DIR + "/logs/")
             print(universidad.alias)
             print(e)
-            # log([
-            #     universidad.alias,
-            #     e
-            # ])
             print("-------------------------")
 
 
@@ -295,22 +303,3 @@ def topicNewWidget(request):
     return render(request, "news/thematic.html", {'news':news, 'topic':topic})
 
 
-def log(content = [] ):
-    for i in range(len(content)):
-        content[i] = str(content[i]) + "\n"
-
-    # Opening a file
-    file = open(settings.BASE_DIR + '/logs/' + 'log_statistics.txt', 'a+')
-
-    # Text
-    separator = "---------------------------------\n"
-    dateTimeObj = datetime.now(tz=None)
-    timestamp = dateTimeObj.strftime("%d-%b-%Y %H:%M:%S.%f") + "\n"
-
-    # Write
-    file.write(separator)
-    file.write(timestamp)
-    file.writelines(content)
-
-    # Closing file
-    file.close()
