@@ -30,8 +30,8 @@
                         type="button" role="tab" aria-controls="v-pills-general" aria-selected="true">General</button>
                     
                     <!-- Botón Depuración -->
-                    <button class="nav-link" id="v-pills-depuracion-tab" data-bs-toggle="pill" data-bs-target="#v-pills-depuracion"
-                        type="button" role="tab" aria-controls="v-pills-depuracion" aria-selected="false">Depuración</button>
+                    <!-- <button class="nav-link" id="v-pills-depuracion-tab" data-bs-toggle="pill" data-bs-target="#v-pills-depuracion"
+                        type="button" role="tab" aria-controls="v-pills-depuracion" aria-selected="false">Depuración</button> -->
                     
                     <!-- Botones Universidades -->
                     {% for universidad in estadisticas_universidades %}
@@ -115,6 +115,7 @@
                         <h1>Depuración</h1>
                         <hr>
 
+                        {% comment %}
                         <div class="col">
                             <code>
                                 <h3>Estadísticas generales</h3>
@@ -124,6 +125,7 @@
                                 {{ estadisticas_universidades }}
                             </code>
                         </div>
+                        {% endcomment %}
                     </div>
                     <!-- Fin Contenido Depuración -->
 
@@ -347,21 +349,23 @@
             chart.draw(data, options);
         };
 
+    {% endfor %}
 
-        
+    
 
+    {% for universidad in estadisticas_universidades %}
         // Gráfico 4 - Noticias por año
-            google.charts.setOnLoadCallback(grafico_4_{{ universidad.nombre_corto }});
-            function grafico_4_{ { universidad.nombre_corto } } () {
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Año');
-                // data.addColumn('date', 'Año');
-                data.addColumn('number', 'Noticias');
+        google.charts.setOnLoadCallback(grafico_4_{{ universidad.nombre_corto }});
+        function grafico_4_{{universidad.nombre_corto}}() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Año');
+            // data.addColumn('date', 'Año');
+            data.addColumn('number', 'Noticias');
 
-                data.addRows([
-                    {% for year in universidad.noticias_por_anio %}
-            // [new Date({{ year.year|date:"Y, m-1, d "}}), {{ year.total }}],
-            ['{{ year.year|date:"Y"}}', {{ year.total }}],
+            data.addRows([
+                {% for year in universidad.noticias_por_anio %}
+                    // [new Date({{ year.year|date:"Y, m-1, d "}}), {{ year.total }}],
+                    ['{{ year.year|date:"Y"}}', {{ year.total }}],
                 {% endfor %}
             ]);
             // Create three formatters in three styles.
@@ -401,7 +405,6 @@
             var chart = new google.visualization.ColumnChart(document.getElementById("G4_{{universidad.nombre_corto}}"));
             chart.draw(view, options);
         };
-
     {% endfor %}
 
 
