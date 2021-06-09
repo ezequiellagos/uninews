@@ -1,3 +1,4 @@
+
 from django.db.models.functions.datetime import TruncYear
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.template import RequestContext, Template
@@ -11,6 +12,16 @@ from django.db.models.functions import ExtractYear
 from django.db.models.functions import TruncMonth
 
 import unidecode
+
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk import tokenize
+import urllib
+import base64
+import io
 
 CANTIDAD_NOTICIAS_MAS_VISTAS = 3
 
@@ -76,13 +87,15 @@ def statistics(request):
     news = Noticia.objects.order_by('-contador_visitas')
     universidades = Universidad.objects.order_by('-alias')
 
+
+    nltk.download('stopwords')
+
     date = mostViewed()
     estadisticas_universidades = []
     total_noticias = 0
     total_visitas = 0
 
     for universidad in universidades:
-
         n = news.filter(id_universidad__alias=universidad.alias)
 
         total_noticias += n.count()
@@ -104,8 +117,8 @@ def statistics(request):
                 'noticias_por_mes': n.annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
                 # Noticias por año
                 'noticias_por_anio': n.annotate(year=TruncYear('fecha')).values('year').annotate(total=Count('id_noticia')).order_by(),
-                # Noticias por mes por año
-                # 'noticias_por_mes_por_anio': n.annotate(year=TruncYear('fecha')).values('year').annotate(month=TruncMonth('fecha')).values('month').annotate(total=Count('id_noticia')).order_by(),
+                # Nube de palabras
+                'nube_de_palabras': word_cloud(list(n.values('titulo', 'bajada'))),
 
                 # 'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
                 
@@ -116,7 +129,7 @@ def statistics(request):
             #     print(year)
 
             # print("-------------------------")
-            # print(estadisticas_universidades['noticias_por_anio'].query)
+            # print(estadisticas_universidades['nube_de_palabras'])
             # print("-------------------------")
 
             
@@ -125,8 +138,6 @@ def statistics(request):
             print(universidad.alias)
             print(e)
             print("-------------------------")
-
-
 
 
 # agregar una estadisticas que sea la tasa de crecimiento mensual por universidad y otra de la plataforma en cantidad de noticias
@@ -142,6 +153,42 @@ def statistics(request):
         'estadisticas_universidades':estadisticas_universidades, 
         'estadisticas_generales':estadisticas_generales
         })
+
+
+def word_cloud(lista):
+    comment_words = ''
+    stopwords_es = set(stopwords.words('spanish'))
+
+    for val in lista:
+        # typecaste each val to string
+        val = str(val['titulo'] + ' ' + val['bajada'])
+
+        # split the value
+        tokens = val.split()
+
+        # Converts each token into lowercase
+        for i in range(len(tokens)):
+            tokens[i] = tokens[i].lower()
+
+        comment_words += " ".join(tokens)+" "
+
+    wordcloud = WordCloud(width=800, height=800,
+                        background_color='white',
+                        stopwords=stopwords_es,
+                        min_font_size=10).generate(comment_words)
+
+    # plot the WordCloud image
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud)
+    plt.axis("off")
+
+    image = io.BytesIO()
+    plt.savefig(image, format='png')
+    image.seek(0)  # rewind the data
+    string = base64.b64encode(image.read())
+
+    image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
+    return image_64
 
 def search(request):
     info = False

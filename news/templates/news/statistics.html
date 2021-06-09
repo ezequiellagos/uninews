@@ -238,8 +238,10 @@
                                     <div class="tab-pane fade" id="nav-grafico-3-{{universidad.nombre_corto}}" role="tabpanel"
                                         aria-labelledby="nav-grafico-3-{{universidad.nombre_corto}}-tab">
                                         <div class="row">
-                                            <h3 class="my-3">En construcción</h3>
-                                            <div id="G3_{{universidad.nombre_corto}}" style="width: 600px; height: 500px;"></div>
+                                            <h3 class="my-3">Nube de palabras en título y bajada de la noticia</h3>
+                                            <div id="G3_{{universidad.nombre_corto}}" >
+                                                <img src="{{ universidad.nube_de_palabras }}" alt="Nube de Palabras {{universidad.nombre_largo}}">
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Fin Contenido Gráfico 3 {{universidad.nombre_corto}} -->
@@ -345,69 +347,21 @@
             chart.draw(data, options);
         };
 
-    {% endfor %}
-
-    {% comment %}
-    {% for universidad in estadisticas_universidades %}
-        google.charts.setOnLoadCallback(G3_{{universidad.nombre_corto}});
-
-        function G3_{{universidad.nombre_corto}}() {
-            // var data = google.visualization.arrayToDataTable([
-            //     ['Mes', '2017', '2018', '2019', '2020', '2021'],
-            //     ['Enero', 1000, 400, 100, 600, 700],
-            //     ['Febrero', 1170, 460, 654, 111, 999],
-            //     ['Marzo', 660, 1120, 543, 678, 90],
-            //     ['Abril', 1030, 540, 76, 998, 656]
-            // ]);
-
-            var data = new google.visualization.DataTable();
-                    data.addColumn('string', 'Mes');
-                    data.addColumn('number', 'Noticias');
-
-                    data.addRows([
-                        ['Mes', '2017', '2018', '2019', '2020', '2021'],
-                        {% for year in universidad.noticias_por_mes %}
-                            ['{{ year.month|date: "F" }}', {{ year.total }}],
-                        {% endfor %}
-                    ]);
-
-            // Create three formatters in three styles.
-            var formatter_date = new google.visualization.DateFormat({ pattern: 'MMMM yyyy' });
-
-            var options = {
-                title: 'Comparación anual y mensual de noticias',
-                chartArea: { left: 20, top: 20, width: "75%", height: "75%" },
-                width: 900,
-                height: 300,
-                hAxis: { title: 'Mes', titleTextStyle: { color: '#333' }, format: 'decimal'},
-                vAxis: { minValue: 0 }
-            };
-
-            var chart = new google.visualization.AreaChart(document.getElementById('G3_{{universidad.nombre_corto}}'));
-            chart.draw(data, options);
-        };
-
 
         
-    {% endfor %}
-    {% endcomment %}
 
-
-
-
-    {% for universidad in estadisticas_universidades %}
         // Gráfico 4 - Noticias por año
-        google.charts.setOnLoadCallback(grafico_4_{{ universidad.nombre_corto }});
-        function grafico_4_{{universidad.nombre_corto}}() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Año');
-            // data.addColumn('date', 'Año');
-            data.addColumn('number', 'Noticias');
+            google.charts.setOnLoadCallback(grafico_4_{{ universidad.nombre_corto }});
+            function grafico_4_{ { universidad.nombre_corto } } () {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Año');
+                // data.addColumn('date', 'Año');
+                data.addColumn('number', 'Noticias');
 
-            data.addRows([
-                {% for year in universidad.noticias_por_anio %}
-                    // [new Date({{ year.year|date:"Y, m-1, d "}}), {{ year.total }}],
-                    ['{{ year.year|date:"Y"}}', {{ year.total }}],
+                data.addRows([
+                    {% for year in universidad.noticias_por_anio %}
+            // [new Date({{ year.year|date:"Y, m-1, d "}}), {{ year.total }}],
+            ['{{ year.year|date:"Y"}}', {{ year.total }}],
                 {% endfor %}
             ]);
             // Create three formatters in three styles.
@@ -447,9 +401,8 @@
             var chart = new google.visualization.ColumnChart(document.getElementById("G4_{{universidad.nombre_corto}}"));
             chart.draw(view, options);
         };
+
     {% endfor %}
-
-
 
 
 
