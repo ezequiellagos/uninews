@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '4wuekdibk*_leap&e*3n8i1jk%_qyp-22f)42mum(rrp%$5lc#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['uninews.datoslab.cl', '127.0.0.1']
 
