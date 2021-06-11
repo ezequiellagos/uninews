@@ -13,15 +13,15 @@ from django.db.models.functions import TruncMonth
 
 import unidecode
 
-from wordcloud import WordCloud, STOPWORDS
-import matplotlib.pyplot as plt
-import pandas as pd
-import nltk
-from nltk.corpus import stopwords
-from nltk import tokenize
-import urllib
-import base64
-import io
+# from wordcloud import WordCloud, STOPWORDS
+# import matplotlib.pyplot as plt
+# import pandas as pd
+# import nltk
+# from nltk.corpus import stopwords
+# from nltk import tokenize
+# import urllib
+# import base64
+# import io
 
 CANTIDAD_NOTICIAS_MAS_VISTAS = 3
 
@@ -88,7 +88,7 @@ def statistics(request):
     universidades = Universidad.objects.order_by('-alias')
 
 
-    nltk.download('stopwords')
+    # nltk.download('stopwords')
 
     date = mostViewed()
     estadisticas_universidades = []
@@ -118,7 +118,7 @@ def statistics(request):
                 # Noticias por año
                 'noticias_por_anio': n.annotate(year=TruncYear('fecha')).values('year').annotate(total=Count('id_noticia')).order_by(),
                 # Nube de palabras
-                'nube_de_palabras': word_cloud(list(n.values('titulo', 'bajada'))),
+                # 'nube_de_palabras': word_cloud(list(n.values('titulo', 'bajada'))),
 
                 # 'test': n.extra(select={'day': 'date( fecha )'}).values('day').annotate(noticias=Count('id_noticia')).order_by('fecha'),
                 
