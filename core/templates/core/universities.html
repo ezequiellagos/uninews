@@ -8,40 +8,63 @@
 
 <!-- section -->
 <div class="section">
-    <!-- container -->
-    <div class="container">
-        <!-- row -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="section-title">
-                    <h2>Universidades</h2>
-                </div>
-            </div>
 
-            {% for university in universities %}
-            <!-- post -->
-            <div class="col-md-4">
-                <div class="post">
-                    {% with "./img/universidades/"|add:university.alias|lower|add:".png" as university_logo %}
-                    <a class="post-img" href="{% url 'university' university.alias %}" target="_self"><img src="{% static university_logo %}" alt="" class="img-fluid" style="max-height: 15em; object-fit: cover;"></a>
-                    {% endwith %}
-                    <div class="post-body">
-                        <div class="post-meta">
-                            <a class="post-category cat-{{university.alias}}" href="{% url 'university' university.alias %}">{{university.alias}}</a>
-                        </div>
-                        <h3 class="post-title"><a href="{% url 'university' university.alias %}" target="_self" style="text-decoration:none;">{{university.nombre}}</a></h3>
+    <div class="album py-5 ">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h2>Universidades</h2>
                     </div>
                 </div>
             </div>
-            <!-- /post -->
-            {% endfor %}
+    
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                
+                {% for university in universities %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <!-- Imagen -->
+                            <div class="div-imagen">
+                                {% with "./img/universidades/"|add:university.alias|lower|add:".png" as university_logo %}
+                                    <a class="" href="{% url 'university' university.alias %}" target="_self">
+                                        <img src="{% static university_logo %}" alt="" class="card-img-top no-image" width="100%" height="auto">
+                                    </a>
+                                {% endwith %}
+                            </div>
+                            
+                            <!-- Cuerpo -->
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <a href="{% url 'university' university.alias %}" class="text-decoration-none" target="_self">
+                                        {{ university.nombre }}
+                                    </a>
+                                </p>
 
-            <div class="clearfix visible-md visible-lg"></div>
+                                <!-- Botones -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'university' university.alias %}" class="btn btn-sm btn-outline-secondary text-decoration-none text-white cat-{{university.alias}}">
+                                            {{university.alias}}
+                                        </a>
+
+                                    
+
+                                    </div>
+                                    <small class="text-muted">{{new.fecha}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+            
 
         </div>
-        <!-- /row -->
     </div>
-    <!-- /container -->
+
 </div>
 <!-- /section -->
 
