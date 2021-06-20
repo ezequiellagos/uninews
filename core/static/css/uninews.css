@@ -1,3 +1,28 @@
+:root{
+    --color-pucv: #a75154;
+    --color-ucn: #BD6222;
+    --color-utfsm: #f7ae00;
+    --color-upla: #0099cc;
+    --color-uv: #003399;
+    --color-udec: #9c9a9a;
+    --color-utalca: #AE0E36;
+    --color-ulagos: #056563;
+    --color-ucsc: #d10024;
+    --color-ubiobio: #054993;
+    --color-unap: #004b80;
+    --color-ua: #0c5dc5;
+    --color-uda: #364b57;
+    --color-userena: #003cff;
+    --color-uoh: #0073b8;
+    --color-ucm: #003cff;
+    --color-ufro: #003cff;
+    --color-uct: #003cff;
+    --color-uach: #003cff;
+    --color-uaysen: #003cff;
+    --color-umag: #003cff;
+    --color-uta: #003cff;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -61,91 +86,91 @@ html {
 
 /* PUCV */
 .cat-PUCV {
-    background-color: #a75154;
+    background-color: var(--color-pucv) !important;
 }
 /* UCN */
 .cat-UCN {
-    background-color: #BD6222;
+    background-color: var(--color-ucn) !important;
 }
 /* UTFSM */
 .cat-UTFSM {
-    background-color: #f7ae00;
+    background-color: var(--color-utfsm) !important;
 }
 /* UPLA */
 .cat-UPLA {
-    background-color: #0099cc;
+    background-color: var(--color-upla) !important;
 }
 /* UV */
 .cat-UV {
-    background-color: #003399;
+    background-color: var(--color-uv) !important;
 }
 /* UDEC */
 .cat-UDEC {
-    background-color: #9c9a9a;
+    background-color: var(--color-udec) !important;
 }
 /* UTALCA */
 .cat-UTALCA {
-    background-color: #AE0E36;
+    background-color: var(--color-utalca) !important;
 }
 /* ULAGOS */
 .cat-ULAGOS {
-    background-color: #056563;
+    background-color: var(--color-ulagos) !important;
 }
 /* UCSC */
 .cat-UCSC {
-    background-color: #d10024;
+    background-color: var(--color-ucsc) !important;
 }
 /* UBIOBIO */
 .cat-UBIOBIO {
-    background-color: #054993;
+    background-color: var(--color-ubiobio) !important;
 }
 /* UNAP */
 .cat-UNAP {
-    background-color: #004b80;
+    background-color: var(--color-unap) !important;
 }
 /* UA */
 .cat-UA {
-    background-color: #0c5dc5;
+    background-color: var(--color-ua) !important;
 }
 /* UDA */
 .cat-UDA {
-    background-color: #364b57;
+    background-color: var(--color-uda) !important;
 }
 /* USERENA */
 .cat-USERENA {
-    background-color: #003cff;
+    background-color: var(--color-userena) !important;
 }
 /* UOH */
 .cat-UOH {
-    background-color: #003cff;
+    background-color: var(--color-uoh) !important;
 }
 /* UCM */
 .cat-UCM {
-    background-color: #003cff;
+    background-color: var(--color-ucm) !important;
 }
 /* UFRO */
 .cat-UFRO {
-    background-color: #003cff;
+    background-color: var(--color-ufro) !important;
 }
 /* UCT */
 .cat-UCT {
-    background-color: #003cff;
+    background-color: var(--color-uct) !important;
 }
 /* UACH */
 .cat-UACH {
-    background-color: #003cff;
+    background-color: var(--color-uach) !important;
 }
 /* UAYSEN */
 .cat-UAYSEN {
-    background-color: #003cff;
+    background-color: var(--color-uaysen) !important;
 }
 /* UMAG */
 .cat-UMAG {
-    background-color: #003cff;
+    background-color: var(--color-umag) !important;
 }
 /* UTA */
 .cat-UTA {
-    background-color: #003cff;
+    background-color: var(--color-uta) !important;
 }
 
 /* Ajuste de texto para cierto tipo de resolucion */
