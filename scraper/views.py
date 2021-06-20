@@ -29,7 +29,7 @@ def scraper(request):
             {'target':udec, 'name':'UDEC'},
             {'target':utalca, 'name':'UTALCA'},
             {'target':ulagos, 'name':'ULAGOS'},
-            # {'target':unap, 'name':'UNAP'},
+            # {'target':unap, 'name':'UNAP'}, # Tiene errores
             {'target':ua, 'name':'UA'},
             {'target':uda, 'name':'UDA'},
             {'target':userena, 'name':'USERENA'},
@@ -53,23 +53,25 @@ def scraper(request):
         # Pero el panel uninews.datoslab.cl/scraper solo muestra información acerca de los errores e información si se usa este metodo
         # Usar solo para Desarrollo
 
-        pucv() # Funcionando
-        ucn() # Funcionando
-        utfsm() # Funcionando
-        uv() # Funcionando
-        upla() # Funcionando #Revisar
-        udec() # Funcionando
-        utalca() # Funcionando #Revisar
-        ulagos() # Funcionando
-        ucsc() # Funcionando
-        ubiobio() # Funcionando
-        uda() # En Funcionando
-        userena() # En Funcionando #Revisar
-        # unap() # Funcionando
-        ua() # Funcionando
+        #pucv() # Funcionando
+        #ucn() # Funcionando
+        #utfsm() # Funcionando
+        #uv() # Funcionando
+        #upla() # Funcionando #Revisar
+        #udec() # Funcionando
+        #utalca() # Funcionando #Revisar
+        #ulagos() # Funcionando
+        #ucsc() # Funcionando
+        #ubiobio() # Funcionando
+        #uda() # En Funcionando
+        #userena() # En Funcionando #Revisar
+        ## unap() # NO FUNCIONA
+        #ua() # Funcionando
 
-        uoh()
+        # uoh() No se pudo scrapear
+
         ucm()
+
         ufro()
         uct()
         uach()
@@ -192,6 +194,10 @@ def formatear_fecha(fecha, universidad):
         mes = fecha[3]
         anno = fecha[5]
     elif universidad == 'ua':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'ucm':
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -706,17 +712,40 @@ def userena():
 
 # Universidad de O'Higgins
 def uoh():
-    logging.debug('Lanzado')
-    logging.debug('Deteniendo')
     # https://www.uoh.cl/
-    pass
+    # https://www.uoh.cl/#noticias-y-eventos
+    logging.debug('Lanzado')
+
+    # universidad = Universidad.objects.get(alias='UOH')
+    # contents = urllib.request.urlopen("https://www.uoh.cl/#noticias-y-eventos").read()
+    logging.debug('Deteniendo')
+    
 
 # Universidad Católica del Maule
 def ucm():
-    logging.debug('Lanzado')
-    logging.debug('Deteniendo')
     # http://portal.ucm.cl/
-    pass
+    logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UCM')
+    url_rss = "https://portal.ucm.cl/feed" # URL de feed RSS
+    feed = feedparser.parse( url_rss ) # Se obtiene el XML y se procesa
+
+    for item in feed['items']:
+        try:
+            titulo = item['title']
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "ucm")
+            categoria_busqueda = setCategoria(item['category'])
+
+            noticia = urllib.request.urlopen(link).read()
+
+            imagen = BeautifulSoup(noticia, "html.parser").find('div', {'class': 'section-content-image'}).img['src']
+            bajada =  BeautifulSoup(noticia, "html.parser").find('div', {'class': 'section-content-paragraph'}).find_all('p')[1].text
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    logging.debug('Deteniendo')
 
 # Universidad de la Frontera
 def ufro():
