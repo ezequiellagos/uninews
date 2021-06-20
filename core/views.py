@@ -17,8 +17,16 @@ def license(request):
     return render(request, "core/license.html")
 
 def universities(request):
-    universities = Universidad.objects.all()
-    return render(request, "core/universities.html", {'universities':universities})
+    universities = Universidad.objects.order_by('alias')
+    news = Noticia.objects.order_by('-contador_visitas')
+    list_universities = Universidad.objects.none()
+
+    # Si la universidad tiene más de 0 noticias, entonces mostrará su logo
+    for university in universities:
+        if news.filter(id_universidad__alias=university.alias).count() > 0:
+            list_universities |= Universidad.objects.filter(alias=university.alias)
+
+    return render(request, "core/universities.html", {'universities':list_universities})
 
 def categories(request):
     categories = Noticia.objects.order_by().values('categoria').distinct()
