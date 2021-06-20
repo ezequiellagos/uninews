@@ -70,14 +70,14 @@ def scraper(request):
 
         # uoh() No se pudo scrapear
 
-        ucm()
+        # ucm() # Funcionando
 
         ufro()
-        uct()
-        uach()
-        uaysen()
-        umag()
-        uta()
+        # uct()
+        # uach()
+        # uaysen()
+        # umag()
+        # uta()
 
     hora_fin = time.time()
     hora["finish"] = time.strftime("%H:%M:%S")
@@ -198,6 +198,10 @@ def formatear_fecha(fecha, universidad):
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
     elif universidad == 'ucm':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'ufro':
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -750,13 +754,37 @@ def ucm():
 # Universidad de la Frontera
 def ufro():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UFRO')
+    url_rss = 'https://www.ufro.cl/index.php/noticias/12-destacadas?format=feed&type=rss'
+    feed = feedparser.parse( url_rss )
+
+    for item in feed['items']:
+        try:
+            titulo = item['title']
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "ufro")
+            categoria_busqueda = setCategoria(item['category'])
+
+            noticia = urllib.request.urlopen(link).read()
+
+            imagen = 'https://www.ufro.cl' + BeautifulSoup(noticia, "html.parser").find('td', {'id': 'imagen'}).p.img['src']
+            bajada =  BeautifulSoup(noticia, "html.parser").find('p', {'class': 'bajada'}).text.strip()
+            if not bajada:
+                bajada =  BeautifulSoup(noticia, "html.parser").find('table', {'class': 'tnoticia'}).tbody.tr.find_all('td')[1].p.text.strip()
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
     logging.debug('Deteniendo')
     # https://www.ufro.cl/
-    pass
 
 # Universidad Católica de Temuco
 def uct():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UCT')
+    url = ''
     logging.debug('Deteniendo')
     # https://www.uct.cl/
     pass
@@ -764,6 +792,8 @@ def uct():
 # Universidad Austral de Chile
 def uach():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UACH')
+    url = ''
     logging.debug('Deteniendo')
     # https://www.uach.cl/
     pass
@@ -771,6 +801,8 @@ def uach():
 # Universidad de Aysén
 def uaysen():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UAYSEN')
+    url = ''
     logging.debug('Deteniendo')
     # https://uaysen.cl/
     pass
@@ -778,6 +810,8 @@ def uaysen():
 # Universidad de Magallanes
 def umag():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UMAG')
+    url = ''
     logging.debug('Deteniendo')
     # http://www.umag.cl/
     pass
@@ -785,6 +819,8 @@ def umag():
 # Universidad de Taracapá
 def uta():
     logging.debug('Lanzado')
+    universidad = Universidad.objects.get(alias='UTA')
+    url = ''
     logging.debug('Deteniendo')
     # https://www.uta.cl/
     pass
