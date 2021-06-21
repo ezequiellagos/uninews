@@ -6,3 +6,4 @@ db.sqlite3
 *.pyc
 log/log_statistics.txt
 logs/log_statistics.txt
+core/static/img/universidades/debug.log
