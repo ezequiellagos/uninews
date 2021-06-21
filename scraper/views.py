@@ -29,7 +29,7 @@ def scraper(request):
             {'target':udec, 'name':'UDEC'},
             {'target':utalca, 'name':'UTALCA'},
             {'target':ulagos, 'name':'ULAGOS'},
-            # {'target':unap, 'name':'UNAP'}, # Tiene errores
+            {'target':unap, 'name':'UNAP'},
             {'target':ua, 'name':'UA'},
             {'target':uda, 'name':'UDA'},
             {'target':userena, 'name':'USERENA'},
@@ -65,15 +65,15 @@ def scraper(request):
         #ubiobio() # Funcionando
         #uda() # En Funcionando
         #userena() # En Funcionando #Revisar
-        ## unap() # NO FUNCIONA
+        unap() # Funcionando
         #ua() # Funcionando
 
         # uoh() No se pudo scrapear
 
         # ucm() # Funcionando
 
-        ufro()
-        # uct()
+        # ufro() # Funcionando
+        # uct() # Funciona con angular, usar selenium
         # uach()
         # uaysen()
         # umag()
@@ -606,37 +606,54 @@ def ubiobio():
 def unap():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UNAP')
-    url_base = "http://www.unap.cl"
-    contents = urllib.request.urlopen("http://www.unap.cl/prontus_unap/site/cache/nroedic/taxport/38_39_0_1.html").read()
-    bs = BeautifulSoup(contents, "html.parser")
-    items = bs.find_all("div", {"class": "taxport-item"})    
-    items = list(set(items)) # Elimina elementos duplicados
-    
-    for item in items:
-        try:
-            link = url_base + item.find("div", {"class": "titular"}).a['href']
-            titulo = item.find("div", {"class": "titular"}).a.text.strip()
-            fecha = item.find("div", {"class": "fecha"}).text.strip()
-            fecha = formatear_fecha(fecha, 'unap')
-            
-            noticia = urllib.request.urlopen(link).read()
-            bs_noticia = BeautifulSoup(noticia, "html.parser")
-            try:
-                bajada = bs_noticia.find(id='content').find('h2', {'class': 'bajada'}).text.strip()
-            except Exception:
-                bajada = bs_noticia.find("div", {"class": "CUERPO"}).find_all('p', {'style': 'text-align: justify;'})
-                for b in bajada:
-                    b = b.text.strip()
-                    if b: # Si la bajada no está vacia devuelvela y termina de buscar
-                        bajada = b
-                        break
+    url_base = 'https://www.unap.cl'
+    urls_news = {
+        'investigacion': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_13_48__1.html',
+        'vinculacion': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_38_39__1.html',
+        'acreditacion': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_83_113__1.html',
+        'casa-central': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_5_15__1.html',
+        'sede-victoria': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_5_17__1.html',
+        'noticias-arica': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_5_12__1.html',
+        'noticias-antofagasta': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_5_14__1.html',
+        'noticias-santiago': 'https://www.unap.cl/prontus_unap/site/tax/port/all/taxport_5_16__1.html'
+    }
 
-            imagen = url_base + bs_noticia.find("div", {"class": "CUERPO"}).find("img", {"alt": "Imagen"})['src']
-            categoria_busqueda = setCategoria()
-            
-            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
-        except Exception as e:
-            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+    for cat, url in urls_news.items():
+        contents = urllib.request.urlopen(url).read()
+        bs = BeautifulSoup(contents, "html.parser")
+        items = bs.find_all("div", {"class": "taxport-item"})
+        items = list(set(items)) # Elimina elementos duplicados
+    
+        for item in items:
+            try:
+                link = url_base + item.find("div", {"class": "titular"}).a['href'].strip()
+                titulo = item.find("div", {"class": "titular"}).a.text.strip()
+                fecha = item.find("div", {"class": "fecha"}).text.strip()
+                fecha = formatear_fecha(fecha, 'unap')
+                
+                noticia = urllib.request.urlopen(link).read()
+                bs_noticia = BeautifulSoup(noticia, "html.parser")
+
+                try:
+                    bajada = bs_noticia.find(id='content').find('h2', {'class': 'bajada'}).text.strip()
+                except Exception:
+                    bajada = bs_noticia.find("div", {"class": "CUERPO"}).find_all('p')
+                    for b in bajada:
+                        b = b.text.strip()
+                        if b: # Si la bajada no está vacia devuelvela y termina de buscar
+                            bajada = b
+                            break
+
+                try:
+                    imagen = url_base + bs_noticia.find("div", {"class": "CUERPO"}).find("img")['src'].strip()
+                except Exception:
+                    imagen = ''
+
+                categoria_busqueda = setCategoria(cat)
+
+                saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})            
+            except Exception as e:
+                result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
 
 # Universidad de Antofagasta
@@ -782,9 +799,19 @@ def ufro():
 
 # Universidad Católica de Temuco
 def uct():
+    # Esta página carga con Angular, se debe usar selenium
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UCT')
-    url = ''
+    url_base = 'https://www.uct.cl/actualidad/?typing=noticias'
+    # contents = urllib.request.urlopen(url_base).read()
+    # bs = BeautifulSoup(contents, "html.parser")
+    # items = bs.find_all("div", {"class": "cardwdetail"}) 
+
+    # print('------------------')
+    # print( items )
+    # print('------------------')
+
+
     logging.debug('Deteniendo')
     # https://www.uct.cl/
     pass
