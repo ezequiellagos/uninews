@@ -96,6 +96,11 @@ def statistics(request):
     total_visitas = 0
 
     for universidad in universidades:
+
+        # Si la universidad no tiene noticias, pasa a la siguiente
+        if news.filter(id_universidad__alias=universidad.alias).count() == 0:
+            continue
+        
         n = news.filter(id_universidad__alias=universidad.alias)
 
         total_noticias += n.count()
@@ -155,40 +160,40 @@ def statistics(request):
         })
 
 
-def word_cloud(lista):
-    comment_words = ''
-    stopwords_es = set(stopwords.words('spanish'))
+# def word_cloud(lista):
+#     comment_words = ''
+#     stopwords_es = set(stopwords.words('spanish'))
 
-    for val in lista:
-        # typecaste each val to string
-        val = str(val['titulo'] + ' ' + val['bajada'])
+#     for val in lista:
+#         # typecaste each val to string
+#         val = str(val['titulo'] + ' ' + val['bajada'])
 
-        # split the value
-        tokens = val.split()
+#         # split the value
+#         tokens = val.split()
 
-        # Converts each token into lowercase
-        for i in range(len(tokens)):
-            tokens[i] = tokens[i].lower()
+#         # Converts each token into lowercase
+#         for i in range(len(tokens)):
+#             tokens[i] = tokens[i].lower()
 
-        comment_words += " ".join(tokens)+" "
+#         comment_words += " ".join(tokens)+" "
 
-    wordcloud = WordCloud(width=800, height=800,
-                        background_color='white',
-                        stopwords=stopwords_es,
-                        min_font_size=10).generate(comment_words)
+#     wordcloud = WordCloud(width=800, height=800,
+#                         background_color='white',
+#                         stopwords=stopwords_es,
+#                         min_font_size=10).generate(comment_words)
 
-    # plot the WordCloud image
-    plt.figure(figsize=(8, 8), facecolor=None)
-    plt.imshow(wordcloud)
-    plt.axis("off")
+#     # plot the WordCloud image
+#     plt.figure(figsize=(8, 8), facecolor=None)
+#     plt.imshow(wordcloud)
+#     plt.axis("off")
 
-    image = io.BytesIO()
-    plt.savefig(image, format='png')
-    image.seek(0)  # rewind the data
-    string = base64.b64encode(image.read())
+#     image = io.BytesIO()
+#     plt.savefig(image, format='png')
+#     image.seek(0)  # rewind the data
+#     string = base64.b64encode(image.read())
 
-    image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
-    return image_64
+#     image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
+#     return image_64
 
 def search(request):
     info = False
