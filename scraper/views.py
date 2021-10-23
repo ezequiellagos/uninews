@@ -65,7 +65,7 @@ def scraper(request):
         #ubiobio() # Funcionando
         #uda() # En Funcionando
         #userena() # En Funcionando #Revisar
-        unap() # Funcionando
+        # unap() # Funcionando
         #ua() # Funcionando
 
         # uoh() No se pudo scrapear
@@ -77,7 +77,7 @@ def scraper(request):
         # uach()
         # uaysen()
         # umag()
-        # uta()
+        uta()
 
     hora_fin = time.time()
     hora["finish"] = time.strftime("%H:%M:%S")
@@ -202,6 +202,10 @@ def formatear_fecha(fecha, universidad):
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
     elif universidad == 'ufro':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'uta':
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -843,12 +847,40 @@ def umag():
     # http://www.umag.cl/
     pass
 
-# Universidad de Taracapá
+# Universidad de Tarapacá
 def uta():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UTA')
-    url = ''
+    url_rss = 'https://www.uta.cl/index.php/feed/'
+    feed = feedparser.parse( url_rss )
+
+    for item in feed['items']:
+        try:
+            titulo = item['title']
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "uta")
+            
+            try:
+                categoria_busqueda = setCategoria(item['category'])
+            except:
+                categoria_busqueda = setCategoria()
+            
+            bajada = item['summary'].strip()
+
+            noticia = urllib.request.urlopen(link).read()
+            
+            try:
+                imagen = BeautifulSoup(noticia, "html.parser").find('div', {'class': 'wp-block-image'}).figure.a.img['src']
+            except:
+                try:
+                    imagen = BeautifulSoup(noticia, "html.parser").find('figure', {'class': 'wp-block-image'}).a.img['src']
+                except:
+                    imagen = ''
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
     logging.debug('Deteniendo')
     # https://www.uta.cl/
-    pass
     
