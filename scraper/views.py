@@ -74,9 +74,9 @@ def scraper(request):
 
         # ufro() # Funcionando
         # uct() # Funciona con angular, usar selenium
-        # uach()
-        # uaysen()
-        umag() # Funcionando - Revisar la bajada
+        uach()
+        # uaysen() #Funcionando
+        # umag() # Funcionando - Revisar la bajada
         # uta() # Funcionando
 
     hora_fin = time.time()
@@ -213,7 +213,11 @@ def formatear_fecha(fecha, universidad):
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
-
+    elif universidad == 'uaysen':
+        fecha = fecha.lower().split()
+        dia = fecha[0]
+        mes = fecha[1]
+        anno = fecha[2]
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -272,6 +276,7 @@ def setCategoria(categoria = ''):
         categoria = elimina_tildes(categoria)
         categoria = categoria.replace(" ", "-")
         categoria = categoria.replace("&", "y")
+        categoria = categoria.replace("#", "")
     return categoria
 
 def elimina_tildes(s):
@@ -837,7 +842,28 @@ def uach():
 def uaysen():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UAYSEN')
-    url = ''
+    url = 'https://uaysen.cl/actualidad/noticias'
+    contents = urllib.request.urlopen(url).read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("div", {"class": "mb-4 col-xl-4 col-lg-4 col-md-6 col-sm-12"})
+
+    for item in items:
+        try:
+            titulo = item.div.a.text.strip()
+            link = item.div.find("a")['href']
+            fecha = item.find("small", {"class": "date"}).text.strip()
+            fecha = formatear_fecha(fecha, "uaysen")
+            categoria_busqueda = setCategoria(item.find("ul", {"class": "list-inline"}).li.a.text.strip())
+            imagen = item.find("div", {"class": "image-news-container-small"}).img['src']
+
+            noticia = urllib.request.urlopen(link).read()
+            noticia_bs = BeautifulSoup(noticia, "html.parser")
+            bajada =  noticia_bs.find("div", {"class": "text-justify font-weight-bold mb-3"}).text.strip()
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
     logging.debug('Deteniendo')
     # https://uaysen.cl/
     pass
@@ -847,7 +873,6 @@ def umag():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UMAG')
     url = 'http://www.umag.cl/vcm/?page_id=459'
-
     contents = urllib.request.urlopen(url).read()
     bs = BeautifulSoup(contents, "html.parser")
     items = bs.find_all("div", {"class": "not-col11"})
