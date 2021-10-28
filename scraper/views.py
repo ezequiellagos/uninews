@@ -8,6 +8,7 @@ import ssl
 import dateutil.parser
 import logging
 import unidecode
+import json
 
 result = []
 
@@ -73,8 +74,8 @@ def scraper(request):
         # ucm() # Funcionando
 
         # ufro() # Funcionando
-        # uct() # Funciona con angular, usar selenium
-        uach()
+        uct() # Funciona con angular, usar selenium
+        # uach() # Funcionando
         # uaysen() #Funcionando
         # umag() # Funcionando - Revisar la bajada
         # uta() # Funcionando
@@ -222,6 +223,11 @@ def formatear_fecha(fecha, universidad):
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'uct':
+        fecha = fecha.lower().split()
+        dia = fecha[0]
+        mes = fecha[1]
+        anno = fecha[2]
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -281,6 +287,7 @@ def setCategoria(categoria = ''):
         categoria = categoria.replace(" ", "-")
         categoria = categoria.replace("&", "y")
         categoria = categoria.replace("#", "")
+        categoria = categoria.replace(",", "-")
     return categoria
 
 def elimina_tildes(s):
@@ -816,22 +823,40 @@ def ufro():
 
 # Universidad Católica de Temuco
 def uct():
-    # Esta página carga con Angular, se debe usar selenium
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UCT')
-    url_base = 'https://www.uct.cl/actualidad/?typing=noticias'
-    # contents = urllib.request.urlopen(url_base).read()
-    # bs = BeautifulSoup(contents, "html.parser")
-    # items = bs.find_all("div", {"class": "cardwdetail"}) 
+    url_base = 'https://www.uct.cl/actualidad/'
+    contents = urllib.request.urlopen(url_base).read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find('div', {'id': 'cardslist'}).find('cards-container')[':cards'].strip()
+    data = json.loads(items)
 
-    # print('------------------')
-    # print( items )
-    # print('------------------')
+    for item in data:
+        try:
+            titulo = item['title'].replace('“','"').replace('”','"').strip()
+            link = item['button']['link']
+            fecha = item['date']
+            fecha = formatear_fecha(fecha, "uct")
+            categoria_busqueda = setCategoria(item['cat'])
 
+            noticia = urllib.request.urlopen(link).read()
+            noticia_bs = BeautifulSoup(noticia, "html.parser")
+            
+            try:
+                imagen = item['image']['src']
+                if imagen is None:
+                    imagen = noticia_bs.find('div', {'class': 'wysiwyg'}).find('img')['src']
+            except Exception as e:
+                imagen = ''
+
+            bajada =  noticia_bs.find('div', {'class': 'wysiwyg'}).find('p').text.replace('“','"').replace('”','"').strip()
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
 
     logging.debug('Deteniendo')
     # https://www.uct.cl/
-    pass
 
 # Universidad Austral de Chile
 def uach():
