@@ -76,8 +76,8 @@ def scraper(request):
         # uct() # Funciona con angular, usar selenium
         # uach()
         # uaysen()
-        # umag()
-        uta()
+        umag() # Funcionando - Revisar la bajada
+        # uta() # Funcionando
 
     hora_fin = time.time()
     hora["finish"] = time.strftime("%H:%M:%S")
@@ -206,6 +206,10 @@ def formatear_fecha(fecha, universidad):
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
     elif universidad == 'uta':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
+    elif universidad == 'umag':
         dia = dateutil.parser.parse(fecha).strftime('%d')
         mes = dateutil.parser.parse(fecha).strftime('%m')
         anno = dateutil.parser.parse(fecha).strftime('%Y')
@@ -842,10 +846,40 @@ def uaysen():
 def umag():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UMAG')
-    url = ''
+    url = 'http://www.umag.cl/vcm/?page_id=459'
+
+    contents = urllib.request.urlopen(url).read()
+    bs = BeautifulSoup(contents, "html.parser")
+    items = bs.find_all("div", {"class": "not-col11"})
+
+    for item in items:
+        try:
+            link = item.find('a', {'class': 'link'})['href']
+            noticia = urllib.request.urlopen(link).read()
+            bs_noticia = BeautifulSoup(noticia, "html.parser")
+
+            titulo = bs_noticia.find('div', {'class': 'post-title'}).h2.a.text.strip()
+
+            fecha = bs_noticia.find('span', {'class': 'post-dates'}).text.strip()
+            fecha = formatear_fecha(fecha, "umag")
+
+            categoria_busqueda = setCategoria('')
+
+            try:
+                imagen = bs_noticia.find('div', {'class': 'entry'}).find('a').find('img')['src']
+            except:
+                imagen = ''
+
+            bajada =  bs_noticia.find('div', {'class': 'entry'}).p.text.strip()
+            if not bajada:
+                bajada =  bs_noticia.find('div', {'class': 'entry'}).find_all('p')[2].text.strip()
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
     logging.debug('Deteniendo')
     # http://www.umag.cl/
-    pass
 
 # Universidad de Tarapacá
 def uta():
