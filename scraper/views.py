@@ -218,6 +218,10 @@ def formatear_fecha(fecha, universidad):
         dia = fecha[0]
         mes = fecha[1]
         anno = fecha[2]
+    elif universidad == 'uach':
+        dia = dateutil.parser.parse(fecha).strftime('%d')
+        mes = dateutil.parser.parse(fecha).strftime('%m')
+        anno = dateutil.parser.parse(fecha).strftime('%Y')
 
     if mes == "enero" or mes == "jan" or mes == '1':
         mes = '01'
@@ -833,10 +837,32 @@ def uct():
 def uach():
     logging.debug('Lanzado')
     universidad = Universidad.objects.get(alias='UACH')
-    url = ''
+    url_rss = 'https://diario.uach.cl/feed/'
+
+    if hasattr(ssl, '_create_unverified_context'):
+        ssl._create_default_https_context = ssl._create_unverified_context
+    feed = feedparser.parse( url_rss )
+
+    for item in feed['items']:
+        try:
+            titulo = item['title']
+            link = item['link']
+            fecha = item['published']
+            fecha = formatear_fecha(fecha, "uach")
+            categoria_busqueda = setCategoria(item['category'])
+
+            noticia = urllib.request.urlopen(link).read()
+            noticia_bs = BeautifulSoup(noticia, "html.parser")
+
+            imagen = noticia_bs.find('article', {'class': 'post'}).find('div', {'class': 'post-image'}).a['href'].strip()
+            bajada =  noticia_bs.find('p', {'class': 'bajada'}).text.replace('“','"').replace('”','"').strip()
+
+            saveNew({'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+        except Exception as e:
+            result.append({'status':"error", 'error_message':e, 'universidad':universidad, 'titulo':titulo, 'bajada':bajada, 'fecha':fecha, 'link_noticia':link, 'link_recurso':imagen, 'categoria':categoria_busqueda})
+
     logging.debug('Deteniendo')
     # https://www.uach.cl/
-    pass
 
 # Universidad de Aysén
 def uaysen():
