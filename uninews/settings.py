@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '4wuekdibk*_leap&e*3n8i1jk%_qyp-22f)42mum(rrp%$5lc#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['uninews.datoslab.cl', '127.0.0.1']
 
@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     'django.contrib.humanize',
 
     'core',
     'news.apps.NewsConfig',
     'scraper',
+    'cities_light',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +85,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'other': {
+        'ENGINE': "django.db.backends.postgresql_psycopg2",
+        'NAME': "uninews_v3",
+        'USER': "postgres",
+        'PASSWORD': "ezequiel19",
+        'HOST': "127.0.0.1",
+        'PORT': "5432",
     }
 }
 
@@ -109,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-cl'
 
 TIME_ZONE = 'America/Santiago'
 

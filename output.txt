@@ -1,0 +1,287 @@
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 10 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): cities_light.
+Run 'python manage.py migrate' to apply them.
+November 30, 2021 - 13:41:08
+Django version 2.2.13, using settings 'uninews.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+||||||||||||||||||||||||||||||||||||||||||
+ID: 27338
+Size ID: 5
+Type ID: <class 'int'>
+--------------------
+Titulo: ¡Basket UdeC gana el primer partido de la final de la LNB!
+Size Titulo: 58
+Type Titulo: <class 'str'>
+--------------------
+Bajada: El Club Deportivo Universidad de Concepción aprovechó la localía y derrotó al campeón de la Conferencia Sur, Club Deportivo Valdivia con un marcador de 67-57. El lunes será el segundo encuentro en la Casa del Deporte.
+Size Bajada: 217
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2021-09-05
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: https://noticias.udec.cl/basket-udec-gana-el-primer-partido-de-la-final-de-la-lnb/
+Size Link Noticia: 82
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: https://noticias.udec.cl/wp-content/uploads/2021/09/udec-cdv-1er-partido-1024x683.jpeg
+Size Link Recurso: 86
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 5
+Size Contador Visitas: 1
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: 2021-09-06 10:00:12.031360+00:00
+Size Created: 32
+Type Created: <class 'datetime.datetime'>
+--------------------
+Updated: 2021-09-06 10:00:12.031430+00:00
+Size Updated: 32
+Type Updated: <class 'datetime.datetime'>
+--------------------
+ID Universidad: UDEC
+Size ID Universidad: 4
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: deporte
+Size Categoria: 7
+Type Categoria: <class 'str'>
+--------------------
+Error: 2021-09-05 00:00:00
+||||||||||||||||||||||||||||||||||||||||||
+ID: 27339
+Size ID: 5
+Type ID: <class 'int'>
+--------------------
+Titulo: Curso de ceremonial y protocolo destacó por su aplicación práctica en el contexto regional
+Size Titulo: 90
+Type Titulo: <class 'str'>
+--------------------
+Bajada: Curso de ceremonial y protocolo destacó por su aplicación práctica en el contexto regional
+Size Bajada: 90
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2021-09-05
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: https://www.ulagos.cl/2021/09/curso-de-ceremonial-y-protocolo-destaco-por-su-aplicacion-practica-en-el-contexto-regional/
+Size Link Noticia: 121
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: https://www.ulagos.cl/wp-content/uploads/2021/09/Foto-Curso-Protocolo-ULagos-1280x443.jpg
+Size Link Recurso: 89
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 9
+Size Contador Visitas: 1
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: 2021-09-06 10:00:13.578931+00:00
+Size Created: 32
+Type Created: <class 'datetime.datetime'>
+--------------------
+Updated: 2021-09-06 10:00:13.578975+00:00
+Size Updated: 32
+Type Updated: <class 'datetime.datetime'>
+--------------------
+ID Universidad: ULAGOS
+Size ID Universidad: 6
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: campus-osorno
+Size Categoria: 13
+Type Categoria: <class 'str'>
+--------------------
+Error: 2021-09-05 00:00:00
+||||||||||||||||||||||||||||||||||||||||||
+ID: 9159
+Size ID: 4
+Type ID: <class 'int'>
+--------------------
+Titulo: UCN presente en I Congreso Internacional en Ciencias Agropecuarias efectuado en Colombia
+Size Titulo: 88
+Type Titulo: <class 'str'>
+--------------------
+Bajada: Luis Pereira, académico de Acuicultura, fue invitado por el SENA. La UCN se hizo presente en el Primer Congreso Internacional de Ciencias Agropecuarias y Afines,...
+Size Bajada: 164
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2019-09-08
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: http://www.noticias.ucn.cl/noticias/internacional/ucn-presente-en-i-congreso-internacional-en-ciencias-agropecuarias-efectuado-en-colombia/
+Size Link Noticia: 139
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: http://www.noticias.ucn.cl/wp-content/uploads/2019/09/Luis-Pereira-Colombia-sept2019.jpg
+Size Link Recurso: 88
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 11
+Size Contador Visitas: 2
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: 2019-09-09 10:00:05.223744+00:00
+Size Created: 32
+Type Created: <class 'datetime.datetime'>
+--------------------
+Updated: 2019-09-09 10:00:05.223807+00:00
+Size Updated: 32
+Type Updated: <class 'datetime.datetime'>
+--------------------
+ID Universidad: UCN
+Size ID Universidad: 3
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: academia
+Size Categoria: 8
+Type Categoria: <class 'str'>
+--------------------
+Error: 2019-09-08 00:00:00
+||||||||||||||||||||||||||||||||||||||||||
+ID: 9160
+Size ID: 4
+Type ID: <class 'int'>
+--------------------
+Titulo: Finaliza ciclo de talleres de desarrollo de carrera para egresados de la UCN
+Size Titulo: 76
+Type Titulo: <class 'str'>
+--------------------
+Bajada: Más de 60 exalumnos de diferentes profesiones adquirieron herramientas orientadas a fortalecer su desempeño en el ámbito laboral. Por tercer año consecutivo, exalumnos de la...
+Size Bajada: 176
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2019-09-08
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: http://www.noticias.ucn.cl/noticias/ex-alumnos/finaliza-ciclo-de-talleres-de-desarrollo-de-carrera-para-egresados-de-la-ucn/
+Size Link Noticia: 124
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: http://www.noticias.ucn.cl/wp-content/uploads/2019/09/Talleres-egresados-UCN1.jpg
+Size Link Recurso: 81
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 11
+Size Contador Visitas: 2
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: 2019-09-09 10:00:05.291970+00:00
+Size Created: 32
+Type Created: <class 'datetime.datetime'>
+--------------------
+Updated: 2019-09-09 10:00:05.292032+00:00
+Size Updated: 32
+Type Updated: <class 'datetime.datetime'>
+--------------------
+ID Universidad: UCN
+Size ID Universidad: 3
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: academia
+Size Categoria: 8
+Type Categoria: <class 'str'>
+--------------------
+Error: 2019-09-08 00:00:00
+||||||||||||||||||||||||||||||||||||||||||
+ID: 24523
+Size ID: 5
+Type ID: <class 'int'>
+--------------------
+Titulo: Unap y senador Durana trabajan para consolidar Centro de Investigación Acuícola en Arica
+Size Titulo: 88
+Type Titulo: <class 'str'>
+--------------------
+Bajada: Encuentro entre el legislador y los vicerrectores de Administración y Finanzas y de Investigación, busca avanzar en la concreción de esta iniciativa académica y de fomento al desarrollo productivo
+Size Bajada: 196
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2019-09-08
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: https://www.unap.cl/prontus_unap/site/artic/20190908/pags/20190908233259.html
+Size Link Noticia: 77
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: https://www.unap.cl/prontus_unap/site/artic/20190908/imag/foto_0000000120190908233259.jpg
+Size Link Recurso: 89
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 11
+Size Contador Visitas: 2
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: 2021-06-21 02:09:52.919197+00:00
+Size Created: 32
+Type Created: <class 'datetime.datetime'>
+--------------------
+Updated: 2021-06-21 02:09:52.919279+00:00
+Size Updated: 32
+Type Updated: <class 'datetime.datetime'>
+--------------------
+ID Universidad: UNAP
+Size ID Universidad: 4
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: noticias-arica
+Size Categoria: 14
+Type Categoria: <class 'str'>
+--------------------
+Error: 2019-09-08 00:00:00
+||||||||||||||||||||||||||||||||||||||||||
+ID: 448
+Size ID: 3
+Type ID: <class 'int'>
+--------------------
+Titulo: Entrega de campos clínicos a Ues con lucro preocupa a Upla
+Size Titulo: 58
+Type Titulo: <class 'str'>
+--------------------
+Bajada: Fuente: El Mercurio de Valparaíso, página 5, publicado el 13 de agosto de 2017
+Size Bajada: 78
+Type Bajada: <class 'str'>
+--------------------
+Fecha: 2017-08-13
+Size Fecha: 10
+Type Fecha: <class 'datetime.date'>
+--------------------
+Link Noticia: http://www.upla.cl/noticias/2017/08/13/entrega-de-campos-clinicos-a-ues-con-lucro-preocupa-a-upla/
+Size Link Noticia: 98
+Type Link Noticia: <class 'str'>
+--------------------
+Link Recurso: http://www.upla.cl/noticias/wp-content/uploads/2017/08/20170813_Mercuriovalpo-mirta-crovetto-campus-clinicos-640-310x165.jpg
+Size Link Recurso: 124
+Type Link Recurso: <class 'str'>
+--------------------
+Contador Visitas: 11
+Size Contador Visitas: 2
+Type Contador Visitas: <class 'int'>
+--------------------
+Created: None
+Size Created: 4
+Type Created: <class 'NoneType'>
+--------------------
+Updated: None
+Size Updated: 4
+Type Updated: <class 'NoneType'>
+--------------------
+ID Universidad: UPLA
+Size ID Universidad: 4
+Type ID Universidad: <class 'str'>
+--------------------
+Categoria: upla-en-los-medios
+Size Categoria: 18
+Type Categoria: <class 'str'>
+--------------------
+Error: 2017-08-13 00:00:00
+[27338, 27339, 9159, 9160, 24523, 448]
