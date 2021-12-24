@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="114" height="18" viewBox="0 0 114 18">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 22px;
+        font-family: "Book Antiqua";
+      }
+
+      .cls-2 {
+        fill: #0180ff;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text id="UNINEWS" class="cls-1" x="0.772" y="16.299">UNI<tspan class="cls-2">NEWS</tspan></text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 40px;
+        font-family: "Book Antiqua";
+        font-weight: 700;
+      }
+
+      .cls-2 {
+        fill: #0180ff;
+      }
+    </style>
+  </defs>
+  <text id="UN" class="cls-1" x="0.378" y="44.9">U<tspan class="cls-2">N</tspan></text>
+</svg>

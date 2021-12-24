@@ -69,12 +69,12 @@ def scraper(request):
         # unap() # Funcionando
         #ua() # Funcionando
 
-        # uoh() No se pudo scrapear
+        # uoh() #No se pudo scrapear - Página hecha con angular
 
         # ucm() # Funcionando
 
-        # ufro() # Funcionando
-        uct() # Funciona con angular, usar selenium
+        ufro() # Funcionando
+        # uct() # Funcionando - detalles de rendimiento
         # uach() # Funcionando
         # uaysen() #Funcionando
         # umag() # Funcionando - Revisar la bajada
@@ -758,8 +758,10 @@ def userena():
 # Universidad de O'Higgins
 def uoh():
     # https://www.uoh.cl/
-    # https://www.uoh.cl/#noticias-y-eventos
     logging.debug('Lanzado')
+
+    universidad = Universidad.objects.get(alias='UOH')
+    url = 'https://www.uoh.cl/#noticias-y-eventos'
 
     # universidad = Universidad.objects.get(alias='UOH')
     # contents = urllib.request.urlopen("https://www.uoh.cl/#noticias-y-eventos").read()
