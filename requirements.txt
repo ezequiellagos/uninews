@@ -2,7 +2,7 @@ astroid==2.2.5
 beautifulsoup4==4.6.3
 certifi==2019.3.9
 colorama==0.4.1
-Django==2.2.13
+Django==2.2.27
 dryscrape==1.0
 feedparser==5.2.1
 html5lib==1.1
