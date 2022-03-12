@@ -24,5 +24,5 @@ webkit-server==1.0
 wincertstore==0.2
 wrapt==1.11.1
 xvfbwrapper==0.2.9
-Pillow==7.2.0
+Pillow==9.0.1
 urllib3==1.24.1
