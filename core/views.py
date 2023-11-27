@@ -16,6 +16,9 @@ def contact(request):
 def license(request):
     return render(request, "core/license.html")
 
+def privacy(request):
+    return render(request, "core/privacy.html")
+
 def universities(request):
     universities = Universidad.objects.order_by('alias')
     news = Noticia.objects.order_by('-contador_visitas')
