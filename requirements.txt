@@ -16,7 +16,7 @@ pylint-plugin-utils==0.5
 python-dateutil==2.8.0
 pytz==2018.9
 six==1.12.0
-sqlparse==0.4.1
+sqlparse==0.4.2
 typed-ast==1.3.2
 Unidecode==1.2.0
 webencodings==0.5.1
